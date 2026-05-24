@@ -229,3 +229,50 @@
   to   { transform: scale(1);    opacity: 1; }
 }
 .pop-in { animation: pop-in 0.2s ease; }
+
+/* ─── Intro Page ─────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.25; }
+  50%       { opacity: 0.45; }
+}
+
+.intro-glow-top {
+  background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+.intro-glow-bl {
+  background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
+  animation: glow-pulse 5s ease-in-out infinite 1s;
+}
+.intro-glow-br {
+  background: radial-gradient(circle, #22c55e 0%, transparent 70%);
+  animation: glow-pulse 5s ease-in-out infinite 2s;
+}
+
+.intro-badges  { animation: fade-up 0.5s ease 0.1s both; }
+.intro-title   { animation: fade-up 0.5s ease 0.25s both; }
+.intro-cta     { animation: fade-up 0.5s ease 0.4s both; }
+.intro-features { animation: fade-up 0.5s ease 0.55s both; }
+
+.intro-float-1 { animation: float 3.5s ease-in-out infinite; }
+.intro-float-2 { animation: float 3.5s ease-in-out infinite 0.6s; }
+.intro-float-3 { animation: float 3.5s ease-in-out infinite 1.2s; }
+
+.intro-main-title {
+  font-size: clamp(2.2rem, 6vw, 3.5rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, #a78bfa 0%, #c084fc 40%, #f0abfc 80%, #93c5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+  filter: drop-shadow(0 0 30px rgba(167, 139, 250, 0.4));
+}

@@ -35,7 +35,7 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  step: 'input',
+  step: 'intro',
   settings: { useMost: true, useBan: true },
   players: makeDefaultPlayers(),
   teamA: [],

@@ -17,7 +17,7 @@ export interface AssignedPlayer extends Player {
   assignedRole: Role;
 }
 
-export type AppStep = 'input' | 'teams' | 'result';
+export type AppStep = 'intro' | 'input' | 'teams' | 'result';
 
 export interface AppSettings {
   useMost: boolean;

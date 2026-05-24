@@ -1,5 +1,6 @@
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from './store';
+import IntroPage from './components/IntroPage';
 import PlayerInputForm from './components/PlayerInputForm';
 import TeamSplit from './components/TeamSplit';
 import RoleAssignment from './components/RoleAssignment';
@@ -36,6 +37,15 @@ export default function App() {
     setShowSettings: s.setShowSettings,
   })));
 
+  if (step === 'intro') {
+    return (
+      <>
+        <IntroPage />
+        <SettingsModal />
+      </>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center w-full min-h-screen">
       <header className="w-full flex flex-col items-center gap-1.5 px-6 pt-8 pb-6"
@@ -56,8 +66,8 @@ export default function App() {
       </header>
 
       <main className="w-full flex flex-col items-center flex-1">
-        {step === 'input' && <PlayerInputForm />}
-        {step === 'teams' && <TeamSplit />}
+        {step === 'input'  && <PlayerInputForm />}
+        {step === 'teams'  && <TeamSplit />}
         {step === 'result' && (
           resultA.length > 0 && resultB.length > 0
             ? <ResultView />

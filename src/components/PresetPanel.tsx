@@ -20,35 +20,38 @@ export default function PresetPanel({ players, onLoad }: Props) {
   };
 
   return (
-    <div className="card-dark w-full px-3.5 py-3">
-      <div className="flex items-center justify-between mb-2.5">
-        <span className="text-[0.82rem] font-bold text-lavender">프리셋</span>
+    <div className="flex flex-col gap-3 w-full">
+      <div className="flex items-center justify-between">
+        <p className="text-[0.8rem] text-muted">
+          {presets.length > 0 ? `${presets.length}개 저장됨 (최대 5개)` : '저장된 프리셋이 없습니다'}
+        </p>
         <button
-          className="bg-deep-indigo border border-indigo text-lilac text-[0.75rem] px-2.5 py-1 rounded-md cursor-pointer transition-all hover:bg-[#2e1f6e] hover:border-purple font-[inherit]"
+          className="bg-deep-indigo border border-indigo text-lilac text-[0.75rem] px-3 py-1.5 rounded-lg cursor-pointer transition-all hover:bg-[#2e1f6e] hover:border-purple font-[inherit] font-semibold"
           onClick={handleSave}
         >
-          현재 저장
+          + 현재 저장
         </button>
       </div>
 
-      {presets.length === 0 ? (
-        <p className="text-[0.75rem] text-faint text-center py-1.5">저장된 프리셋이 없습니다</p>
-      ) : (
-        <ul className="flex flex-col gap-1.5">
+      {presets.length > 0 && (
+        <ul className="flex flex-col gap-2">
           {presets.map(p => (
-            <li key={p.id} className="flex items-center justify-between bg-[#13132a] border border-line rounded-lg px-2.5 py-1.5 gap-2">
-              <span className="text-[0.8rem] text-sub flex-1 min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
-                {p.name}
-              </span>
-              <div className="flex gap-1.5 shrink-0">
+            <li key={p.id} className="flex items-center justify-between bg-card border border-line rounded-xl px-3.5 py-3 gap-2">
+              <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                <span className="text-[0.85rem] font-semibold text-text truncate">{p.name}</span>
+                <span className="text-[0.7rem] text-faint">
+                  {p.players.filter(pl => pl.name.trim()).length}명 입력됨
+                </span>
+              </div>
+              <div className="flex gap-2 shrink-0">
                 <button
-                  className="bg-deep-indigo border border-indigo text-lilac text-[0.73rem] px-2 py-0.5 rounded cursor-pointer transition-colors hover:bg-[#2e1f6e] font-[inherit]"
+                  className="bg-deep-indigo border border-indigo text-lilac text-[0.75rem] px-3 py-1.5 rounded-lg cursor-pointer transition-colors hover:bg-[#2e1f6e] font-[inherit] font-semibold"
                   onClick={() => onLoad(p.players)}
                 >
                   불러오기
                 </button>
                 <button
-                  className="bg-transparent border border-[#3a2a2a] text-dim text-[0.7rem] px-1.5 py-0.5 rounded cursor-pointer transition-all hover:text-dps hover:border-dps font-[inherit] leading-none"
+                  className="bg-transparent border border-[#3a2a2a] text-dim text-[0.75rem] w-8 h-8 rounded-lg cursor-pointer transition-all hover:text-dps hover:border-dps font-[inherit] flex items-center justify-center"
                   onClick={() => handleDelete(p.id)}
                 >
                   ✕
