@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
 import { useAppStore } from '../../store';
 import MapPicker from '../MapPicker';
@@ -36,7 +37,7 @@ export default function ResultView() {
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch {
-      alert('이미지 저장에 실패했습니다. 다시 시도해주세요.');
+      toast.error('이미지 저장에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
