@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { AssignedPlayer } from '../../types';
 import { useAppStore } from '../../store';
@@ -18,9 +18,11 @@ export default function RoleAssignment() {
   const [doneA, setDoneA] = useState<AssignedPlayer[] | null>(null);
   const [doneB, setDoneB] = useState<AssignedPlayer[] | null>(null);
 
-  useEffect(() => {
+  const canConfirm = !!doneA && !!doneB;
+
+  const handleConfirm = () => {
     if (doneA && doneB) setResult(doneA, doneB);
-  }, [doneA, doneB, setResult]);
+  };
 
   return (
     <div className="w-full max-w-[1100px] flex flex-col flex-1">
@@ -30,15 +32,30 @@ export default function RoleAssignment() {
           <p className="section-desc mt-1">각 팀의 사다리 시작 버튼을 눌러 역할을 배정하세요.</p>
         </div>
         <div className="ladders-wrap grid grid-cols-2 gap-6 w-full">
-          <TeamLadder players={teamA} label="A" onDone={setDoneA} />
-          <TeamLadder players={teamB} label="B" onDone={setDoneB} />
+          <TeamLadder
+            players={teamA}
+            label="A"
+            onDone={setDoneA}
+            onReset={() => setDoneA(null)}
+          />
+          <TeamLadder
+            players={teamB}
+            label="B"
+            onDone={setDoneB}
+            onReset={() => setDoneB(null)}
+          />
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex">
-        <button className="btn-secondary py-[14px]! w-full!" onClick={() => setStep('teams')}>
+      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex gap-2">
+        <button className="btn-secondary py-[14px]! flex-1!" onClick={() => setStep('teams')}>
           ← 팀 다시 나누기
         </button>
+        {canConfirm && (
+          <button className="btn-primary py-[14px]! flex-[2]!" onClick={handleConfirm}>
+            배정 확인 →
+          </button>
+        )}
       </div>
     </div>
   );

@@ -136,6 +136,7 @@
   .badge-tank, .badge-dps, .badge-heal {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     padding: 2px 8px;
     border-radius: 12px;
     font-size: 0.72rem;
@@ -149,6 +150,7 @@
   .badge-sm-tank, .badge-sm-dps, .badge-sm-heal, .badge-ban {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     padding: 1px 6px;
     border-radius: 10px;
     font-size: 0.62rem;

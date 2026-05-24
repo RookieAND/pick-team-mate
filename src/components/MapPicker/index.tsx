@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { OW_MAPS, HAS_SIDE, type OWMap } from '../../data/maps';
 
 function randomItem<T>(arr: T[]): T {
@@ -22,32 +22,75 @@ export default function MapPicker({
   teamBName: string;
 }) {
   const [picked, setPicked] = useState<OWMap | null>(null);
+  const [displayMap, setDisplayMap] = useState<OWMap | null>(null);
   const [side, setSide] = useState<{ first: string; second: string } | null>(null);
   const [spinning, setSpinning] = useState(false);
+  const [tickKey, setTickKey] = useState(0);
 
-  const pick = () => {
+  const finalRef = useRef<OWMap | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const settle = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    const map = finalRef.current!;
+    finalRef.current = null;
+    setDisplayMap(null);
+    setPicked(map);
+    if (HAS_SIDE.includes(map.mode)) {
+      const coin = Math.random() < 0.5;
+      setSide({ first: coin ? teamAName : teamBName, second: coin ? teamBName : teamAName });
+    } else {
+      setSide(null);
+    }
+    setSpinning(false);
+  };
+
+  const startSpin = () => {
+    if (spinning) { settle(); return; }
+
+    const target = randomItem(OW_MAPS);
+    finalRef.current = target;
+    setPicked(null);
+    setSide(null);
     setSpinning(true);
-    setTimeout(() => {
-      const map = randomItem(OW_MAPS);
-      setPicked(map);
-      if (HAS_SIDE.includes(map.mode)) {
-        const coin = Math.random() < 0.5;
-        setSide({ first: coin ? teamAName : teamBName, second: coin ? teamBName : teamAName });
+
+    const start = Date.now();
+    const DURATION = 1400;
+
+    (function tick() {
+      const elapsed = Date.now() - start;
+      const progress = Math.min(elapsed / DURATION, 1);
+      if (progress < 1) {
+        setDisplayMap(randomItem(OW_MAPS));
+        setTickKey((k) => k + 1);
+        const delay = 55 + Math.floor(progress * progress * 310);
+        timerRef.current = setTimeout(tick, delay);
       } else {
-        setSide(null);
+        settle();
       }
-      setSpinning(false);
-    }, 500);
+    })();
   };
 
   return (
     <div className="card px-5 py-4 flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
         <span className="text-[0.88rem] font-bold text-muted uppercase tracking-wide">맵 뽑기</span>
-        <button className="btn-sm" onClick={pick} disabled={spinning}>
-          {spinning ? '추첨 중...' : picked ? '다시 뽑기' : '맵 뽑기'}
+        <button className="btn-sm" onClick={startSpin}>
+          {spinning ? '즉시 확정' : picked ? '다시 뽑기' : '맵 뽑기'}
         </button>
       </div>
+
+      {spinning && displayMap && (
+        <div key={tickKey} className="flex items-center gap-2.5 slot-in">
+          <span
+            className="text-[0.72rem] font-bold px-2.5 py-0.5 rounded-full text-white whitespace-nowrap"
+            style={{ background: MODE_COLOR[displayMap.mode] ?? '#555' }}
+          >
+            {displayMap.mode}
+          </span>
+          <span className="text-[1.1rem] font-extrabold text-text">{displayMap.name}</span>
+        </div>
+      )}
 
       {picked && !spinning && (
         <div className="flex items-center gap-2.5 flex-wrap pop-in">

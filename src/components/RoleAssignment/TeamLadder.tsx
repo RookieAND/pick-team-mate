@@ -10,9 +10,10 @@ interface TeamLadderProps {
   players: Player[];
   label: string;
   onDone: (assigned: AssignedPlayer[]) => void;
+  onReset?: () => void;
 }
 
-export default function TeamLadder({ players, label, onDone }: TeamLadderProps) {
+export default function TeamLadder({ players, label, onDone, onReset }: TeamLadderProps) {
   const useBan = useAppStore((s) => s.settings.useBan);
 
   const {
@@ -160,6 +161,12 @@ export default function TeamLadder({ players, label, onDone }: TeamLadderProps) 
               <RoleBadge role={p.assignedRole}>{ROLE_LABELS[p.assignedRole]}</RoleBadge>
             </div>
           ))}
+          <button
+            className="btn-ghost text-[0.82rem]! py-[9px]! w-full! mt-0.5"
+            onClick={() => { onReset?.(); startLadder(); }}
+          >
+            다시 뽑기
+          </button>
         </div>
       )}
     </div>
