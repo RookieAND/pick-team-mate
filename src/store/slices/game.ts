@@ -11,7 +11,7 @@ export const createGameSlice: StateCreator<AppState, [], [], GameSlice> = (set, 
 
   setStep: (step) => set({ step }),
   confirmTeams: (teamA, teamB) => set({ teamA, teamB, step: 'result', resultA: [], resultB: [] }),
-  confirmRoles: (resultA, resultB) => set({ resultA, resultB, step: 'map' }),
+  confirmRoles: (resultA, resultB) => set({ resultA, resultB, step: 'done' }),
 
   reset: () => {
     const { settings } = get();

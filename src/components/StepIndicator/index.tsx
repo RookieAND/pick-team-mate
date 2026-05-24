@@ -8,7 +8,7 @@ const STEPS = [
 ] as const;
 
 const STEP_IDX: Partial<Record<AppStep, number>> = {
-  input: 0, teams: 1, result: 2, map: 3, done: 4,
+  input: 0, teams: 1, result: 2, done: 3, map: 3,
 };
 
 export default function StepIndicator({ current }: { current: AppStep }) {

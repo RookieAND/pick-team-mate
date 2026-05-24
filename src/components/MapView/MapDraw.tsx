@@ -33,7 +33,6 @@ export default function MapDraw() {
   const [displayMap, setDisplayMap] = useState<OWMap | null>(null);
   const [spinning, setSpinning] = useState(false);
   const [tickKey, setTickKey] = useState(0);
-  const [showSettings, setShowSettings] = useState(false);
   const [showManual, setShowManual] = useState(false);
 
   const finalRef = useRef<OWMap | null>(null);
@@ -102,7 +101,7 @@ export default function MapDraw() {
   return (
     <div className="flex flex-col gap-4">
       {/* 맵 추첨 카드 */}
-      <div className="card px-5 py-4 flex flex-col gap-3">
+      <div className="card px-5 py-5 flex flex-col gap-4">
         <div className="flex items-center justify-between gap-3">
           <span className="text-[0.88rem] font-bold text-muted uppercase tracking-wide">맵 추첨</span>
           <div className="flex gap-2">
@@ -124,49 +123,58 @@ export default function MapDraw() {
           </div>
         </div>
 
-        {available.length === 0 && !spinning && !current && (
-          <p className="text-[0.82rem] text-danger text-center py-1">
-            선택 가능한 맵이 없습니다. 설정을 확인해주세요.
-          </p>
-        )}
+        {/* 룰렛 디스플레이 영역 */}
+        <div className="flex items-center justify-center min-h-[88px] rounded-xl bg-base border border-line-subtle px-6">
+          {!spinning && !current && available.length === 0 && (
+            <p className="text-[0.85rem] text-danger">선택 가능한 맵이 없습니다. 설정을 확인해주세요.</p>
+          )}
+          {!spinning && !current && available.length > 0 && (
+            <p className="text-[0.85rem] text-faint">맵 뽑기 버튼을 눌러 추첨을 시작하세요</p>
+          )}
 
-        {spinning && displayMap && (
-          <div key={tickKey} className="flex items-center gap-2.5 slot-in">
-            <span
-              className="text-[0.72rem] font-bold px-2.5 py-0.5 rounded-full text-white whitespace-nowrap"
-              style={{ background: MODE_COLOR[displayMap.mode] ?? '#555' }}
-            >
-              {displayMap.mode}
-            </span>
-            <span className="text-[1.1rem] font-extrabold text-text">{displayMap.name}</span>
-          </div>
-        )}
-
-        {current && !spinning && (
-          <div className="flex flex-col gap-2.5 pop-in">
-            <div className="flex items-center gap-2.5 flex-wrap">
+          {spinning && displayMap && (
+            <div key={tickKey} className="flex flex-col items-center gap-2 slot-in">
               <span
-                className="text-[0.72rem] font-bold px-2.5 py-0.5 rounded-full text-white whitespace-nowrap"
+                className="text-[0.75rem] font-bold px-3 py-0.5 rounded-full text-white"
+                style={{ background: MODE_COLOR[displayMap.mode] ?? '#555' }}
+              >
+                {displayMap.mode}
+              </span>
+              <span className="text-[1.8rem] font-black text-text tracking-tight leading-none">
+                {displayMap.name}
+              </span>
+            </div>
+          )}
+
+          {current && !spinning && (
+            <div className="flex flex-col items-center gap-2 pop-in w-full">
+              <span
+                className="text-[0.75rem] font-bold px-3 py-0.5 rounded-full text-white"
                 style={{ background: MODE_COLOR[current.map.mode] ?? '#555' }}
               >
                 {current.map.mode}
               </span>
-              <span className="text-[1.1rem] font-extrabold text-text">{current.map.name}</span>
+              <span className="text-[1.8rem] font-black text-text tracking-tight leading-none">
+                {current.map.name}
+              </span>
               {current.side && (
-                <div className="flex gap-3 ml-auto flex-wrap">
-                  <span className="text-[0.8rem] text-muted">
-                    ⚔ 선공: <strong className="text-warn">{current.side.first}</strong>
+                <div className="flex gap-4 mt-1">
+                  <span className="text-[0.82rem] text-muted">
+                    ⚔ 선공 <strong className="text-warn">{current.side.first}</strong>
                   </span>
-                  <span className="text-[0.8rem] text-muted">
-                    🛡 후공: <strong className="text-tank-t">{current.side.second}</strong>
+                  <span className="text-[0.82rem] text-muted">
+                    🛡 후공 <strong className="text-tank-t">{current.side.second}</strong>
                   </span>
                 </div>
               )}
             </div>
-            <button className="btn-primary py-[11px]! text-[0.9rem]! w-full!" onClick={confirm}>
-              이 맵 진행하기 →
-            </button>
-          </div>
+          )}
+        </div>
+
+        {current && !spinning && (
+          <button className="btn-primary py-[11px]! text-[0.9rem]! w-full!" onClick={confirm}>
+            이 맵 진행하기 →
+          </button>
         )}
 
         {/* 직접 선택 패널 */}
@@ -202,56 +210,46 @@ export default function MapDraw() {
       </div>
 
       {/* 설정 카드 */}
-      <div className="card px-5 py-4 flex flex-col gap-3">
-        <button
-          className="flex items-center justify-between w-full"
-          onClick={() => setShowSettings((v) => !v)}
-        >
-          <span className="text-[0.88rem] font-bold text-muted uppercase tracking-wide">맵 설정</span>
-          <span className="text-muted text-xs">{showSettings ? '▲' : '▼'}</span>
-        </button>
+      <div className="card px-5 py-4 flex flex-col gap-4">
+        <span className="text-[0.88rem] font-bold text-muted uppercase tracking-wide">맵 설정</span>
 
-        {showSettings && (
-          <div className="flex flex-col gap-4">
-            <label className="flex items-center gap-2.5 cursor-pointer group">
-              <div
-                className={`w-10 h-5.5 rounded-full transition-colors flex items-center px-0.5 ${
-                  mapSettings.preventDuplicates ? 'bg-purple' : 'bg-line'
-                }`}
-                onClick={() => setMapSettings({ preventDuplicates: !mapSettings.preventDuplicates })}
-              >
-                <div
-                  className={`w-4.5 h-4.5 rounded-full bg-white shadow transition-transform ${
-                    mapSettings.preventDuplicates ? 'translate-x-4.5' : 'translate-x-0'
-                  }`}
-                />
-              </div>
-              <span className="text-[0.88rem] text-sub">중복 방지 (진행한 맵 제외)</span>
-            </label>
-
-            <div className="flex flex-col gap-2">
-              <span className="text-[0.8rem] text-muted">제외할 모드</span>
-              <div className="flex flex-wrap gap-2">
-                {ALL_MODES.map((mode) => {
-                  const excluded = mapSettings.excludedModes.includes(mode);
-                  return (
-                    <button
-                      key={mode}
-                      onClick={() => toggleMode(mode)}
-                      className={`text-[0.78rem] font-semibold px-3 py-1 rounded-full border transition-all ${
-                        excluded
-                          ? 'bg-surface border-faint text-faint line-through'
-                          : 'border-line text-sub hover:border-purple hover:text-lilac'
-                      }`}
-                    >
-                      {mode}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+        <label className="flex items-center gap-2.5 cursor-pointer">
+          <div
+            className={`w-10 h-5.5 rounded-full transition-colors flex items-center px-0.5 ${
+              mapSettings.preventDuplicates ? 'bg-purple' : 'bg-line'
+            }`}
+            onClick={() => setMapSettings({ preventDuplicates: !mapSettings.preventDuplicates })}
+          >
+            <div
+              className={`w-4.5 h-4.5 rounded-full bg-white shadow transition-transform ${
+                mapSettings.preventDuplicates ? 'translate-x-4.5' : 'translate-x-0'
+              }`}
+            />
           </div>
-        )}
+          <span className="text-[0.88rem] text-sub">중복 방지 (진행한 맵 제외)</span>
+        </label>
+
+        <div className="flex flex-col gap-2">
+          <span className="text-[0.8rem] text-muted">제외할 모드</span>
+          <div className="flex flex-wrap gap-2">
+            {ALL_MODES.map((mode) => {
+              const excluded = mapSettings.excludedModes.includes(mode);
+              return (
+                <button
+                  key={mode}
+                  onClick={() => toggleMode(mode)}
+                  className={`text-[0.78rem] font-semibold px-3 py-1 rounded-full border transition-all ${
+                    excluded
+                      ? 'bg-surface border-faint text-faint line-through'
+                      : 'border-line text-sub hover:border-purple hover:text-lilac'
+                  }`}
+                >
+                  {mode}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
