@@ -35,8 +35,8 @@ export default function RoleAssignment() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex justify-center">
-        <button className="btn-secondary py-[14px]! px-7!" onClick={() => setStep('teams')}>
+      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex">
+        <button className="btn-secondary py-[14px]! w-full!" onClick={() => setStep('teams')}>
           ← 팀 다시 나누기
         </button>
       </div>

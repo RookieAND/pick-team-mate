@@ -69,10 +69,10 @@ export default function PlayerInputForm() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-5 py-4 flex flex-col items-center gap-2">
+      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-5 py-4 flex flex-col gap-2">
         {error && <p className="text-[0.82rem] text-danger text-center">{error}</p>}
         <button
-          className="btn-primary py-[17px]! px-14! text-[1.05rem]!"
+          className="btn-primary py-[17px]! text-[1.05rem]! w-full!"
           disabled={filledCount < totalCount}
           onClick={() => {
             if (validate()) setStep('teams');

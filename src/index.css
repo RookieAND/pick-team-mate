@@ -189,7 +189,7 @@
     transition: border-color 0.2s;
     outline: none;
   }
-  .field-input:focus { border-color: var(--color-purple); }
+  .field-input:focus { border-color: var(--color-purple); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15); }
 
   /* == Role ban button == */
   .ban-btn {

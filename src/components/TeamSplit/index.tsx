@@ -162,19 +162,19 @@ export default function TeamSplit() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex gap-3 flex-wrap justify-center">
+      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex gap-2">
         <button
-          className="btn-secondary py-[14px]! px-7!"
+          className="btn-secondary py-[14px]! flex-1!"
           onClick={() => setStep('input')}
           disabled={spinning}
         >
           ← 돌아가기
         </button>
-        <button className="btn-ghost py-[14px]! px-6!" onClick={reshuffle}>
+        <button className="btn-ghost py-[14px]! flex-1!" onClick={reshuffle}>
           {spinning ? '⏩ 바로 보기' : '🔀 다시 섞기'}
         </button>
         <button
-          className="btn-primary py-[17px]! px-12! text-[1.05rem]!"
+          className="btn-primary py-[17px]! text-[1.05rem]! flex-[2]!"
           onClick={() => confirmTeams(teams.teamA, teams.teamB)}
           disabled={spinning}
         >

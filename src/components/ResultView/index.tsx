@@ -23,11 +23,21 @@ export default function ResultView() {
 
   const download = async () => {
     if (!captureRef.current) return;
-    const canvas = await html2canvas(captureRef.current, { backgroundColor: '#0f0f1a', scale: 2 });
-    const link = document.createElement('a');
-    link.download = 'team-result.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    try {
+      await document.fonts.ready;
+      const canvas = await html2canvas(captureRef.current, {
+        backgroundColor: '#0f0f1a',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+      const link = document.createElement('a');
+      link.download = 'team-result.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch {
+      alert('이미지 저장에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
   return (
@@ -47,11 +57,11 @@ export default function ResultView() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex gap-3 flex-wrap justify-center">
-        <button className="btn-icon py-[14px]! px-8!" onClick={download}>
+      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex gap-2">
+        <button className="btn-icon py-[14px]! flex-1!" onClick={download}>
           📷 이미지 저장
         </button>
-        <button className="btn-primary py-[17px]! px-12! text-[1.05rem]!" onClick={reset}>
+        <button className="btn-primary py-[17px]! text-[1.05rem]! flex-[2]!" onClick={reset}>
           처음부터 다시 →
         </button>
       </div>

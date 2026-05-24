@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { Player, Role, AssignedPlayer } from '../../types';
 import { useAppStore } from '../../store';
 import RoleBadge from '../RoleBadge';
@@ -49,12 +49,29 @@ interface TeamLadderProps {
 export default function TeamLadder({ players, label, onDone }: TeamLadderProps) {
   const useBan = useAppStore((s) => s.settings.useBan);
 
-  const [phase, setPhase] = useState<'idle' | 'animating' | 'done'>('idle');
-  const [revealedPaths, setRevealedPaths] = useState<boolean[]>(() =>
-    Array(players.length).fill(false)
-  );
+  const [phase, setPhase] = useState<'idle' | 'ready' | 'done'>('idle');
+  const [revealedSet, setRevealedSet] = useState<Set<number>>(new Set());
+  const [revealingIdx, setRevealingIdx] = useState<number | null>(null);
+  const [bulkRevealing, setBulkRevealing] = useState(false);
   const [assigned, setAssigned] = useState<AssignedPlayer[]>([]);
+
   const rungsRef = useRef<boolean[][]>([]);
+  const slotsRef = useRef<Role[]>([]);
+  const destinationsRef = useRef<number[]>([]);
+
+  // All individually clicked → auto-advance to done
+  useEffect(() => {
+    if (
+      phase === 'ready' &&
+      !bulkRevealing &&
+      revealingIdx === null &&
+      assigned.length > 0 &&
+      revealedSet.size === players.length
+    ) {
+      setPhase('done');
+      onDone(assigned);
+    }
+  }, [revealedSet, phase, bulkRevealing, revealingIdx, players.length, assigned, onDone]);
 
   const startLadder = () => {
     const roleSlots = getRoleSlots(players.length);
@@ -69,25 +86,39 @@ export default function TeamLadder({ players, label, onDone }: TeamLadderProps) 
       if (!useBan || !result.some((p) => p.banned.includes(p.assignedRole))) break;
     }
     rungsRef.current = rungs;
+    slotsRef.current = slots;
+    destinationsRef.current = players.map((_, i) => tracePath(i, rungs));
     setAssigned(result);
-    setPhase('animating');
-    players.forEach((_, i) => {
-      setTimeout(
-        () => {
-          setRevealedPaths((prev) => {
-            const next = [...prev];
-            next[i] = true;
-            return next;
-          });
-          if (i === players.length - 1)
-            setTimeout(() => {
-              setPhase('done');
-              onDone(result);
-            }, 600);
-        },
-        i * 400 + 300
-      );
+    setRevealedSet(new Set());
+    setRevealingIdx(null);
+    setBulkRevealing(false);
+    setPhase('ready');
+  };
+
+  const handleRevealPlayer = (idx: number) => {
+    if (revealedSet.has(idx) || revealingIdx !== null || bulkRevealing) return;
+    setRevealingIdx(idx);
+    setTimeout(() => {
+      setRevealedSet((prev) => new Set([...prev, idx]));
+      setRevealingIdx(null);
+    }, 700);
+  };
+
+  const handleRevealAll = () => {
+    if (bulkRevealing || revealingIdx !== null) return;
+    const unrevealed = players.map((_, i) => i).filter((i) => !revealedSet.has(i));
+    if (unrevealed.length === 0) return;
+
+    setBulkRevealing(true);
+    unrevealed.forEach((idx, i) => {
+      setTimeout(() => {
+        setRevealedSet((prev) => new Set([...prev, idx]));
+      }, i * 380 + 80);
     });
+    setTimeout(() => {
+      setPhase('done');
+      onDone(assigned);
+    }, unrevealed.length * 380 + 480);
   };
 
   const ROWS = 8;
@@ -95,7 +126,30 @@ export default function TeamLadder({ players, label, onDone }: TeamLadderProps) 
   const rungs = rungsRef.current;
   const svgW = players.length * COL_W;
   const svgH = ROWS * 30 + 20;
-  const roleSlots = getRoleSlots(players.length);
+
+  // Slot j is revealed only after the path animation completes (revealedSet, not revealingIdx)
+  const revealedDestinations = new Set(
+    [...revealedSet].map((i) => destinationsRef.current[i])
+  );
+
+  const buildPath = (startCol: number): string => {
+    const parts: string[] = [];
+    let col = startCol;
+    parts.push(`M ${col * COL_W + 30} 10`);
+    for (let row = 0; row < ROWS; row++) {
+      const midY = row * 30 + 25;
+      parts.push(`L ${col * COL_W + 30} ${midY}`);
+      if (col > 0 && rungs[col - 1]?.[row]) {
+        col -= 1;
+        parts.push(`L ${col * COL_W + 30} ${midY}`);
+      } else if (col < rungs.length && rungs[col]?.[row]) {
+        col += 1;
+        parts.push(`L ${col * COL_W + 30} ${midY}`);
+      }
+    }
+    parts.push(`L ${col * COL_W + 30} ${ROWS * 30 + 10}`);
+    return parts.join(' ');
+  };
 
   return (
     <div className="card p-5 flex flex-col items-center gap-3.5">
@@ -108,16 +162,34 @@ export default function TeamLadder({ players, label, onDone }: TeamLadderProps) 
       )}
 
       {phase !== 'idle' && (
-        <div className="w-full flex flex-col items-center gap-1.5">
+        <div className="w-full flex flex-col items-center gap-2">
+          {/* Clickable player name buttons */}
           <div className="flex justify-around" style={{ width: svgW }}>
-            {players.map((p, i) => (
-              <div key={p.id} className={`ladder-name ${revealedPaths[i] ? 'revealed' : ''}`}>
-                {p.name || `#${i + 1}`}
-              </div>
-            ))}
+            {players.map((p, i) => {
+              const isRevealed = revealedSet.has(i);
+              const isAnimating = revealingIdx === i;
+              const role = assigned[i]?.assignedRole;
+              return (
+                <button
+                  key={p.id}
+                  className={[
+                    'ladder-player-btn',
+                    isAnimating ? 'animating' : '',
+                    isRevealed && role ? `revealed-${role}` : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  onClick={() => handleRevealPlayer(i)}
+                  disabled={isRevealed || isAnimating || bulkRevealing || phase === 'done'}
+                >
+                  {p.name || `#${i + 1}`}
+                </button>
+              );
+            })}
           </div>
 
-          <div className="ladder-svg-wrap">
+          {/* Ladder SVG */}
+          <div className="ladder-svg-wrap" style={{ width: svgW }}>
             <svg
               viewBox={`0 0 ${svgW} ${svgH}`}
               xmlns="http://www.w3.org/2000/svg"
@@ -149,27 +221,12 @@ export default function TeamLadder({ players, label, onDone }: TeamLadderProps) 
                   ) : null
                 )
               )}
-              {revealedPaths.map((revealed, startCol) => {
-                if (!revealed || !rungs.length) return null;
-                const pathParts: string[] = [];
-                let col = startCol;
-                pathParts.push(`M ${col * COL_W + 30} 10`);
-                for (let row = 0; row < ROWS; row++) {
-                  const midY = row * 30 + 25;
-                  pathParts.push(`L ${col * COL_W + 30} ${midY}`);
-                  if (col > 0 && rungs[col - 1]?.[row]) {
-                    col -= 1;
-                    pathParts.push(`L ${col * COL_W + 30} ${midY}`);
-                  } else if (col < rungs.length && rungs[col]?.[row]) {
-                    col += 1;
-                    pathParts.push(`L ${col * COL_W + 30} ${midY}`);
-                  }
-                }
-                pathParts.push(`L ${col * COL_W + 30} ${ROWS * 30 + 10}`);
+              {players.map((_, startCol) => {
+                if (!revealedSet.has(startCol) && revealingIdx !== startCol) return null;
                 return (
                   <path
                     key={`path${startCol}`}
-                    d={pathParts.join(' ')}
+                    d={buildPath(startCol)}
                     stroke={`hsl(${(startCol * 60) % 360}, 80%, 65%)`}
                     strokeWidth="3"
                     fill="none"
@@ -182,18 +239,37 @@ export default function TeamLadder({ players, label, onDone }: TeamLadderProps) 
             </svg>
           </div>
 
+          {/* Bottom role slots — reveal after path animation finishes */}
           <div className="flex justify-around" style={{ width: svgW }}>
-            {roleSlots.map((role, i) => (
-              <RoleBadge key={i} role={role} className="min-w-[48px] text-center">
-                {ROLE_LABELS[role]}
-              </RoleBadge>
-            ))}
+            {slotsRef.current.map((role, j) =>
+              revealedDestinations.has(j) ? (
+                <RoleBadge key={j} role={role} className="min-w-[48px] text-center pop-in">
+                  {ROLE_LABELS[role]}
+                </RoleBadge>
+              ) : (
+                <span key={j} className="ladder-slot-hidden">
+                  ?
+                </span>
+              )
+            )}
           </div>
+
+          {/* Reveal-all button */}
+          {phase === 'ready' && !bulkRevealing && (
+            <button
+              className="btn-sm text-[0.8rem]! py-[8px]! px-5! mt-1"
+              onClick={handleRevealAll}
+              disabled={revealingIdx !== null}
+            >
+              전체 공개
+            </button>
+          )}
         </div>
       )}
 
+      {/* Result summary */}
       {phase === 'done' && (
-        <div className="w-full flex flex-col gap-1.5">
+        <div className="w-full flex flex-col gap-1.5 mt-1">
           {assigned.map((p) => (
             <div
               key={p.id}
