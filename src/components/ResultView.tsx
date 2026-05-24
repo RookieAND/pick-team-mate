@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import type { AssignedPlayer, Role, AppSettings } from '../types';
 import MapPicker from './MapPicker';
@@ -51,6 +51,11 @@ function TeamResult({ players, label, showMost, showBan }: {
 
 export default function ResultView({ teamA, teamB, settings, onReset }: Props) {
   const captureRef = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    viewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
 
   const teamAName = '팀 A';
   const teamBName = '팀 B';
@@ -68,7 +73,7 @@ export default function ResultView({ teamA, teamB, settings, onReset }: Props) {
   };
 
   return (
-    <div className="result-view">
+    <div ref={viewRef} className="result-view">
       <h2 className="section-title">배정 완료!</h2>
       <p className="section-desc">모든 팀원의 역할이 배정되었습니다.</p>
 

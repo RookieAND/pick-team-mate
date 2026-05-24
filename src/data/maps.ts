@@ -1,4 +1,4 @@
-export type MapMode = '점령' | '호위' | '혼합' | '밀어붙이기' | '플래시포인트' | '섬멸';
+export type MapMode = '점령' | '호위' | '혼합' | '밀기' | '플래시포인트' | '섬멸';
 
 export interface OWMap {
   name: string;
@@ -35,11 +35,11 @@ export const OW_MAPS: OWMap[] = [
   { name: '할리우드', mode: '혼합' },
   { name: '네온 정션', mode: '혼합' },
 
-  // 밀어붙이기 (Push)
-  { name: '뉴 퀸 스트리트', mode: '밀어붙이기' },
-  { name: '이스페란사', mode: '밀어붙이기' },
-  { name: '콜로세오', mode: '밀어붙이기' },
-  { name: '루나사피', mode: '밀어붙이기' },
+  // 밀기 (Push)
+  { name: '뉴 퀸 스트리트', mode: '밀기' },
+  { name: '이스페란사', mode: '밀기' },
+  { name: '콜로세오', mode: '밀기' },
+  { name: '루나사피', mode: '밀기' },
 
   // 플래시포인트 (Flashpoint)
   { name: '뉴 정크 시티', mode: '플래시포인트' },
@@ -52,4 +52,4 @@ export const OW_MAPS: OWMap[] = [
 ];
 
 // 선공/후공이 의미 있는 모드
-export const HAS_SIDE: MapMode[] = ['호위', '혼합', '밀어붙이기'];
+export const HAS_SIDE: MapMode[] = ['호위', '혼합'];

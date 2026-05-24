@@ -65,23 +65,9 @@ export default function App() {
           />
         )}
         {step === 'result' && (
-          <>
-            <RoleAssignment
-              teamA={teamA}
-              teamB={teamB}
-              settings={settings}
-              onResult={setResult}
-              onBack={() => setStep('teams')}
-            />
-            {resultA.length > 0 && resultB.length > 0 && (
-              <ResultView
-                teamA={resultA}
-                teamB={resultB}
-                settings={settings}
-                onReset={reset}
-              />
-            )}
-          </>
+          resultA.length > 0 && resultB.length > 0
+            ? <ResultView teamA={resultA} teamB={resultB} settings={settings} onReset={reset} />
+            : <RoleAssignment teamA={teamA} teamB={teamB} settings={settings} onResult={setResult} onBack={() => setStep('teams')} />
         )}
       </main>
 
