@@ -29,10 +29,8 @@ function TeamResult({ players, label }: { players: AssignedPlayer[]; label: stri
             </span>
             <span className="result-name">{p.name}</span>
             <span className="result-mosts">
-              {p.most.map((r, i) => (
-                <span key={i} className={`mini-badge role-${r}`}>
-                  {r === 'tank' ? '탱' : r === 'dps' ? '딜' : '힐'}
-                </span>
+              {p.most[p.assignedRole].map((hero, i) => (
+                <span key={i} className={`mini-badge role-${p.assignedRole}`}>{hero}</span>
               ))}
             </span>
           </div>

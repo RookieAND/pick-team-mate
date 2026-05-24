@@ -50,11 +50,9 @@ export default function TeamSplit({ players, onConfirm, onBack }: Props) {
                   <li key={p.id} className="team-member">
                     <span className="member-name">{p.name || '(이름 없음)'}</span>
                     <span className="member-mosts">
-                      {p.most.map((r, i) => (
-                        <span key={i} className={`role-badge role-${r}`}>
-                          {r === 'tank' ? '탱' : r === 'dps' ? '딜' : '힐'}
-                        </span>
-                      ))}
+                      <span className="role-badge role-tank">{p.most.tank[0]}</span>
+                      <span className="role-badge role-dps">{p.most.dps[0]}</span>
+                      <span className="role-badge role-heal">{p.most.heal[0]}</span>
                     </span>
                   </li>
                 ))}

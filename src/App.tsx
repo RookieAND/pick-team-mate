@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Player, AssignedPlayer, AppStep } from './types';
+import { HEROES } from './data/heroes';
 import PlayerInputForm from './components/PlayerInputForm';
 import TeamSplit from './components/TeamSplit';
 import RoleAssignment from './components/RoleAssignment';
@@ -10,7 +11,11 @@ function makeDefaultPlayers(): Player[] {
   return Array.from({ length: 10 }, (_, i) => ({
     id: String(i),
     name: '',
-    most: ['dps', 'heal', 'tank'],
+    most: {
+      tank: [HEROES.tank[0], HEROES.tank[1], HEROES.tank[2]],
+      dps: [HEROES.dps[0], HEROES.dps[1], HEROES.dps[2]],
+      heal: [HEROES.heal[0], HEROES.heal[1], HEROES.heal[2]],
+    },
     banned: [],
   }));
 }

@@ -64,6 +64,16 @@
   letter-spacing: 0.05em;
 }
 
+.role-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.role-label.role-tank { color: #60a5fa; }
+.role-label.role-dps  { color: #f87171; }
+.role-label.role-heal { color: #4ade80; }
+
 .field input {
   background: #0f0f1a;
   border: 1px solid #333355;
@@ -82,49 +92,48 @@
   color: #f87171;
 }
 
-.most-selects {
+.hero-selects {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
-.most-select-wrap {
+.hero-select-wrap {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .rank-label {
-  font-size: 0.75rem;
-  color: #666;
-  min-width: 42px;
+  font-size: 0.72rem;
+  color: #555;
+  font-weight: 700;
+  min-width: 14px;
+  text-align: center;
 }
 
-.role-buttons {
-  display: flex;
-  gap: 6px;
+.hero-select {
+  flex: 1;
+  background: #0f0f1a;
+  border: 1px solid #333355;
+  border-radius: 7px;
+  padding: 5px 10px;
+  color: #e8e8f0;
+  font-size: 0.82rem;
+  transition: border-color 0.2s;
+  cursor: pointer;
 }
 
-.role-btn {
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 2px solid transparent;
-  background: #1f1f38;
-  color: #666;
-  transition: all 0.15s;
+.hero-select:focus { outline: none; }
+
+.hero-select.role-select-tank:focus { border-color: #3b82f6; }
+.hero-select.role-select-dps:focus  { border-color: #ef4444; }
+.hero-select.role-select-heal:focus { border-color: #22c55e; }
+
+.hero-select option {
+  background: #1a1a2e;
+  color: #e8e8f0;
 }
-
-.role-btn:hover { opacity: 0.85; }
-
-.role-btn.role-tank.active { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; }
-.role-btn.role-dps.active  { background: #3f1515; border-color: #ef4444; color: #fca5a5; }
-.role-btn.role-heal.active { background: #14332a; border-color: #22c55e; color: #86efac; }
-
-.role-btn.role-tank:not(.active):hover { color: #93c5fd; }
-.role-btn.role-dps:not(.active):hover  { color: #fca5a5; }
-.role-btn.role-heal:not(.active):hover { color: #86efac; }
 
 .label-hint {
   font-size: 0.7rem;
@@ -148,6 +157,7 @@
   background: #1f1f38;
   color: #666;
   transition: all 0.15s;
+  cursor: pointer;
 }
 
 .ban-btn:hover { opacity: 0.85; }
@@ -169,6 +179,8 @@
   border-radius: 999px;
   transition: opacity 0.2s, transform 0.1s;
   margin-top: 8px;
+  cursor: pointer;
+  border: none;
 }
 
 .primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
