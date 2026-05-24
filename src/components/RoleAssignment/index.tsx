@@ -6,11 +6,11 @@ import TeamLadder from './TeamLadder';
 import './RoleAssignment.css';
 
 export default function RoleAssignment() {
-  const { teamA, teamB, setResult, setStep } = useAppStore(
+  const { teamA, teamB, confirmRoles, setStep } = useAppStore(
     useShallow((s) => ({
       teamA: s.teamA,
       teamB: s.teamB,
-      setResult: s.setResult,
+      confirmRoles: s.confirmRoles,
       setStep: s.setStep,
     }))
   );
@@ -19,10 +19,6 @@ export default function RoleAssignment() {
   const [doneB, setDoneB] = useState<AssignedPlayer[] | null>(null);
 
   const canConfirm = !!doneA && !!doneB;
-
-  const handleConfirm = () => {
-    if (doneA && doneB) setResult(doneA, doneB);
-  };
 
   return (
     <div className="w-full max-w-[1100px] flex flex-col flex-1">
@@ -52,7 +48,10 @@ export default function RoleAssignment() {
           ← 팀 다시 나누기
         </button>
         {canConfirm && (
-          <button className="btn-primary py-[14px]! flex-[2]!" onClick={handleConfirm}>
+          <button
+            className="btn-primary py-[14px]! flex-[2]!"
+            onClick={() => confirmRoles(doneA!, doneB!)}
+          >
             배정 확인 →
           </button>
         )}

@@ -17,12 +17,26 @@ export interface AssignedPlayer extends Player {
   assignedRole: Role;
 }
 
-export type AppStep = 'intro' | 'input' | 'teams' | 'result';
+export type AppStep = 'intro' | 'input' | 'teams' | 'result' | 'map' | 'done';
 
 export interface AppSettings {
   useMost: boolean;
   useBan: boolean;
   use6v6: boolean;
+}
+
+export interface PlayedMap {
+  id: string;
+  name: string;
+  mode: string;
+  winner: 'A' | 'B' | 'draw' | null;
+  side: { first: string; second: string } | null;
+  playedAt: number;
+}
+
+export interface MapSettings {
+  preventDuplicates: boolean;
+  excludedModes: string[];
 }
 
 export interface Preset {

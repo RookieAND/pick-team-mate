@@ -4,6 +4,7 @@ import IntroPage from './components/IntroPage';
 import PlayerInputForm from './components/PlayerInputForm';
 import TeamSplit from './components/TeamSplit';
 import RoleAssignment from './components/RoleAssignment';
+import MapView from './components/MapView';
 import ResultView from './components/ResultView';
 import SettingsModal from './components/SettingsModal';
 import PresetDialog from './components/PresetDialog';
@@ -11,11 +12,9 @@ import StepIndicator from './components/StepIndicator';
 import './App.css';
 
 export default function App() {
-  const { step, resultA, resultB, setShowSettings, setShowPreset } = useAppStore(
+  const { step, setShowSettings, setShowPreset } = useAppStore(
     useShallow((s) => ({
       step: s.step,
-      resultA: s.resultA,
-      resultB: s.resultB,
       setShowSettings: s.setShowSettings,
       setShowPreset: s.setShowPreset,
     }))
@@ -56,10 +55,11 @@ export default function App() {
       </header>
 
       <main className="flex-1 overflow-y-auto flex flex-col items-center">
-        {step === 'input' && <PlayerInputForm />}
-        {step === 'teams' && <TeamSplit />}
-        {step === 'result' &&
-          (resultA.length > 0 && resultB.length > 0 ? <ResultView /> : <RoleAssignment />)}
+        {step === 'input'  && <PlayerInputForm />}
+        {step === 'teams'  && <TeamSplit />}
+        {step === 'result' && <RoleAssignment />}
+        {step === 'map'    && <MapView />}
+        {step === 'done'   && <ResultView />}
       </main>
 
       <SettingsModal />

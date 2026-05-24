@@ -1,4 +1,4 @@
-import type { Player, AssignedPlayer, AppStep, AppSettings } from '../types';
+import type { Player, AssignedPlayer, AppStep, AppSettings, PlayedMap, MapSettings } from '../types';
 
 export interface SettingsSlice {
   settings: AppSettings;
@@ -20,8 +20,17 @@ export interface GameSlice {
   resultB: AssignedPlayer[];
   setStep: (step: AppStep) => void;
   confirmTeams: (a: Player[], b: Player[]) => void;
-  setResult: (a: AssignedPlayer[], b: AssignedPlayer[]) => void;
+  confirmRoles: (a: AssignedPlayer[], b: AssignedPlayer[]) => void;
   reset: () => void;
+}
+
+export interface MapSlice {
+  mapHistory: PlayedMap[];
+  mapSettings: MapSettings;
+  addPlayedMap: (entry: Omit<PlayedMap, 'id' | 'playedAt'>) => void;
+  updateMapWinner: (id: string, winner: PlayedMap['winner']) => void;
+  setMapSettings: (patch: Partial<MapSettings>) => void;
+  clearMapHistory: () => void;
 }
 
 export interface UISlice {
@@ -31,4 +40,4 @@ export interface UISlice {
   setShowPreset: (v: boolean) => void;
 }
 
-export type AppState = SettingsSlice & PlayersSlice & GameSlice & UISlice;
+export type AppState = SettingsSlice & PlayersSlice & GameSlice & MapSlice & UISlice;
