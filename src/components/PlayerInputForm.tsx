@@ -10,10 +10,11 @@ const ROLES: Role[] = ['tank', 'dps', 'heal'];
 
 function PlayerCard({
   player, index, useMost, useBan,
-  onChange, isActive, onSelect,
+  onChange, isActive, onSelect, onTabNext, onTabPrev,
 }: {
   player: Player; index: number; useMost: boolean; useBan: boolean;
   onChange: (p: Player) => void; isActive: boolean; onSelect: () => void;
+  onTabNext: () => void; onTabPrev: () => void;
 }) {
   const setHero = (role: Role, rank: 0 | 1 | 2, hero: string) => {
     const newMost: HeroMost = {
@@ -57,6 +58,12 @@ function PlayerCard({
               placeholder="닉네임 입력"
               autoFocus
               onChange={e => onChange({ ...player, name: e.target.value })}
+              onKeyDown={e => {
+                if (e.key === 'Tab') {
+                  e.preventDefault();
+                  e.shiftKey ? onTabPrev() : onTabNext();
+                }
+              }}
             />
           </div>
 
@@ -157,6 +164,8 @@ export default function PlayerInputForm() {
             onChange={p => setPlayer(i, p)}
             isActive={activeIdx === i}
             onSelect={() => setActiveIdx(activeIdx === i ? null : i)}
+            onTabNext={() => setActiveIdx(i < 9 ? i + 1 : null)}
+            onTabPrev={() => setActiveIdx(i > 0 ? i - 1 : null)}
           />
         ))}
       </div>
