@@ -98,6 +98,20 @@
 .role-badge.role-dps  { background: #3f1515; color: #fca5a5; }
 .role-badge.role-heal { background: #14332a; color: #86efac; }
 
+.member-bans {
+  display: flex;
+  gap: 4px;
+}
+
+.ban-badge {
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 0.68rem;
+  background: #2a1a1a;
+  color: #f87171;
+  border: 1px solid #5c1a1a;
+}
+
 .action-row {
   display: flex;
   gap: 12px;

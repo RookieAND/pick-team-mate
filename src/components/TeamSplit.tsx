@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import type { Player } from '../types';
+import { useAppStore } from '../store';
 import './TeamSplit.css';
 
 interface Props {
@@ -18,6 +20,7 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export default function TeamSplit({ players, onConfirm, onBack }: Props) {
+  const { useMost, useBan } = useAppStore(useShallow(s => s.settings));
   const split = useCallback(() => {
     const shuffled = shuffle(players);
     return { teamA: shuffled.slice(0, 5), teamB: shuffled.slice(5, 10) };
@@ -49,11 +52,20 @@ export default function TeamSplit({ players, onConfirm, onBack }: Props) {
                 {team.map(p => (
                   <li key={p.id} className="team-member">
                     <span className="member-name">{p.name || '(이름 없음)'}</span>
-                    <span className="member-mosts">
-                      <span className="role-badge role-tank">{p.most.tank[0]}</span>
-                      <span className="role-badge role-dps">{p.most.dps[0]}</span>
-                      <span className="role-badge role-heal">{p.most.heal[0]}</span>
-                    </span>
+                    {useMost && (
+                      <span className="member-mosts">
+                        <span className="role-badge role-tank">{p.most.tank[0]}</span>
+                        <span className="role-badge role-dps">{p.most.dps[0]}</span>
+                        <span className="role-badge role-heal">{p.most.heal[0]}</span>
+                      </span>
+                    )}
+                    {useBan && p.banned.length > 0 && (
+                      <span className="member-bans">
+                        {p.banned.map(role => (
+                          <span key={role} className="ban-badge">🚫{role === 'tank' ? '탱' : role === 'dps' ? '딜' : '힐'}</span>
+                        ))}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
