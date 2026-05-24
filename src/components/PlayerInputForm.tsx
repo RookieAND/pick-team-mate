@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Player, Role, HeroMost } from '../types';
+import type { Player, Role, HeroMost, AppSettings } from '../types';
 import { HEROES } from '../data/heroes';
 import './PlayerInputForm.css';
 
@@ -8,12 +8,108 @@ const ROLES: Role[] = ['tank', 'dps', 'heal'];
 
 interface Props {
   players: Player[];
+  settings: AppSettings;
   onChange: (players: Player[]) => void;
   onNext: () => void;
 }
 
-export default function PlayerInputForm({ players, onChange, onNext }: Props) {
-  const [errors, setErrors] = useState<Record<string, string>>({});
+function PlayerCard({
+  player, index, settings,
+  onChange, isActive, onSelect,
+}: {
+  player: Player; index: number; settings: AppSettings;
+  onChange: (p: Player) => void; isActive: boolean; onSelect: () => void;
+}) {
+  const setHero = (role: Role, rank: 0 | 1 | 2, hero: string) => {
+    const newMost: HeroMost = {
+      ...player.most,
+      [role]: player.most[role].map((h, i) => (i === rank ? hero : h)) as [string, string, string],
+    };
+    onChange({ ...player, most: newMost });
+  };
+
+  const toggleBan = (role: Role) => {
+    const banned = player.banned.includes(role)
+      ? player.banned.filter(r => r !== role)
+      : [...player.banned, role];
+    onChange({ ...player, banned });
+  };
+
+  const filled = player.name.trim().length > 0;
+
+  return (
+    <div className={`pcard ${isActive ? 'active' : ''} ${filled ? 'filled' : ''}`}>
+      <button className="pcard-header" onClick={onSelect}>
+        <span className="pcard-num">#{index + 1}</span>
+        <span className="pcard-name">{player.name || '미입력'}</span>
+        {filled && <span className="pcard-check">✓</span>}
+        <span className="pcard-arrow">{isActive ? '▲' : '▼'}</span>
+      </button>
+
+      {isActive && (
+        <div className="pcard-body">
+          <div className="pfield">
+            <label>닉네임</label>
+            <input
+              type="text"
+              value={player.name}
+              placeholder="닉네임 입력"
+              autoFocus
+              onChange={e => onChange({ ...player, name: e.target.value })}
+            />
+          </div>
+
+          {settings.useMost && (
+            <div className="most-section">
+              {ROLES.map(role => (
+                <div key={role} className={`most-role most-role-${role}`}>
+                  <span className={`most-role-label role-${role}`}>{ROLE_LABELS[role]}</span>
+                  <div className="most-selects">
+                    {([0, 1, 2] as const).map(rank => (
+                      <div key={rank} className="hero-select-wrap">
+                        <span className="rank-dot">{rank + 1}</span>
+                        <select
+                          value={player.most[role][rank]}
+                          onChange={e => setHero(role, rank, e.target.value)}
+                          className={`hero-select role-select-${role}`}
+                        >
+                          {HEROES[role].map(hero => (
+                            <option key={hero} value={hero}>{hero}</option>
+                          ))}
+                        </select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {settings.useBan && (
+            <div className="pfield">
+              <label>역할 밴 <span className="label-hint">너무 잘해서 제외</span></label>
+              <div className="ban-buttons">
+                {ROLES.map(role => (
+                  <button
+                    key={role}
+                    className={`ban-btn role-${role} ${player.banned.includes(role) ? 'banned' : ''}`}
+                    onClick={() => toggleBan(role)}
+                  >
+                    {player.banned.includes(role) ? '🚫 ' : ''}{ROLE_LABELS[role]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function PlayerInputForm({ players, settings, onChange, onNext }: Props) {
+  const [activeIdx, setActiveIdx] = useState<number | null>(0);
+  const [error, setError] = useState('');
 
   const setPlayer = (index: number, updated: Player) => {
     const next = [...players];
@@ -21,102 +117,51 @@ export default function PlayerInputForm({ players, onChange, onNext }: Props) {
     onChange(next);
   };
 
-  const setHero = (playerIdx: number, role: Role, rank: 0 | 1 | 2, hero: string) => {
-    const player = players[playerIdx];
-    const newMost: HeroMost = {
-      ...player.most,
-      [role]: player.most[role].map((h, i) => (i === rank ? hero : h)) as [string, string, string],
-    };
-    setPlayer(playerIdx, { ...player, most: newMost });
-  };
-
-  const toggleBan = (playerIdx: number, role: Role) => {
-    const player = players[playerIdx];
-    const banned = player.banned.includes(role)
-      ? player.banned.filter(r => r !== role)
-      : [...player.banned, role];
-    setPlayer(playerIdx, { ...player, banned });
-  };
-
   const validate = () => {
-    const newErrors: Record<string, string> = {};
-    players.forEach((p, i) => {
-      if (!p.name.trim()) newErrors[`name_${i}`] = '이름을 입력하세요';
-      if (p.banned.length >= 3) newErrors[`ban_${i}`] = '모든 역할을 밴할 수 없어요';
-      ROLES.forEach(role => {
-        const picks = p.most[role];
-        if (new Set(picks).size !== 3) newErrors[`most_${i}_${role}`] = '모스트 3개를 모두 다르게 선택하세요';
-      });
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const empty = players.filter(p => !p.name.trim());
+    if (empty.length > 0) {
+      setError(`${empty.length}명의 닉네임이 비어있습니다.`);
+      return false;
+    }
+    if (players.some(p => p.banned.length >= 3)) {
+      setError('모든 역할을 밴한 플레이어가 있습니다.');
+      return false;
+    }
+    setError('');
+    return true;
   };
+
+  const filledCount = players.filter(p => p.name.trim()).length;
 
   return (
     <div className="player-input-form">
-      <h2 className="section-title">플레이어 정보 입력</h2>
-      <p className="section-desc">닉네임, 포지션별 모스트 영웅, 밴 포지션을 입력하세요.</p>
-      <div className="players-grid">
+      <div className="form-progress">
+        <div className="progress-bar">
+          <div className="progress-fill" style={{ width: `${(filledCount / 10) * 100}%` }} />
+        </div>
+        <span className="progress-label">{filledCount} / 10 입력 완료</span>
+      </div>
+
+      <div className="pcards-list">
         {players.map((player, i) => (
-          <div key={player.id} className="player-card">
-            <div className="player-number">#{i + 1}</div>
-
-            <div className="field">
-              <label>닉네임</label>
-              <input
-                type="text"
-                value={player.name}
-                placeholder="닉네임 입력"
-                onChange={e => setPlayer(i, { ...player, name: e.target.value })}
-                className={errors[`name_${i}`] ? 'error' : ''}
-              />
-              {errors[`name_${i}`] && <span className="error-msg">{errors[`name_${i}`]}</span>}
-            </div>
-
-            {ROLES.map(role => (
-              <div key={role} className="field">
-                <label className={`role-label role-${role}`}>{ROLE_LABELS[role]} 모스트</label>
-                <div className="hero-selects">
-                  {([0, 1, 2] as const).map(rank => (
-                    <div key={rank} className="hero-select-wrap">
-                      <span className="rank-label">{rank + 1}</span>
-                      <select
-                        value={player.most[role][rank]}
-                        onChange={e => setHero(i, role, rank, e.target.value)}
-                        className={`hero-select role-select-${role}`}
-                      >
-                        {HEROES[role].map(hero => (
-                          <option key={hero} value={hero}>{hero}</option>
-                        ))}
-                      </select>
-                    </div>
-                  ))}
-                </div>
-                {errors[`most_${i}_${role}`] && (
-                  <span className="error-msg">{errors[`most_${i}_${role}`]}</span>
-                )}
-              </div>
-            ))}
-
-            <div className="field">
-              <label>역할 밴 <span className="label-hint">(너무 잘해서 제외할 역할)</span></label>
-              <div className="ban-buttons">
-                {ROLES.map(role => (
-                  <button
-                    key={role}
-                    className={`ban-btn role-${role} ${player.banned.includes(role) ? 'banned' : ''}`}
-                    onClick={() => toggleBan(i, role)}
-                  >
-                    {player.banned.includes(role) ? '🚫 ' : ''}{ROLE_LABELS[role]}
-                  </button>
-                ))}
-              </div>
-              {errors[`ban_${i}`] && <span className="error-msg">{errors[`ban_${i}`]}</span>}
-            </div>
-          </div>
+          <PlayerCard
+            key={player.id}
+            player={player}
+            index={i}
+            settings={settings}
+            onChange={p => setPlayer(i, p)}
+            isActive={activeIdx === i}
+            onSelect={() => setActiveIdx(activeIdx === i ? null : i)}
+          />
         ))}
       </div>
-      <button className="primary-btn" onClick={() => { if (validate()) onNext(); }}>
+
+      {error && <p className="form-error">{error}</p>}
+
+      <button
+        className={`primary-btn ${filledCount === 10 ? 'ready' : ''}`}
+        onClick={() => { if (validate()) onNext(); }}
+      >
         팀 나누기 →
       </button>
     </div>

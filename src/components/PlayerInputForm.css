@@ -1,130 +1,213 @@
 .player-input-form {
   width: 100%;
-  max-width: 1100px;
-  padding: 32px 24px;
+  max-width: 680px;
+  padding: 24px 20px 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
-}
-
-.section-title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #a78bfa;
-}
-
-.section-desc {
-  color: #888;
-  font-size: 0.9rem;
-}
-
-.players-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+}
+
+/* Progress */
+.form-progress {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
 }
 
-@media (max-width: 700px) {
-  .players-grid { grid-template-columns: 1fr; }
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #1f1f38;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
-.player-card {
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #a855f7);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-label {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+/* Accordion list */
+.pcards-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pcard {
   background: #1a1a2e;
   border: 1px solid #2a2a45;
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  position: relative;
-}
-
-.player-number {
-  position: absolute;
-  top: 12px;
-  right: 14px;
-  font-size: 0.75rem;
-  color: #555;
-  font-weight: 600;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.field label {
-  font-size: 0.78rem;
-  color: #888;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.role-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.role-label.role-tank { color: #60a5fa; }
-.role-label.role-dps  { color: #f87171; }
-.role-label.role-heal { color: #4ade80; }
-
-.field input {
-  background: #0f0f1a;
-  border: 1px solid #333355;
-  border-radius: 8px;
-  padding: 8px 12px;
-  color: #e8e8f0;
-  font-size: 0.95rem;
+  border-radius: 10px;
+  overflow: hidden;
   transition: border-color 0.2s;
 }
 
-.field input:focus { border-color: #7c3aed; }
-.field input.error { border-color: #ef4444; }
+.pcard.active  { border-color: #7c3aed; }
+.pcard.filled  { border-color: #3a2a5e; }
+.pcard.active.filled { border-color: #a855f7; }
 
-.error-msg {
-  font-size: 0.75rem;
-  color: #f87171;
-}
-
-.hero-selects {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.hero-select-wrap {
+.pcard-header {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: background 0.15s;
 }
 
-.rank-label {
+.pcard-header:hover { background: rgba(255,255,255,0.03); }
+
+.pcard-num {
   font-size: 0.72rem;
   color: #555;
   font-weight: 700;
-  min-width: 14px;
+  min-width: 28px;
+}
+
+.pcard-name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c4b5fd;
+}
+
+.pcard:not(.filled) .pcard-name { color: #555; }
+
+.pcard-check {
+  font-size: 0.75rem;
+  color: #7c3aed;
+  font-weight: 700;
+}
+
+.pcard-arrow {
+  font-size: 0.65rem;
+  color: #555;
+}
+
+/* Body */
+.pcard-body {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid #2a2a45;
+}
+
+.pfield {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 12px;
+}
+
+.pfield label {
+  font-size: 0.73rem;
+  color: #888;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.label-hint {
+  font-size: 0.68rem;
+  color: #555;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.pfield input {
+  background: #0f0f1a;
+  border: 1px solid #333355;
+  border-radius: 8px;
+  padding: 9px 12px;
+  color: #e8e8f0;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.pfield input:focus { border-color: #7c3aed; }
+
+/* Most section */
+.most-section {
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.most-role {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.most-role-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  min-width: 36px;
   text-align: center;
+  padding: 3px 6px;
+  border-radius: 6px;
+}
+
+.most-role-label.role-tank { background: #1e3a5f; color: #93c5fd; }
+.most-role-label.role-dps  { background: #3f1515; color: #fca5a5; }
+.most-role-label.role-heal { background: #14332a; color: #86efac; }
+
+.most-selects {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+}
+
+.hero-select-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rank-dot {
+  font-size: 0.65rem;
+  color: #444;
+  font-weight: 700;
 }
 
 .hero-select {
   flex: 1;
   background: #0f0f1a;
-  border: 1px solid #333355;
-  border-radius: 7px;
-  padding: 5px 10px;
+  border: 1px solid #2a2a45;
+  border-radius: 6px;
+  padding: 4px 6px;
   color: #e8e8f0;
-  font-size: 0.82rem;
-  transition: border-color 0.2s;
+  font-size: 0.78rem;
+  font-family: inherit;
   cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
 }
-
-.hero-select:focus { outline: none; }
 
 .hero-select.role-select-tank:focus { border-color: #3b82f6; }
 .hero-select.role-select-dps:focus  { border-color: #ef4444; }
@@ -132,56 +215,61 @@
 
 .hero-select option {
   background: #1a1a2e;
-  color: #e8e8f0;
 }
 
-.label-hint {
-  font-size: 0.7rem;
-  color: #555;
-  font-weight: 400;
-  text-transform: none;
-  letter-spacing: 0;
-}
-
+/* Ban buttons */
 .ban-buttons {
   display: flex;
   gap: 8px;
 }
 
 .ban-btn {
-  padding: 5px 14px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 2px solid #2a2a45;
-  background: #1f1f38;
-  color: #666;
-  transition: all 0.15s;
+  flex: 1;
+  padding: 6px 0;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1.5px solid #2a2a45;
+  background: #0f0f1a;
+  color: #555;
   cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
 }
 
-.ban-btn:hover { opacity: 0.85; }
+.ban-btn.role-tank.banned { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; opacity: 0.6; text-decoration: line-through; }
+.ban-btn.role-dps.banned  { background: #3f1515; border-color: #ef4444; color: #fca5a5; opacity: 0.6; text-decoration: line-through; }
+.ban-btn.role-heal.banned { background: #14332a; border-color: #22c55e; color: #86efac; opacity: 0.6; text-decoration: line-through; }
 
-.ban-btn.role-tank.banned { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; opacity: 0.5; text-decoration: line-through; }
-.ban-btn.role-dps.banned  { background: #3f1515; border-color: #ef4444; color: #fca5a5; opacity: 0.5; text-decoration: line-through; }
-.ban-btn.role-heal.banned { background: #14332a; border-color: #22c55e; color: #86efac; opacity: 0.5; text-decoration: line-through; }
+.ban-btn.role-tank:not(.banned):hover { color: #93c5fd; border-color: #3b82f6; }
+.ban-btn.role-dps:not(.banned):hover  { color: #fca5a5; border-color: #ef4444; }
+.ban-btn.role-heal:not(.banned):hover { color: #86efac; border-color: #22c55e; }
 
-.ban-btn.role-tank:not(.banned):hover { color: #93c5fd; }
-.ban-btn.role-dps:not(.banned):hover  { color: #fca5a5; }
-.ban-btn.role-heal:not(.banned):hover { color: #86efac; }
+/* Bottom */
+.form-error {
+  font-size: 0.82rem;
+  color: #f87171;
+  text-align: center;
+}
 
 .primary-btn {
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
-  color: white;
+  background: linear-gradient(135deg, #4a2a8a, #6b3aaa);
+  color: #aaa;
   font-size: 1rem;
   font-weight: 700;
   padding: 14px 40px;
   border-radius: 999px;
-  transition: opacity 0.2s, transform 0.1s;
-  margin-top: 8px;
-  cursor: pointer;
   border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 4px;
+  font-family: inherit;
 }
 
-.primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.primary-btn.ready {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: white;
+}
+
+.primary-btn.ready:hover { opacity: 0.9; transform: translateY(-1px); }
 .primary-btn:active { transform: translateY(0); }

@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import type { Player, Role, AssignedPlayer } from '../types';
+import type { Player, Role, AssignedPlayer, AppSettings } from '../types';
 import './RoleAssignment.css';
 
 interface Props {
   teamA: Player[];
   teamB: Player[];
+  settings: AppSettings;
   onResult: (teamA: AssignedPlayer[], teamB: AssignedPlayer[]) => void;
   onBack: () => void;
 }
@@ -47,10 +48,11 @@ function tracePath(startCol: number, rungs: boolean[][]): number {
 interface TeamLadderProps {
   players: Player[];
   label: string;
+  useBan: boolean;
   onDone: (assigned: AssignedPlayer[]) => void;
 }
 
-function TeamLadder({ players, label, onDone }: TeamLadderProps) {
+function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
   const [phase, setPhase] = useState<'idle' | 'animating' | 'done'>('idle');
   const [revealedPaths, setRevealedPaths] = useState<boolean[]>(Array(5).fill(false));
   const [assigned, setAssigned] = useState<AssignedPlayer[]>([]);
@@ -69,7 +71,7 @@ function TeamLadder({ players, label, onDone }: TeamLadderProps) {
       rungs = generateLadder(5);
       mapping = players.map((_, i) => tracePath(i, rungs));
       result = players.map((p, i) => ({ ...p, assignedRole: slots[mapping[i]] }));
-      const hasBanConflict = result.some(p => p.banned.includes(p.assignedRole));
+      const hasBanConflict = useBan && result.some(p => p.banned.includes(p.assignedRole));
       if (!hasBanConflict) break;
     }
 
@@ -222,7 +224,7 @@ function TeamLadder({ players, label, onDone }: TeamLadderProps) {
   );
 }
 
-export default function RoleAssignment({ teamA, teamB, onResult, onBack }: Props) {
+export default function RoleAssignment({ teamA, teamB, settings, onResult, onBack }: Props) {
   const [doneA, setDoneA] = useState<AssignedPlayer[] | null>(null);
   const [doneB, setDoneB] = useState<AssignedPlayer[] | null>(null);
 
@@ -235,8 +237,8 @@ export default function RoleAssignment({ teamA, teamB, onResult, onBack }: Props
       <h2 className="section-title">사다리타기 역할 배정</h2>
       <p className="section-desc">각 팀의 사다리 시작 버튼을 눌러 역할을 배정하세요.</p>
       <div className="ladders-wrap">
-        <TeamLadder players={teamA} label="A" onDone={setDoneA} />
-        <TeamLadder players={teamB} label="B" onDone={setDoneB} />
+        <TeamLadder players={teamA} label="A" useBan={settings.useBan} onDone={setDoneA} />
+        <TeamLadder players={teamB} label="B" useBan={settings.useBan} onDone={setDoneB} />
       </div>
       <button className="secondary-btn" onClick={onBack}>← 팀 다시 나누기</button>
     </div>

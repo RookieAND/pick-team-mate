@@ -18,3 +18,8 @@ export interface AssignedPlayer extends Player {
 }
 
 export type AppStep = 'input' | 'teams' | 'result';
+
+export interface AppSettings {
+  useMost: boolean;
+  useBan: boolean;
+}
