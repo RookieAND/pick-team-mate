@@ -31,8 +31,8 @@ export default function ResultView() {
   };
 
   return (
-    <div ref={viewRef} className="w-full max-w-[900px] flex flex-col">
-      <div className="px-6 pt-8 pb-4 flex flex-col items-center gap-6">
+    <div ref={viewRef} className="w-full max-w-[900px] flex flex-col flex-1">
+      <div className="flex-1 px-6 pt-8 pb-4 flex flex-col items-center gap-6">
         <div className="text-center">
           <h2 className="section-title">배정 완료!</h2>
           <p className="section-desc mt-1">모든 팀원의 역할이 배정되었습니다.</p>

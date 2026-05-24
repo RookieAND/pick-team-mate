@@ -23,8 +23,8 @@ export default function RoleAssignment() {
   }, [doneA, doneB, setResult]);
 
   return (
-    <div className="w-full max-w-[1100px] flex flex-col">
-      <div className="px-6 pt-8 pb-4 flex flex-col items-center gap-6">
+    <div className="w-full max-w-[1100px] flex flex-col flex-1">
+      <div className="flex-1 px-6 pt-8 pb-4 flex flex-col items-center gap-6">
         <div className="text-center">
           <h2 className="section-title">사다리타기 역할 배정</h2>
           <p className="section-desc mt-1">각 팀의 사다리 시작 버튼을 눌러 역할을 배정하세요.</p>

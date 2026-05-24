@@ -13,6 +13,8 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+type TeamPair = { teamA: Player[]; teamB: Player[] };
+
 export default function TeamSplit() {
   const { players, settings, confirmTeams, setStep } = useAppStore(
     useShallow((s) => ({
@@ -24,72 +26,74 @@ export default function TeamSplit() {
   );
 
   const half = Math.floor(players.length / 2);
-  const split = useCallback(() => {
+  const split = useCallback((): TeamPair => {
     const shuffled = shuffle(players);
     return { teamA: shuffled.slice(0, half), teamB: shuffled.slice(half) };
   }, [players, half]);
 
-  const [teams, setTeams] = useState(split);
+  // Compute initial teams once at mount (before first render) and reuse as animation target
+  const initRef = useRef<TeamPair | null>(null);
+  if (initRef.current === null) initRef.current = split();
+
+  const [teams, setTeams] = useState<TeamPair>(initRef.current);
   const [spinning, setSpinning] = useState(false);
   const [displayNames, setDisplayNames] = useState<{ a: string[]; b: string[] } | null>(null);
   const [tickKey, setTickKey] = useState(0);
-
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const finalTeamsRef = useRef<ReturnType<typeof split> | null>(null);
+  const finalRef = useRef<TeamPair | null>(null);
 
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
+  useEffect(() => () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); }, []);
 
-  const settle = () => {
+  const settle = useCallback(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setTeams(finalTeamsRef.current!);
+    if (finalRef.current) setTeams(finalRef.current);
+    finalRef.current = null;
     setDisplayNames(null);
     setSpinning(false);
-    finalTeamsRef.current = null;
-  };
+  }, []);
+
+  const animate = useCallback(
+    (target: TeamPair) => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      finalRef.current = target;
+      setSpinning(true);
+
+      const names = players.map((p) => p.name || '???');
+      const start = Date.now();
+
+      (function tick() {
+        const progress = Math.min((Date.now() - start) / 800, 1);
+        setDisplayNames({
+          a: target.teamA.map(() => names[Math.floor(Math.random() * names.length)]),
+          b: target.teamB.map(() => names[Math.floor(Math.random() * names.length)]),
+        });
+        setTickKey((k) => k + 1);
+        if (progress < 1) {
+          timeoutRef.current = setTimeout(tick, 40 + Math.floor(progress * progress * 160));
+        } else {
+          settle();
+        }
+      })();
+    },
+    [players, settle]
+  );
+
+  // Auto-start animation on mount with the pre-computed initial teams
+  useEffect(() => {
+    animate(initRef.current!);
+  }, [animate]);
 
   const reshuffle = () => {
     if (spinning) {
       settle();
       return;
     }
-
-    const newTeams = split();
-    finalTeamsRef.current = newTeams;
-    setSpinning(true);
-
-    const allNames = players.map((p) => p.name || '???');
-    const DURATION = 800;
-    const startTime = Date.now();
-
-    const tick = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / DURATION, 1);
-
-      setDisplayNames({
-        a: newTeams.teamA.map(() => allNames[Math.floor(Math.random() * allNames.length)]),
-        b: newTeams.teamB.map(() => allNames[Math.floor(Math.random() * allNames.length)]),
-      });
-      setTickKey((k) => k + 1);
-
-      if (progress < 1) {
-        // Quadratic ease-out: fast start (40ms) → slow end (200ms)
-        const nextDelay = Math.floor(40 + progress * progress * 160);
-        timeoutRef.current = setTimeout(tick, nextDelay);
-      } else {
-        settle();
-      }
-    };
-
-    tick();
+    animate(split());
   };
 
   return (
-    <div className="w-full max-w-3xl flex flex-col">
-      <div className="px-6 pt-8 pb-4 flex flex-col items-center gap-6">
+    <div className="w-full max-w-3xl flex flex-col flex-1">
+      <div className="flex-1 px-6 pt-8 pb-4 flex flex-col items-center gap-6">
         <div className="text-center">
           <h2 className="section-title">팀 배정</h2>
           <p className="section-desc mt-1">

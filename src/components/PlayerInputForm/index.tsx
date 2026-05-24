@@ -36,8 +36,8 @@ export default function PlayerInputForm() {
   const filledCount = players.filter((p) => p.name.trim()).length;
 
   return (
-    <div className="w-full max-w-[680px] flex flex-col">
-      <div className="px-5 pt-6 pb-4 flex flex-col items-center gap-4">
+    <div className="w-full max-w-[680px] flex flex-col flex-1">
+      <div className="flex-1 px-5 pt-6 pb-4 flex flex-col items-center gap-4">
         <div className="w-full flex flex-col items-end gap-1">
           <div className="w-full h-1 bg-[#1f1f38] rounded-full overflow-hidden">
             <div

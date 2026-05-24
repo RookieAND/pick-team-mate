@@ -197,7 +197,7 @@ export default function TeamLadder({ players, label, onDone }: TeamLadderProps) 
           {assigned.map((p) => (
             <div
               key={p.id}
-              className="flex justify-between items-center bg-white/[0.04] rounded-lg px-3 py-2"
+              className="flex justify-between items-center bg-white/4 rounded-lg px-3 py-2"
             >
               <span className="font-semibold text-[0.9rem]">{p.name}</span>
               <RoleBadge role={p.assignedRole}>{ROLE_LABELS[p.assignedRole]}</RoleBadge>
