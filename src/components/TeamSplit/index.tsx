@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { Player } from '../../types';
 import { useAppStore } from '../../store';
+import RoleBadge from '../RoleBadge';
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -73,17 +74,22 @@ export default function TeamSplit() {
                       </span>
                       {settings.useMost && (
                         <div className="flex gap-1">
-                          <span className="badge-tank">{p.most.tank[0]}</span>
-                          <span className="badge-dps">{p.most.dps[0]}</span>
-                          <span className="badge-heal">{p.most.heal[0]}</span>
+                          <RoleBadge role="tank">{p.most.tank[0]}</RoleBadge>
+                          <RoleBadge role="dps">{p.most.dps[0]}</RoleBadge>
+                          <RoleBadge role="heal">{p.most.heal[0]}</RoleBadge>
                         </div>
                       )}
                       {settings.useBan && p.banned.length > 0 && (
                         <div className="flex gap-1">
                           {p.banned.map((role) => (
-                            <span key={role} className="badge-ban">
+                            <RoleBadge
+                              key={role}
+                              role={role}
+                              size="sm"
+                              className="opacity-60 line-through"
+                            >
                               🚫{role === 'tank' ? '탱' : role === 'dps' ? '딜' : '힐'}
-                            </span>
+                            </RoleBadge>
                           ))}
                         </div>
                       )}
@@ -96,14 +102,17 @@ export default function TeamSplit() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 w-full bg-base border-t border-line/40 px-6 py-4 flex gap-3 flex-wrap justify-center">
-        <button className="btn-secondary" onClick={() => setStep('input')}>
+      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex gap-3 flex-wrap justify-center">
+        <button className="btn-secondary py-[14px]! px-7!" onClick={() => setStep('input')}>
           ← 돌아가기
         </button>
-        <button className="btn-ghost" onClick={reshuffle} disabled={spinning}>
+        <button className="btn-ghost py-[14px]! px-6!" onClick={reshuffle} disabled={spinning}>
           🔀 다시 섞기
         </button>
-        <button className="btn-primary" onClick={() => confirmTeams(teams.teamA, teams.teamB)}>
+        <button
+          className="btn-primary py-[17px]! px-12! text-[1.05rem]!"
+          onClick={() => confirmTeams(teams.teamA, teams.teamB)}
+        >
           역할 배정 시작 →
         </button>
       </div>

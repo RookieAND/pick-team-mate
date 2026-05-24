@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react';
 import type { Player, Role, AssignedPlayer } from '../../types';
+import { useAppStore } from '../../store';
+import RoleBadge from '../RoleBadge';
 
 const ROLE_LABELS: Record<Role, string> = { tank: '탱', dps: '딜', heal: '힐' };
 const ROLE_SLOTS_5: Role[] = ['tank', 'dps', 'dps', 'heal', 'heal'];
@@ -41,11 +43,12 @@ function tracePath(startCol: number, rungs: boolean[][]): number {
 interface TeamLadderProps {
   players: Player[];
   label: string;
-  useBan: boolean;
   onDone: (assigned: AssignedPlayer[]) => void;
 }
 
-export default function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
+export default function TeamLadder({ players, label, onDone }: TeamLadderProps) {
+  const useBan = useAppStore((s) => s.settings.useBan);
+
   const [phase, setPhase] = useState<'idle' | 'animating' | 'done'>('idle');
   const [revealedPaths, setRevealedPaths] = useState<boolean[]>(() =>
     Array(players.length).fill(false)
@@ -181,9 +184,9 @@ export default function TeamLadder({ players, label, useBan, onDone }: TeamLadde
 
           <div className="flex justify-around" style={{ width: svgW }}>
             {roleSlots.map((role, i) => (
-              <div key={i} className={`badge-${role} min-w-[48px] text-center`}>
+              <RoleBadge key={i} role={role} className="min-w-[48px] text-center">
                 {ROLE_LABELS[role]}
-              </div>
+              </RoleBadge>
             ))}
           </div>
         </div>
@@ -197,7 +200,7 @@ export default function TeamLadder({ players, label, useBan, onDone }: TeamLadde
               className="flex justify-between items-center bg-white/[0.04] rounded-lg px-3 py-2"
             >
               <span className="font-semibold text-[0.9rem]">{p.name}</span>
-              <span className={`badge-${p.assignedRole}`}>{ROLE_LABELS[p.assignedRole]}</span>
+              <RoleBadge role={p.assignedRole}>{ROLE_LABELS[p.assignedRole]}</RoleBadge>
             </div>
           ))}
         </div>

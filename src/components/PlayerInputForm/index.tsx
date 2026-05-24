@@ -5,10 +5,9 @@ import { useAppStore } from '../../store';
 import PlayerCard from './PlayerCard';
 
 export default function PlayerInputForm() {
-  const { players, settings, setPlayers, setStep } = useAppStore(
+  const { players, setPlayers, setStep } = useAppStore(
     useShallow((s) => ({
       players: s.players,
-      settings: s.settings,
       setPlayers: s.setPlayers,
       setStep: s.setStep,
     }))
@@ -60,8 +59,6 @@ export default function PlayerInputForm() {
               key={player.id}
               player={player}
               index={i}
-              useMost={settings.useMost}
-              useBan={settings.useBan}
               onChange={(p) => setPlayer(i, p)}
               isActive={activeIdx === i}
               onSelect={() => setActiveIdx(activeIdx === i ? null : i)}
@@ -72,10 +69,10 @@ export default function PlayerInputForm() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 w-full bg-base border-t border-line/40 px-5 py-4 flex flex-col items-center gap-2">
+      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-5 py-4 flex flex-col items-center gap-2">
         {error && <p className="text-[0.82rem] text-danger text-center">{error}</p>}
         <button
-          className="btn-primary"
+          className="btn-primary py-[17px]! px-14! text-[1.05rem]!"
           disabled={filledCount < totalCount}
           onClick={() => {
             if (validate()) setStep('teams');

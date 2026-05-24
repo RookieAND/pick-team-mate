@@ -32,13 +32,10 @@ export default function App() {
 
   return (
     <div className="flex flex-col w-full h-screen">
-      <header className="sticky top-0 z-50 w-full flex flex-col items-center gap-1.5 px-6 pt-6 pb-4 bg-[#0c0c1e] backdrop-blur-md border-b border-line/40 shrink-0">
-        <div className="w-full relative flex justify-center">
-          <div className="text-center">
-            <h1 className="app-title">빠치마리</h1>
-            <p className="text-[0.85rem] text-dim mb-3">팀 역할 배정기 · 5:5 랜덤 팀 나누기</p>
-          </div>
-          <div className="absolute right-0 top-0 flex flex-col gap-1.5">
+      <header className="sticky top-0 z-50 w-full flex flex-col gap-3 px-6 pt-4 pb-3 bg-base/90 backdrop-blur-md border-b border-line/20 shrink-0">
+        <div className="w-full flex items-center justify-between">
+          <h1 className="app-title text-[1.15rem]!">빠치마리</h1>
+          <div className="flex gap-2">
             <button
               className="bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3.5 py-1.5 transition-all hover:border-purple hover:text-lilac"
               onClick={() => setShowSettings(true)}

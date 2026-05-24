@@ -1,5 +1,8 @@
+import { useShallow } from 'zustand/react/shallow';
 import type { Player, Role, HeroMost } from '../../types';
 import { HEROES } from '../../data/heroes';
+import { useAppStore } from '../../store';
+import RoleBadge from '../RoleBadge';
 import SearchableSelect from '../SearchableSelect';
 
 const ROLE_LABELS: Record<Role, string> = { tank: '탱커', dps: '딜러', heal: '힐러' };
@@ -8,8 +11,6 @@ const ROLES: Role[] = ['tank', 'dps', 'heal'];
 export default function PlayerCard({
   player,
   index,
-  useMost,
-  useBan,
   onChange,
   isActive,
   onSelect,
@@ -18,14 +19,19 @@ export default function PlayerCard({
 }: {
   player: Player;
   index: number;
-  useMost: boolean;
-  useBan: boolean;
   onChange: (p: Player) => void;
   isActive: boolean;
   onSelect: () => void;
   onTabNext: () => void;
   onTabPrev: () => void;
 }) {
+  const { useMost, useBan } = useAppStore(
+    useShallow((s) => ({
+      useMost: s.settings.useMost,
+      useBan: s.settings.useBan,
+    }))
+  );
+
   const setHero = (role: Role, rank: 0 | 1 | 2, hero: string) => {
     const newMost: HeroMost = {
       ...player.most,
@@ -65,9 +71,9 @@ export default function PlayerCard({
           <div className="flex items-center gap-1.5 shrink-0">
             <span className="text-[0.62rem] text-faint font-bold">[모스트]</span>
             <div className="flex gap-1">
-              <span className="badge-sm-tank">{player.most.tank[0]}</span>
-              <span className="badge-sm-dps">{player.most.dps[0]}</span>
-              <span className="badge-sm-heal">{player.most.heal[0]}</span>
+              <RoleBadge role="tank" size="sm">{player.most.tank[0]}</RoleBadge>
+              <RoleBadge role="dps" size="sm">{player.most.dps[0]}</RoleBadge>
+              <RoleBadge role="heal" size="sm">{player.most.heal[0]}</RoleBadge>
             </div>
           </div>
         )}
@@ -77,9 +83,9 @@ export default function PlayerCard({
             <span className="text-[0.62rem] text-faint font-bold">[밴]</span>
             <div className="flex gap-1">
               {player.banned.map((role) => (
-                <span key={role} className={`badge-sm-${role} opacity-60 line-through`}>
-                  {role === 'tank' ? '탱커' : role === 'dps' ? '딜러' : '힐러'}
-                </span>
+                <RoleBadge key={role} role={role} size="sm" className="opacity-60 line-through">
+                  {ROLE_LABELS[role]}
+                </RoleBadge>
               ))}
             </div>
           </div>
@@ -117,7 +123,9 @@ export default function PlayerCard({
             <div className="flex flex-col gap-2.5 pt-1">
               {ROLES.map((role) => (
                 <div key={role} className="flex items-center gap-2.5">
-                  <span className={`badge-${role} min-w-9 text-center`}>{ROLE_LABELS[role]}</span>
+                  <RoleBadge role={role} className="min-w-9 text-center">
+                    {ROLE_LABELS[role]}
+                  </RoleBadge>
                   <div className="flex-1 flex gap-1.5">
                     {([0, 1, 2] as const).map((rank) => (
                       <div key={rank} className="flex-1 flex items-center gap-1">

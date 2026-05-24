@@ -6,11 +6,10 @@ import TeamLadder from './TeamLadder';
 import './RoleAssignment.css';
 
 export default function RoleAssignment() {
-  const { teamA, teamB, settings, setResult, setStep } = useAppStore(
+  const { teamA, teamB, setResult, setStep } = useAppStore(
     useShallow((s) => ({
       teamA: s.teamA,
       teamB: s.teamB,
-      settings: s.settings,
       setResult: s.setResult,
       setStep: s.setStep,
     }))
@@ -31,13 +30,13 @@ export default function RoleAssignment() {
           <p className="section-desc mt-1">각 팀의 사다리 시작 버튼을 눌러 역할을 배정하세요.</p>
         </div>
         <div className="ladders-wrap grid grid-cols-2 gap-6 w-full">
-          <TeamLadder players={teamA} label="A" useBan={settings.useBan} onDone={setDoneA} />
-          <TeamLadder players={teamB} label="B" useBan={settings.useBan} onDone={setDoneB} />
+          <TeamLadder players={teamA} label="A" onDone={setDoneA} />
+          <TeamLadder players={teamB} label="B" onDone={setDoneB} />
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 w-full bg-base border-t border-line/40 px-6 py-4 flex justify-center">
-        <button className="btn-secondary" onClick={() => setStep('teams')}>
+      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex justify-center">
+        <button className="btn-secondary py-[14px]! px-7!" onClick={() => setStep('teams')}>
           ← 팀 다시 나누기
         </button>
       </div>

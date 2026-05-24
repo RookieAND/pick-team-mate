@@ -6,11 +6,10 @@ import MapPicker from '../MapPicker';
 import TeamResult from './TeamResult';
 
 export default function ResultView() {
-  const { resultA, resultB, settings, reset } = useAppStore(
+  const { resultA, resultB, reset } = useAppStore(
     useShallow((s) => ({
       resultA: s.resultA,
       resultB: s.resultB,
-      settings: s.settings,
       reset: s.reset,
     }))
   );
@@ -41,28 +40,18 @@ export default function ResultView() {
 
         <div className="w-full flex flex-col gap-4 p-4 bg-base rounded-2xl">
           <div ref={captureRef} className="grid grid-cols-2 gap-4 max-[600px]:grid-cols-1">
-            <TeamResult
-              players={resultA}
-              label="A"
-              showMost={settings.useMost}
-              showBan={settings.useBan}
-            />
-            <TeamResult
-              players={resultB}
-              label="B"
-              showMost={settings.useMost}
-              showBan={settings.useBan}
-            />
+            <TeamResult players={resultA} label="A" />
+            <TeamResult players={resultB} label="B" />
           </div>
           <MapPicker teamAName="팀 A" teamBName="팀 B" />
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 w-full bg-base border-t border-line/40 px-6 py-4 flex gap-3 flex-wrap justify-center">
-        <button className="btn-icon" onClick={download}>
+      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex gap-3 flex-wrap justify-center">
+        <button className="btn-icon py-[14px]! px-8!" onClick={download}>
           📷 이미지 저장
         </button>
-        <button className="btn-primary" onClick={reset}>
+        <button className="btn-primary py-[17px]! px-12! text-[1.05rem]!" onClick={reset}>
           처음부터 다시 →
         </button>
       </div>
