@@ -6,6 +6,7 @@ import TeamSplit from './components/TeamSplit';
 import RoleAssignment from './components/RoleAssignment';
 import ResultView from './components/ResultView';
 import SettingsModal from './components/SettingsModal';
+import PresetDialog from './components/PresetDialog';
 import type { AppStep } from './types';
 import './App.css';
 
@@ -30,11 +31,12 @@ function StepIndicator({ current }: { current: AppStep }) {
 }
 
 export default function App() {
-  const { step, resultA, resultB, setShowSettings } = useAppStore(useShallow(s => ({
+  const { step, resultA, resultB, setShowSettings, setShowPreset } = useAppStore(useShallow(s => ({
     step: s.step,
     resultA: s.resultA,
     resultB: s.resultB,
     setShowSettings: s.setShowSettings,
+    setShowPreset: s.setShowPreset,
   })));
 
   if (step === 'intro') {
@@ -55,12 +57,20 @@ export default function App() {
             <h1 className="app-title">팀 역할 배정기</h1>
             <p className="text-[0.85rem] text-dim mb-3">10인 5:5 팀 나누기 + 사다리타기 역할 배정</p>
           </div>
-          <button
-            className="absolute right-0 top-1 bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3.5 py-1.5 transition-all hover:border-purple hover:text-lilac"
-            onClick={() => setShowSettings(true)}
-          >
-            ⚙ 설정
-          </button>
+          <div className="absolute right-0 top-0 flex flex-col gap-1.5">
+            <button
+              className="bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3.5 py-1.5 transition-all hover:border-purple hover:text-lilac"
+              onClick={() => setShowSettings(true)}
+            >
+              ⚙ 설정
+            </button>
+            <button
+              className="bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3.5 py-1.5 transition-all hover:border-purple hover:text-lilac"
+              onClick={() => setShowPreset(true)}
+            >
+              📋 프리셋
+            </button>
+          </div>
         </div>
         <StepIndicator current={step} />
       </header>
@@ -76,6 +86,7 @@ export default function App() {
       </main>
 
       <SettingsModal />
+      <PresetDialog />
     </div>
   );
 }
