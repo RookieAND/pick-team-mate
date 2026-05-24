@@ -37,21 +37,25 @@ export default function App() {
   })));
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <div className="header-top">
-          <div className="header-titles">
+    <div className="flex flex-col items-center w-full min-h-screen">
+      <header className="w-full flex flex-col items-center gap-1.5 px-6 pt-8 pb-6"
+        style={{ background: 'linear-gradient(180deg, #12012f 0%, transparent 100%)' }}>
+        <div className="w-full relative flex justify-center">
+          <div className="text-center">
             <h1 className="app-title">팀 역할 배정기</h1>
-            <p className="app-subtitle">10인 5:5 팀 나누기 + 사다리타기 역할 배정</p>
+            <p className="text-[0.85rem] text-dim mb-3">10인 5:5 팀 나누기 + 사다리타기 역할 배정</p>
           </div>
-          <button className="settings-btn" onClick={() => setShowSettings(true)}>
+          <button
+            className="absolute right-0 top-1 bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3.5 py-1.5 transition-all hover:border-purple hover:text-lilac"
+            onClick={() => setShowSettings(true)}
+          >
             ⚙ 설정
           </button>
         </div>
         <StepIndicator current={step} />
       </header>
 
-      <main className="app-main">
+      <main className="w-full flex flex-col items-center flex-1">
         {step === 'input' && <PlayerInputForm />}
         {step === 'teams' && <TeamSplit />}
         {step === 'result' && (

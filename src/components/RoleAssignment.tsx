@@ -7,23 +7,16 @@ import './RoleAssignment.css';
 const ROLE_LABELS: Record<Role, string> = { tank: '탱', dps: '딜', heal: '힐' };
 const ROLE_SLOTS: Role[] = ['tank', 'dps', 'dps', 'heal', 'heal'];
 
-
 function generateLadder(count: number): boolean[][] {
-  // rungs[col][row] = true means there's a horizontal bar between col and col+1 at row
   const ROWS = 8;
   const rungs: boolean[][] = Array.from({ length: count - 1 }, () =>
     Array.from({ length: ROWS }, () => false)
   );
-
   for (let row = 0; row < ROWS; row++) {
     let col = 0;
     while (col < count - 1) {
-      if (Math.random() > 0.5) {
-        rungs[col][row] = true;
-        col += 2; // skip adjacent
-      } else {
-        col += 1;
-      }
+      if (Math.random() > 0.5) { rungs[col][row] = true; col += 2; }
+      else { col += 1; }
     }
   }
   return rungs;
@@ -51,42 +44,23 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
   const [revealedPaths, setRevealedPaths] = useState<boolean[]>(Array(5).fill(false));
   const [assigned, setAssigned] = useState<AssignedPlayer[]>([]);
   const rungsRef = useRef<boolean[][]>([]);
-  const mappingRef = useRef<number[]>([]);
 
   const startLadder = () => {
-    // Retry until no player gets a banned role (max 200 attempts)
-    let slots: Role[] = [];
-    let rungs: boolean[][] = [];
-    let mapping: number[] = [];
-    let result: AssignedPlayer[] = [];
-
+    let slots: Role[] = [], rungs: boolean[][] = [], result: AssignedPlayer[] = [];
     for (let attempt = 0; attempt < 200; attempt++) {
       slots = [...ROLE_SLOTS].sort(() => Math.random() - 0.5);
       rungs = generateLadder(5);
-      mapping = players.map((_, i) => tracePath(i, rungs));
+      const mapping = players.map((_, i) => tracePath(i, rungs));
       result = players.map((p, i) => ({ ...p, assignedRole: slots[mapping[i]] }));
-      const hasBanConflict = useBan && result.some(p => p.banned.includes(p.assignedRole));
-      if (!hasBanConflict) break;
+      if (!useBan || !result.some(p => p.banned.includes(p.assignedRole))) break;
     }
-
     rungsRef.current = rungs;
-    mappingRef.current = mapping;
     setAssigned(result);
     setPhase('animating');
-
     players.forEach((_, i) => {
       setTimeout(() => {
-        setRevealedPaths(prev => {
-          const next = [...prev];
-          next[i] = true;
-          return next;
-        });
-        if (i === players.length - 1) {
-          setTimeout(() => {
-            setPhase('done');
-            onDone(result);
-          }, 600);
-        }
+        setRevealedPaths(prev => { const next = [...prev]; next[i] = true; return next; });
+        if (i === players.length - 1) setTimeout(() => { setPhase('done'); onDone(result); }, 600);
       }, i * 400 + 300);
     });
   };
@@ -95,95 +69,51 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
   const rungs = rungsRef.current;
 
   return (
-    <div className="team-ladder">
-      <h3 className="team-label">팀 {label}</h3>
+    <div className="card p-5 flex flex-col items-center gap-3.5">
+      <h3 className="text-[1.1rem] font-bold text-lilac">팀 {label}</h3>
 
       {phase === 'idle' && (
-        <button className="start-btn" onClick={startLadder}>
-          사다리 시작
-        </button>
+        <button className="btn-sm" onClick={startLadder}>사다리 시작</button>
       )}
 
       {phase !== 'idle' && (
-        <div className="ladder-visual">
-          {/* Player names (top) */}
-          <div className="ladder-names top">
+        <div className="w-full flex flex-col items-center gap-1.5">
+          <div className="flex w-[300px] justify-around">
             {players.map((p, i) => (
               <div key={p.id} className={`ladder-name ${revealedPaths[i] ? 'revealed' : ''}`}>
-                {p.name || `#${i+1}`}
+                {p.name || `#${i + 1}`}
               </div>
             ))}
           </div>
 
-          {/* SVG ladder */}
           <div className="ladder-svg-wrap">
-            <svg
-              viewBox={`0 0 ${5 * 60} ${ROWS * 30 + 20}`}
-              xmlns="http://www.w3.org/2000/svg"
-              className="ladder-svg"
-            >
-              {/* Vertical lines */}
+            <svg viewBox={`0 0 ${5 * 60} ${ROWS * 30 + 20}`} xmlns="http://www.w3.org/2000/svg" className="ladder-svg">
               {players.map((_, col) => (
-                <line
-                  key={`v${col}`}
-                  x1={col * 60 + 30}
-                  y1={10}
-                  x2={col * 60 + 30}
-                  y2={ROWS * 30 + 10}
-                  stroke="#333355"
-                  strokeWidth="2"
-                />
+                <line key={`v${col}`} x1={col * 60 + 30} y1={10} x2={col * 60 + 30} y2={ROWS * 30 + 10} stroke="#333355" strokeWidth="2" />
               ))}
-
-              {/* Horizontal rungs */}
               {rungs.map((colRungs, col) =>
                 colRungs.map((hasRung, row) =>
                   hasRung ? (
-                    <line
-                      key={`h${col}_${row}`}
-                      x1={col * 60 + 30}
-                      y1={row * 30 + 25}
-                      x2={(col + 1) * 60 + 30}
-                      y2={row * 30 + 25}
-                      stroke="#5533aa"
-                      strokeWidth="2"
-                    />
+                    <line key={`h${col}_${row}`} x1={col * 60 + 30} y1={row * 30 + 25} x2={(col + 1) * 60 + 30} y2={row * 30 + 25} stroke="#5533aa" strokeWidth="2" />
                   ) : null
                 )
               )}
-
-              {/* Animated path highlights */}
               {revealedPaths.map((revealed, startCol) => {
                 if (!revealed || !rungs.length) return null;
-                // Draw path for this player
                 const pathParts: string[] = [];
                 let col = startCol;
-                let y = 10;
-                pathParts.push(`M ${col * 60 + 30} ${y}`);
+                pathParts.push(`M ${col * 60 + 30} 10`);
                 for (let row = 0; row < ROWS; row++) {
                   const midY = row * 30 + 25;
-                  // go down to rung level
                   pathParts.push(`L ${col * 60 + 30} ${midY}`);
-                  if (col > 0 && rungs[col - 1]?.[row]) {
-                    col -= 1;
-                    pathParts.push(`L ${col * 60 + 30} ${midY}`);
-                  } else if (col < rungs.length && rungs[col]?.[row]) {
-                    col += 1;
-                    pathParts.push(`L ${col * 60 + 30} ${midY}`);
-                  }
+                  if (col > 0 && rungs[col - 1]?.[row]) { col -= 1; pathParts.push(`L ${col * 60 + 30} ${midY}`); }
+                  else if (col < rungs.length && rungs[col]?.[row]) { col += 1; pathParts.push(`L ${col * 60 + 30} ${midY}`); }
                 }
                 pathParts.push(`L ${col * 60 + 30} ${ROWS * 30 + 10}`);
-
-                const hue = (startCol * 60) % 360;
                 return (
-                  <path
-                    key={`path${startCol}`}
-                    d={pathParts.join(' ')}
-                    stroke={`hsl(${hue}, 80%, 65%)`}
-                    strokeWidth="3"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                  <path key={`path${startCol}`} d={pathParts.join(' ')}
+                    stroke={`hsl(${(startCol * 60) % 360}, 80%, 65%)`}
+                    strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"
                     className="path-reveal"
                   />
                 );
@@ -191,25 +121,20 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
             </svg>
           </div>
 
-          {/* Role slots (bottom) */}
-          <div className="ladder-names bottom">
+          <div className="flex w-[300px] justify-around">
             {ROLE_SLOTS.map((role, i) => (
-              <div key={i} className={`ladder-role role-${role}`}>
-                {ROLE_LABELS[role]}
-              </div>
+              <div key={i} className={`badge-${role} min-w-[48px] text-center`}>{ROLE_LABELS[role]}</div>
             ))}
           </div>
         </div>
       )}
 
       {phase === 'done' && (
-        <div className="assigned-list">
+        <div className="w-full flex flex-col gap-1.5">
           {assigned.map(p => (
-            <div key={p.id} className="assigned-row">
-              <span className="assigned-name">{p.name}</span>
-              <span className={`assigned-role role-badge role-${p.assignedRole}`}>
-                {ROLE_LABELS[p.assignedRole]}
-              </span>
+            <div key={p.id} className="flex justify-between items-center bg-white/[0.04] rounded-lg px-3 py-2">
+              <span className="font-semibold text-[0.9rem]">{p.name}</span>
+              <span className={`badge-${p.assignedRole}`}>{ROLE_LABELS[p.assignedRole]}</span>
             </div>
           ))}
         </div>
@@ -235,14 +160,16 @@ export default function RoleAssignment() {
   }, [doneA, doneB, setResult]);
 
   return (
-    <div className="role-assignment">
-      <h2 className="section-title">사다리타기 역할 배정</h2>
-      <p className="section-desc">각 팀의 사다리 시작 버튼을 눌러 역할을 배정하세요.</p>
-      <div className="ladders-wrap">
+    <div className="w-full max-w-[1100px] px-6 py-8 flex flex-col items-center gap-6">
+      <div className="text-center">
+        <h2 className="section-title">사다리타기 역할 배정</h2>
+        <p className="section-desc mt-1">각 팀의 사다리 시작 버튼을 눌러 역할을 배정하세요.</p>
+      </div>
+      <div className="ladders-wrap grid grid-cols-2 gap-6 w-full">
         <TeamLadder players={teamA} label="A" useBan={settings.useBan} onDone={setDoneA} />
         <TeamLadder players={teamB} label="B" useBan={settings.useBan} onDone={setDoneB} />
       </div>
-      <button className="secondary-btn" onClick={() => setStep('teams')}>← 팀 다시 나누기</button>
+      <button className="btn-secondary" onClick={() => setStep('teams')}>← 팀 다시 나누기</button>
     </div>
   );
 }

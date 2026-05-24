@@ -1,26 +1,3 @@
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.app-header {
-  width: 100%;
-  padding: 32px 24px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  background: linear-gradient(180deg, #12012f 0%, transparent 100%);
-  padding-bottom: 24px;
-}
-
-.header-titles {
-  text-align: center;
-}
-
 .app-title {
   font-size: 2rem;
   font-weight: 800;
@@ -30,16 +7,9 @@
   background-clip: text;
 }
 
-.app-subtitle {
-  color: #666;
-  font-size: 0.85rem;
-  margin-bottom: 12px;
-}
-
 .step-indicator {
   display: flex;
   align-items: center;
-  gap: 0;
   margin-top: 12px;
 }
 
@@ -47,12 +17,11 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #555;
+  color: var(--color-faint);
   transition: color 0.3s;
 }
-
-.step.active { color: #c4b5fd; }
-.step.done { color: #7c3aed; }
+.step.active { color: var(--color-lilac); }
+.step.done   { color: var(--color-purple); }
 
 .step-dot {
   width: 26px;
@@ -64,60 +33,20 @@
   justify-content: center;
   font-size: 0.72rem;
   font-weight: 700;
-  background: #0f0f1a;
+  background: var(--color-base);
   transition: background 0.3s;
+  flex-shrink: 0;
 }
+.step.active .step-dot { background: var(--color-indigo); }
+.step.done   .step-dot { background: var(--color-purple); color: white; }
 
-.step.active .step-dot { background: #4c1d95; }
-.step.done .step-dot { background: #7c3aed; color: white; }
-
-.step-label {
-  font-size: 0.8rem;
-  font-weight: 600;
-}
+.step-label { font-size: 0.8rem; font-weight: 600; }
 
 .step-line {
   width: 40px;
   height: 2px;
   background: #333;
   margin: 0 6px;
+  flex-shrink: 0;
 }
-
-.step.done + .step .step-line,
-.step.active + .step .step-line {
-  background: #7c3aed;
-}
-
-.header-top {
-  width: 100%;
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-
-.settings-btn {
-  position: absolute;
-  right: 0;
-  top: 4px;
-  background: #1a1a2e;
-  border: 1px solid #2a2a45;
-  border-radius: 8px;
-  color: #888;
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 7px 14px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: border-color 0.2s, color 0.2s;
-  white-space: nowrap;
-}
-
-.settings-btn:hover { border-color: #7c3aed; color: #c4b5fd; }
-
-.app-main {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-}
+.step.done + .step .step-line { background: var(--color-purple); }
