@@ -35,9 +35,8 @@ export default function PlayerCard({
   };
 
   const toggleBan = (role: Role) => {
-    const banned = player.banned.includes(role)
-      ? player.banned.filter((r) => r !== role)
-      : [...player.banned, role];
+    const alreadyBanned = player.banned.includes(role);
+    const banned = alreadyBanned ? [] : [role];
     onChange({ ...player, banned });
   };
 
@@ -78,8 +77,8 @@ export default function PlayerCard({
             <span className="text-[0.62rem] text-faint font-bold">[밴]</span>
             <div className="flex gap-1">
               {player.banned.map((role) => (
-                <span key={role} className="badge-ban">
-                  {role === 'tank' ? '탱' : role === 'dps' ? '딜' : '힐'}
+                <span key={role} className={`badge-sm-${role} opacity-60 line-through`}>
+                  {role === 'tank' ? '탱커' : role === 'dps' ? '딜러' : '힐러'}
                 </span>
               ))}
             </div>

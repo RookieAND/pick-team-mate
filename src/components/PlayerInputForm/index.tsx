@@ -29,10 +29,6 @@ export default function PlayerInputForm() {
       setError(`${empty.length}명의 닉네임이 비어있습니다.`);
       return false;
     }
-    if (players.some((p) => p.banned.length >= 3)) {
-      setError('모든 역할을 밴한 플레이어가 있습니다.');
-      return false;
-    }
     setError('');
     return true;
   };

@@ -35,10 +35,8 @@ export default function App() {
       <header className="sticky top-0 z-50 w-full flex flex-col items-center gap-1.5 px-6 pt-6 pb-4 bg-[#0c0c1e] backdrop-blur-md border-b border-line/40 shrink-0">
         <div className="w-full relative flex justify-center">
           <div className="text-center">
-            <h1 className="app-title">팀 역할 배정기</h1>
-            <p className="text-[0.85rem] text-dim mb-3">
-              10인 5:5 팀 나누기 + 사다리타기 역할 배정
-            </p>
+            <h1 className="app-title">빠치마리</h1>
+            <p className="text-[0.85rem] text-dim mb-3">팀 역할 배정기 · 5:5 랜덤 팀 나누기</p>
           </div>
           <div className="absolute right-0 top-0 flex flex-col gap-1.5">
             <button

@@ -32,9 +32,10 @@ export default function IntroPage() {
       </div>
 
       <div className="text-center intro-title mb-4">
-        <h1 className="intro-main-title">팀 역할 배정기</h1>
-        <p className="text-[1.05rem] text-muted mt-4 leading-relaxed">
-          오버워치 10인 5:5 · 랜덤 팀 나누기 + 사다리타기 역할 배정
+        <h1 className="intro-main-title">빠치마리</h1>
+        <p className="text-[1.05rem] text-muted mt-2 leading-relaxed">팀 역할 배정기</p>
+        <p className="text-[0.88rem] text-faint mt-1 leading-relaxed">
+          오버워치 5:5 · 랜덤 팀 나누기 + 사다리타기 역할 배정
         </p>
       </div>
 
