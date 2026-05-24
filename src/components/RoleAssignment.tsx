@@ -12,17 +12,6 @@ interface Props {
 const ROLE_LABELS: Record<Role, string> = { tank: '탱', dps: '딜', heal: '힐' };
 const ROLE_SLOTS: Role[] = ['tank', 'dps', 'dps', 'heal', 'heal'];
 
-function assignRoles(players: Player[]): AssignedPlayer[] {
-  const slots = [...ROLE_SLOTS];
-  const shuffledSlots = slots.sort(() => Math.random() - 0.5);
-  return players.map((p, i) => ({ ...p, assignedRole: shuffledSlots[i] }));
-}
-
-interface LadderLine {
-  from: number;
-  to: number;
-  hasRung: boolean[];
-}
 
 function generateLadder(count: number): boolean[][] {
   // rungs[col][row] = true means there's a horizontal bar between col and col+1 at row
