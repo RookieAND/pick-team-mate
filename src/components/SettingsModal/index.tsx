@@ -1,7 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Switch from '@radix-ui/react-switch';
 import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../store';
+import { useAppStore } from '../../store';
 
 function SettingRow({
   label,

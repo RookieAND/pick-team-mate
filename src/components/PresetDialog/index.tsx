@@ -1,7 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { useShallow } from 'zustand/react/shallow';
-import { useAppStore } from '../store';
-import PresetPanel from './PresetPanel';
+import { useAppStore } from '../../store';
+import PresetPanel from '../PresetPanel';
 
 export default function PresetDialog() {
   const { showPreset, players, setPlayers, setShowPreset } = useAppStore(

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import type { Player } from '../types';
-import { useAppStore } from '../store';
+import type { Player } from '../../types';
+import { useAppStore } from '../../store';
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];

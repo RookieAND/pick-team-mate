@@ -1,4 +1,4 @@
-import { useAppStore } from '../store';
+import { useAppStore } from '../../store';
 
 const FEATURES = [
   { icon: '🔀', label: '랜덤 팀 배정', desc: '10명을 공정하게 5:5로 분리' },
@@ -14,32 +14,23 @@ export default function IntroPage() {
     <div className="relative flex flex-col items-center justify-center min-h-screen w-full overflow-hidden px-6 py-16">
       {/* ── Background layers ── */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        {/* Grid */}
         <div className="absolute inset-0 intro-grid" />
-
-        {/* Aurora blobs */}
         <div className="absolute intro-blob intro-blob-purple" />
         <div className="absolute intro-blob intro-blob-tank" />
         <div className="absolute intro-blob intro-blob-dps" />
         <div className="absolute intro-blob intro-blob-heal" />
-
-        {/* Vignette */}
         <div className="absolute inset-0 intro-vignette" />
-
-        {/* Top neon line */}
         <div className="absolute top-0 left-0 right-0 h-px intro-neon-line" />
       </div>
 
       {/* ── Content ── */}
 
-      {/* Role badges */}
       <div className="flex gap-3 mb-10 intro-badges">
         <span className="badge-tank text-sm px-3 py-1.5 intro-float-1">🛡 탱커</span>
         <span className="badge-dps  text-sm px-3 py-1.5 intro-float-2">⚔ 딜러</span>
         <span className="badge-heal text-sm px-3 py-1.5 intro-float-3">💚 힐러</span>
       </div>
 
-      {/* Title */}
       <div className="text-center intro-title mb-4">
         <h1 className="intro-main-title">팀 역할 배정기</h1>
         <p className="text-[1.05rem] text-muted mt-4 leading-relaxed">
@@ -47,7 +38,6 @@ export default function IntroPage() {
         </p>
       </div>
 
-      {/* CTA */}
       <button
         className="btn-primary text-[1.1rem]! px-16! py-4! mt-3 mb-14 intro-cta intro-cta-glow"
         onClick={() => setStep('input')}
@@ -55,7 +45,6 @@ export default function IntroPage() {
         시작하기 →
       </button>
 
-      {/* Feature cards */}
       <div className="grid grid-cols-2 gap-3 w-full max-w-md intro-features">
         {FEATURES.map((f) => (
           <div

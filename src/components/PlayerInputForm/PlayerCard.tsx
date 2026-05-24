@@ -1,14 +1,11 @@
-import { useState } from 'react';
-import { useShallow } from 'zustand/react/shallow';
-import type { Player, Role, HeroMost } from '../types';
-import { HEROES } from '../data/heroes';
-import { useAppStore } from '../store';
-import SearchableSelect from './SearchableSelect';
+import type { Player, Role, HeroMost } from '../../types';
+import { HEROES } from '../../data/heroes';
+import SearchableSelect from '../SearchableSelect';
 
 const ROLE_LABELS: Record<Role, string> = { tank: '탱커', dps: '딜러', heal: '힐러' };
 const ROLES: Role[] = ['tank', 'dps', 'heal'];
 
-function PlayerCard({
+export default function PlayerCard({
   player,
   index,
   useMost,
@@ -164,91 +161,6 @@ function PlayerCard({
           )}
         </div>
       )}
-    </div>
-  );
-}
-
-export default function PlayerInputForm() {
-  const { players, settings, setPlayers, setStep } = useAppStore(
-    useShallow((s) => ({
-      players: s.players,
-      settings: s.settings,
-      setPlayers: s.setPlayers,
-      setStep: s.setStep,
-    }))
-  );
-
-  const [activeIdx, setActiveIdx] = useState<number | null>(0);
-  const [error, setError] = useState('');
-
-  const setPlayer = (index: number, updated: Player) => {
-    const next = [...players];
-    next[index] = updated;
-    setPlayers(next);
-  };
-
-  const validate = () => {
-    const empty = players.filter((p) => !p.name.trim());
-    if (empty.length > 0) {
-      setError(`${empty.length}명의 닉네임이 비어있습니다.`);
-      return false;
-    }
-    if (players.some((p) => p.banned.length >= 3)) {
-      setError('모든 역할을 밴한 플레이어가 있습니다.');
-      return false;
-    }
-    setError('');
-    return true;
-  };
-
-  const totalCount = players.length;
-  const filledCount = players.filter((p) => p.name.trim()).length;
-
-  return (
-    <div className="w-full max-w-[680px] px-5 pt-6 pb-8 flex flex-col items-center gap-4">
-      <div className="w-full flex flex-col items-end gap-1">
-        <div className="w-full h-1 bg-[#1f1f38] rounded-full overflow-hidden">
-          <div
-            className="h-full rounded-full transition-[width] duration-300"
-            style={{
-              width: `${(filledCount / totalCount) * 100}%`,
-              background: 'linear-gradient(90deg, #7c3aed, #a855f7)',
-            }}
-          />
-        </div>
-        <span className="text-[0.75rem] text-muted">
-          {filledCount} / {totalCount} 입력 완료
-        </span>
-      </div>
-
-      <div className="w-full flex flex-col gap-1.5">
-        {players.map((player, i) => (
-          <PlayerCard
-            key={player.id}
-            player={player}
-            index={i}
-            useMost={settings.useMost}
-            useBan={settings.useBan}
-            onChange={(p) => setPlayer(i, p)}
-            isActive={activeIdx === i}
-            onSelect={() => setActiveIdx(activeIdx === i ? null : i)}
-            onTabNext={() => setActiveIdx(i < totalCount - 1 ? i + 1 : null)}
-            onTabPrev={() => setActiveIdx(i > 0 ? i - 1 : null)}
-          />
-        ))}
-      </div>
-
-      {error && <p className="text-[0.82rem] text-danger text-center">{error}</p>}
-
-      <button
-        className="btn-primary mt-1"
-        disabled={filledCount < totalCount}
-        onClick={() => {
-          if (validate()) setStep('teams');
-        }}
-      >
-        팀 나누기 →
-      </button>
     </div>
   );
 }

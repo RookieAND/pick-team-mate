@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { Player, Preset } from '../types';
-import { loadPresets, savePreset, deletePreset } from '../utils/presets';
+import type { Player, Preset } from '../../types';
+import { loadPresets, savePreset, deletePreset } from '../../utils/presets';
 
 interface Props {
   players: Player[];

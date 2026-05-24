@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { OW_MAPS, HAS_SIDE, type OWMap } from '../data/maps';
+import { OW_MAPS, HAS_SIDE, type OWMap } from '../../data/maps';
 
 function randomItem<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
