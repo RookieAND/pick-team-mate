@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Player, Role, HeroMost, AppSettings } from '../types';
 import { HEROES } from '../data/heroes';
 import SearchableSelect from './SearchableSelect';
+import PresetPanel from './PresetPanel';
 import './PlayerInputForm.css';
 
 const ROLE_LABELS: Record<Role, string> = { tank: '탱커', dps: '딜러', heal: '힐러' };
@@ -131,8 +132,15 @@ export default function PlayerInputForm({ players, settings, onChange, onNext }:
 
   const filledCount = players.filter(p => p.name.trim()).length;
 
+  const handleLoadPreset = (presetPlayers: Player[]) => {
+    onChange(presetPlayers);
+    setActiveIdx(null);
+  };
+
   return (
     <div className="player-input-form">
+      <PresetPanel players={players} onLoad={handleLoadPreset} />
+
       <div className="form-progress">
         <div className="progress-bar">
           <div className="progress-fill" style={{ width: `${(filledCount / 10) * 100}%` }} />

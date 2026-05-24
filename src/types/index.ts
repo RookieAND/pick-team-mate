@@ -23,3 +23,10 @@ export interface AppSettings {
   useMost: boolean;
   useBan: boolean;
 }
+
+export interface Preset {
+  id: string;
+  name: string;
+  savedAt: number;
+  players: Player[];
+}
