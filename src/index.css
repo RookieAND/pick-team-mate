@@ -213,6 +213,13 @@
   .ban-btn-heal:not(.banned):hover { color: var(--color-heal-t); border-color: var(--color-heal); }
 }
 
+/* ─── Shuffle slot-machine animation ────────────── */
+@keyframes slot-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.slot-in { animation: slot-in 0.07s ease-out; }
+
 /* ─── Animations ─────────────────────────────────── */
 @keyframes draw {
   from { stroke-dashoffset: 1000; }

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { Player } from '../../types';
 import { useAppStore } from '../../store';
@@ -31,13 +31,60 @@ export default function TeamSplit() {
 
   const [teams, setTeams] = useState(split);
   const [spinning, setSpinning] = useState(false);
+  const [displayNames, setDisplayNames] = useState<{ a: string[]; b: string[] } | null>(null);
+  const [tickKey, setTickKey] = useState(0);
+
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const finalTeamsRef = useRef<ReturnType<typeof split> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  const settle = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setTeams(finalTeamsRef.current!);
+    setDisplayNames(null);
+    setSpinning(false);
+    finalTeamsRef.current = null;
+  };
 
   const reshuffle = () => {
+    if (spinning) {
+      settle();
+      return;
+    }
+
+    const newTeams = split();
+    finalTeamsRef.current = newTeams;
     setSpinning(true);
-    setTimeout(() => {
-      setTeams(split());
-      setSpinning(false);
-    }, 600);
+
+    const allNames = players.map((p) => p.name || '???');
+    const DURATION = 800;
+    const startTime = Date.now();
+
+    const tick = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / DURATION, 1);
+
+      setDisplayNames({
+        a: newTeams.teamA.map(() => allNames[Math.floor(Math.random() * allNames.length)]),
+        b: newTeams.teamB.map(() => allNames[Math.floor(Math.random() * allNames.length)]),
+      });
+      setTickKey((k) => k + 1);
+
+      if (progress < 1) {
+        // Quadratic ease-out: fast start (40ms) → slow end (200ms)
+        const nextDelay = Math.floor(40 + progress * progress * 160);
+        timeoutRef.current = setTimeout(tick, nextDelay);
+      } else {
+        settle();
+      }
+    };
+
+    tick();
   };
 
   return (
@@ -50,51 +97,60 @@ export default function TeamSplit() {
           </p>
         </div>
 
-        <div
-          className={`grid grid-cols-2 gap-4 w-full transition-opacity duration-300 ${spinning ? 'opacity-30' : ''}`}
-        >
+        <div className="grid grid-cols-2 gap-4 w-full">
           {(['A', 'B'] as const).map((label, idx) => {
             const team = idx === 0 ? teams.teamA : teams.teamB;
             return (
               <div
                 key={label}
-                className={`card overflow-hidden ${label === 'A' ? 'border-t-2 border-t-purple!' : 'border-t-2 border-t-violet!'}`}
+                className={`card overflow-hidden transition-all duration-300 ${
+                  label === 'A' ? 'border-t-2 border-t-purple!' : 'border-t-2 border-t-violet!'
+                } ${spinning ? 'shadow-[0_0_24px_rgba(124,58,237,0.2)] border-purple/40!' : ''}`}
               >
                 <div className="px-4 py-3 font-bold text-[0.95rem] text-lilac bg-[#14142a] border-b border-line">
                   팀 {label}
                 </div>
                 <ul className="flex flex-col">
-                  {team.map((p: Player) => (
-                    <li
-                      key={p.id}
-                      className="flex items-center gap-2 px-4 py-2.5 border-b border-line/60 last:border-0"
-                    >
-                      <span className="flex-1 font-semibold text-[0.9rem]">
-                        {p.name || '(이름 없음)'}
-                      </span>
-                      {settings.useMost && (
-                        <div className="flex gap-1">
-                          <RoleBadge role="tank">{p.most.tank[0]}</RoleBadge>
-                          <RoleBadge role="dps">{p.most.dps[0]}</RoleBadge>
-                          <RoleBadge role="heal">{p.most.heal[0]}</RoleBadge>
-                        </div>
-                      )}
-                      {settings.useBan && p.banned.length > 0 && (
-                        <div className="flex gap-1">
-                          {p.banned.map((role) => (
-                            <RoleBadge
-                              key={role}
-                              role={role}
-                              size="sm"
-                              className="opacity-60 line-through"
-                            >
-                              🚫{role === 'tank' ? '탱' : role === 'dps' ? '딜' : '힐'}
-                            </RoleBadge>
-                          ))}
-                        </div>
-                      )}
-                    </li>
-                  ))}
+                  {team.map((p: Player, i: number) => {
+                    const cyclingName =
+                      spinning && displayNames
+                        ? (idx === 0 ? displayNames.a[i] : displayNames.b[i])
+                        : null;
+                    return (
+                      <li
+                        key={p.id}
+                        className="flex items-center gap-2 px-4 py-2.5 border-b border-line/60 last:border-0"
+                      >
+                        <span
+                          key={cyclingName ? `${tickKey}-${idx}-${i}` : p.id}
+                          className={`flex-1 font-semibold text-[0.9rem] ${cyclingName ? 'text-lilac slot-in' : ''}`}
+                        >
+                          {cyclingName ?? (p.name || '(이름 없음)')}
+                        </span>
+                        {!spinning && settings.useMost && (
+                          <div className="flex gap-1">
+                            <RoleBadge role="tank">{p.most.tank[0]}</RoleBadge>
+                            <RoleBadge role="dps">{p.most.dps[0]}</RoleBadge>
+                            <RoleBadge role="heal">{p.most.heal[0]}</RoleBadge>
+                          </div>
+                        )}
+                        {!spinning && settings.useBan && p.banned.length > 0 && (
+                          <div className="flex gap-1">
+                            {p.banned.map((role) => (
+                              <RoleBadge
+                                key={role}
+                                role={role}
+                                size="sm"
+                                className="opacity-60 line-through"
+                              >
+                                🚫{role === 'tank' ? '탱' : role === 'dps' ? '딜' : '힐'}
+                              </RoleBadge>
+                            ))}
+                          </div>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             );
@@ -103,15 +159,20 @@ export default function TeamSplit() {
       </div>
 
       <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex gap-3 flex-wrap justify-center">
-        <button className="btn-secondary py-[14px]! px-7!" onClick={() => setStep('input')}>
+        <button
+          className="btn-secondary py-[14px]! px-7!"
+          onClick={() => setStep('input')}
+          disabled={spinning}
+        >
           ← 돌아가기
         </button>
-        <button className="btn-ghost py-[14px]! px-6!" onClick={reshuffle} disabled={spinning}>
-          🔀 다시 섞기
+        <button className="btn-ghost py-[14px]! px-6!" onClick={reshuffle}>
+          {spinning ? '⏩ 바로 보기' : '🔀 다시 섞기'}
         </button>
         <button
           className="btn-primary py-[17px]! px-12! text-[1.05rem]!"
           onClick={() => confirmTeams(teams.teamA, teams.teamB)}
+          disabled={spinning}
         >
           역할 배정 시작 →
         </button>

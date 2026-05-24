@@ -50,7 +50,9 @@ export default function App() {
             </button>
           </div>
         </div>
-        <StepIndicator current={step} />
+        <div className="flex justify-center w-full">
+          <StepIndicator current={step} />
+        </div>
       </header>
 
       <main className="flex-1 overflow-y-auto flex flex-col items-center">
