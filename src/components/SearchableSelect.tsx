@@ -36,8 +36,11 @@ export default function SearchableSelect({ value, options, roleClass = '', onCha
       <Popover.Portal>
         <Popover.Content
           className={`ss-content ${roleClass}`}
+          side="bottom"
           align="start"
-          sideOffset={2}
+          sideOffset={4}
+          avoidCollisions
+          collisionPadding={8}
           onOpenAutoFocus={e => e.preventDefault()}
         >
           <input
