@@ -1,14 +1,8 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Switch from '@radix-ui/react-switch';
-import type { AppSettings } from '../types';
+import { useShallow } from 'zustand/react/shallow';
+import { useAppStore } from '../store';
 import './SettingsModal.css';
-
-interface Props {
-  open: boolean;
-  settings: AppSettings;
-  onChange: (s: Partial<AppSettings>) => void;
-  onClose: () => void;
-}
 
 function SettingRow({ label, desc, checked, onCheckedChange }: {
   label: string; desc: string; checked: boolean; onCheckedChange: (v: boolean) => void;
@@ -30,9 +24,16 @@ function SettingRow({ label, desc, checked, onCheckedChange }: {
   );
 }
 
-export default function SettingsModal({ open, settings, onChange, onClose }: Props) {
+export default function SettingsModal() {
+  const { showSettings, settings, setSettings, setShowSettings } = useAppStore(useShallow(s => ({
+    showSettings: s.showSettings,
+    settings: s.settings,
+    setSettings: s.setSettings,
+    setShowSettings: s.setShowSettings,
+  })));
+
   return (
-    <Dialog.Root open={open} onOpenChange={v => !v && onClose()}>
+    <Dialog.Root open={showSettings} onOpenChange={v => !v && setShowSettings(false)}>
       <Dialog.Portal>
         <Dialog.Overlay className="dialog-overlay" />
         <Dialog.Content className="dialog-content">
@@ -45,13 +46,13 @@ export default function SettingsModal({ open, settings, onChange, onClose }: Pro
               label="역할 모스트"
               desc="포지션별 모스트 영웅 입력 활성화"
               checked={settings.useMost}
-              onCheckedChange={v => onChange({ useMost: v })}
+              onCheckedChange={v => setSettings({ useMost: v })}
             />
             <SettingRow
               label="역할 밴"
               desc="너무 잘해서 제외할 역할 선택 활성화"
               checked={settings.useBan}
-              onCheckedChange={v => onChange({ useBan: v })}
+              onCheckedChange={v => setSettings({ useBan: v })}
             />
           </div>
         </Dialog.Content>

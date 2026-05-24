@@ -23,12 +23,14 @@ interface AppState {
   teamB: Player[];
   resultA: AssignedPlayer[];
   resultB: AssignedPlayer[];
+  showSettings: boolean;
 
   setStep: (step: AppStep) => void;
   setSettings: (s: Partial<AppSettings>) => void;
   setPlayers: (players: Player[]) => void;
   confirmTeams: (a: Player[], b: Player[]) => void;
   setResult: (a: AssignedPlayer[], b: AssignedPlayer[]) => void;
+  setShowSettings: (v: boolean) => void;
   reset: () => void;
 }
 
@@ -40,12 +42,14 @@ export const useAppStore = create<AppState>((set) => ({
   teamB: [],
   resultA: [],
   resultB: [],
+  showSettings: false,
 
   setStep: (step) => set({ step }),
   setSettings: (s) => set((state) => ({ settings: { ...state.settings, ...s } })),
   setPlayers: (players) => set({ players }),
   confirmTeams: (teamA, teamB) => set({ teamA, teamB, step: 'result', resultA: [], resultB: [] }),
   setResult: (resultA, resultB) => set({ resultA, resultB }),
+  setShowSettings: (showSettings) => set({ showSettings }),
   reset: () => set({
     step: 'input',
     players: makeDefaultPlayers(),

@@ -1,15 +1,10 @@
 import { useRef, useEffect } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import html2canvas from 'html2canvas';
-import type { AssignedPlayer, Role, AppSettings } from '../types';
+import type { AssignedPlayer, Role } from '../types';
+import { useAppStore } from '../store';
 import MapPicker from './MapPicker';
 import './ResultView.css';
-
-interface Props {
-  teamA: AssignedPlayer[];
-  teamB: AssignedPlayer[];
-  settings: AppSettings;
-  onReset: () => void;
-}
 
 const ROLE_LABELS: Record<Role, string> = { tank: '탱커', dps: '딜러', heal: '힐러' };
 const ROLE_ORDER: Role[] = ['tank', 'heal', 'dps'];
@@ -49,16 +44,20 @@ function TeamResult({ players, label, showMost, showBan }: {
   );
 }
 
-export default function ResultView({ teamA, teamB, settings, onReset }: Props) {
+export default function ResultView() {
+  const { resultA, resultB, settings, reset } = useAppStore(useShallow(s => ({
+    resultA: s.resultA,
+    resultB: s.resultB,
+    settings: s.settings,
+    reset: s.reset,
+  })));
+
   const captureRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     viewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
-
-  const teamAName = '팀 A';
-  const teamBName = '팀 B';
 
   const download = async () => {
     if (!captureRef.current) return;
@@ -79,15 +78,15 @@ export default function ResultView({ teamA, teamB, settings, onReset }: Props) {
 
       <div className="result-capture">
         <div ref={captureRef} className="result-teams">
-          <TeamResult players={teamA} label="A" showMost={settings.useMost} showBan={settings.useBan} />
-          <TeamResult players={teamB} label="B" showMost={settings.useMost} showBan={settings.useBan} />
+          <TeamResult players={resultA} label="A" showMost={settings.useMost} showBan={settings.useBan} />
+          <TeamResult players={resultB} label="B" showMost={settings.useMost} showBan={settings.useBan} />
         </div>
-        <MapPicker teamAName={teamAName} teamBName={teamBName} />
+        <MapPicker teamAName="팀 A" teamBName="팀 B" />
       </div>
 
       <div className="result-actions">
         <button className="download-btn" onClick={download}>📷 이미지 저장</button>
-        <button className="reset-btn" onClick={onReset}>처음부터 다시 →</button>
+        <button className="reset-btn" onClick={reset}>처음부터 다시 →</button>
       </div>
     </div>
   );

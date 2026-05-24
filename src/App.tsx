@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from './store';
 import PlayerInputForm from './components/PlayerInputForm';
 import TeamSplit from './components/TeamSplit';
@@ -29,9 +29,12 @@ function StepIndicator({ current }: { current: AppStep }) {
 }
 
 export default function App() {
-  const [showSettings, setShowSettings] = useState(false);
-  const { step, settings, players, teamA, teamB, resultA, resultB,
-    setStep, setSettings, setPlayers, confirmTeams, setResult, reset } = useAppStore();
+  const { step, resultA, resultB, setShowSettings } = useAppStore(useShallow(s => ({
+    step: s.step,
+    resultA: s.resultA,
+    resultB: s.resultB,
+    setShowSettings: s.setShowSettings,
+  })));
 
   return (
     <div className="app">
@@ -49,34 +52,16 @@ export default function App() {
       </header>
 
       <main className="app-main">
-        {step === 'input' && (
-          <PlayerInputForm
-            players={players}
-            settings={settings}
-            onChange={setPlayers}
-            onNext={() => setStep('teams')}
-          />
-        )}
-        {step === 'teams' && (
-          <TeamSplit
-            players={players}
-            onConfirm={confirmTeams}
-            onBack={() => setStep('input')}
-          />
-        )}
+        {step === 'input' && <PlayerInputForm />}
+        {step === 'teams' && <TeamSplit />}
         {step === 'result' && (
           resultA.length > 0 && resultB.length > 0
-            ? <ResultView teamA={resultA} teamB={resultB} settings={settings} onReset={reset} />
-            : <RoleAssignment teamA={teamA} teamB={teamB} settings={settings} onResult={setResult} onBack={() => setStep('teams')} />
+            ? <ResultView />
+            : <RoleAssignment />
         )}
       </main>
 
-      <SettingsModal
-        open={showSettings}
-        settings={settings}
-        onChange={setSettings}
-        onClose={() => setShowSettings(false)}
-      />
+      <SettingsModal />
     </div>
   );
 }

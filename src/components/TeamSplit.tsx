@@ -4,12 +4,6 @@ import type { Player } from '../types';
 import { useAppStore } from '../store';
 import './TeamSplit.css';
 
-interface Props {
-  players: Player[];
-  onConfirm: (teamA: Player[], teamB: Player[]) => void;
-  onBack: () => void;
-}
-
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -19,8 +13,14 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-export default function TeamSplit({ players, onConfirm, onBack }: Props) {
-  const { useMost, useBan } = useAppStore(useShallow(s => s.settings));
+export default function TeamSplit() {
+  const { players, settings, confirmTeams, setStep } = useAppStore(useShallow(s => ({
+    players: s.players,
+    settings: s.settings,
+    confirmTeams: s.confirmTeams,
+    setStep: s.setStep,
+  })));
+
   const split = useCallback(() => {
     const shuffled = shuffle(players);
     return { teamA: shuffled.slice(0, 5), teamB: shuffled.slice(5, 10) };
@@ -49,17 +49,17 @@ export default function TeamSplit({ players, onConfirm, onBack }: Props) {
             <div key={label} className={`team-box team-${label.toLowerCase()}`}>
               <div className="team-header">팀 {label}</div>
               <ul className="team-list">
-                {team.map(p => (
+                {team.map((p: Player) => (
                   <li key={p.id} className="team-member">
                     <span className="member-name">{p.name || '(이름 없음)'}</span>
-                    {useMost && (
+                    {settings.useMost && (
                       <span className="member-mosts">
                         <span className="role-badge role-tank">{p.most.tank[0]}</span>
                         <span className="role-badge role-dps">{p.most.dps[0]}</span>
                         <span className="role-badge role-heal">{p.most.heal[0]}</span>
                       </span>
                     )}
-                    {useBan && p.banned.length > 0 && (
+                    {settings.useBan && p.banned.length > 0 && (
                       <span className="member-bans">
                         {p.banned.map(role => (
                           <span key={role} className="ban-badge">🚫{role === 'tank' ? '탱' : role === 'dps' ? '딜' : '힐'}</span>
@@ -75,9 +75,9 @@ export default function TeamSplit({ players, onConfirm, onBack }: Props) {
       </div>
 
       <div className="action-row">
-        <button className="secondary-btn" onClick={onBack}>← 돌아가기</button>
+        <button className="secondary-btn" onClick={() => setStep('input')}>← 돌아가기</button>
         <button className="ghost-btn" onClick={reshuffle} disabled={spinning}>🔀 다시 섞기</button>
-        <button className="primary-btn" onClick={() => onConfirm(teams.teamA, teams.teamB)}>
+        <button className="primary-btn" onClick={() => confirmTeams(teams.teamA, teams.teamB)}>
           역할 배정 시작 →
         </button>
       </div>

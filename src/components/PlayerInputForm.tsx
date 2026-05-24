@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import type { Player, Role, HeroMost, AppSettings } from '../types';
+import { useShallow } from 'zustand/react/shallow';
+import type { Player, Role, HeroMost } from '../types';
 import { HEROES } from '../data/heroes';
+import { useAppStore } from '../store';
 import SearchableSelect from './SearchableSelect';
 import PresetPanel from './PresetPanel';
 import './PlayerInputForm.css';
@@ -8,18 +10,11 @@ import './PlayerInputForm.css';
 const ROLE_LABELS: Record<Role, string> = { tank: '탱커', dps: '딜러', heal: '힐러' };
 const ROLES: Role[] = ['tank', 'dps', 'heal'];
 
-interface Props {
-  players: Player[];
-  settings: AppSettings;
-  onChange: (players: Player[]) => void;
-  onNext: () => void;
-}
-
 function PlayerCard({
-  player, index, settings,
+  player, index, useMost, useBan,
   onChange, isActive, onSelect,
 }: {
-  player: Player; index: number; settings: AppSettings;
+  player: Player; index: number; useMost: boolean; useBan: boolean;
   onChange: (p: Player) => void; isActive: boolean; onSelect: () => void;
 }) {
   const setHero = (role: Role, rank: 0 | 1 | 2, hero: string) => {
@@ -61,7 +56,7 @@ function PlayerCard({
             />
           </div>
 
-          {settings.useMost && (
+          {useMost && (
             <div className="most-section">
               {ROLES.map(role => (
                 <div key={role} className={`most-role most-role-${role}`}>
@@ -84,7 +79,7 @@ function PlayerCard({
             </div>
           )}
 
-          {settings.useBan && (
+          {useBan && (
             <div className="pfield">
               <label>역할 밴 <span className="label-hint">너무 잘해서 제외</span></label>
               <div className="ban-buttons">
@@ -106,14 +101,21 @@ function PlayerCard({
   );
 }
 
-export default function PlayerInputForm({ players, settings, onChange, onNext }: Props) {
+export default function PlayerInputForm() {
+  const { players, settings, setPlayers, setStep } = useAppStore(useShallow(s => ({
+    players: s.players,
+    settings: s.settings,
+    setPlayers: s.setPlayers,
+    setStep: s.setStep,
+  })));
+
   const [activeIdx, setActiveIdx] = useState<number | null>(0);
   const [error, setError] = useState('');
 
   const setPlayer = (index: number, updated: Player) => {
     const next = [...players];
     next[index] = updated;
-    onChange(next);
+    setPlayers(next);
   };
 
   const validate = () => {
@@ -132,14 +134,9 @@ export default function PlayerInputForm({ players, settings, onChange, onNext }:
 
   const filledCount = players.filter(p => p.name.trim()).length;
 
-  const handleLoadPreset = (presetPlayers: Player[]) => {
-    onChange(presetPlayers);
-    setActiveIdx(null);
-  };
-
   return (
     <div className="player-input-form">
-      <PresetPanel players={players} onLoad={handleLoadPreset} />
+      <PresetPanel players={players} onLoad={p => { setPlayers(p); setActiveIdx(null); }} />
 
       <div className="form-progress">
         <div className="progress-bar">
@@ -154,7 +151,8 @@ export default function PlayerInputForm({ players, settings, onChange, onNext }:
             key={player.id}
             player={player}
             index={i}
-            settings={settings}
+            useMost={settings.useMost}
+            useBan={settings.useBan}
             onChange={p => setPlayer(i, p)}
             isActive={activeIdx === i}
             onSelect={() => setActiveIdx(activeIdx === i ? null : i)}
@@ -166,7 +164,7 @@ export default function PlayerInputForm({ players, settings, onChange, onNext }:
 
       <button
         className={`primary-btn ${filledCount === 10 ? 'ready' : ''}`}
-        onClick={() => { if (validate()) onNext(); }}
+        onClick={() => { if (validate()) setStep('teams'); }}
       >
         팀 나누기 →
       </button>

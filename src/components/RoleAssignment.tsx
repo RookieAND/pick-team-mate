@@ -1,14 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import type { Player, Role, AssignedPlayer, AppSettings } from '../types';
+import { useShallow } from 'zustand/react/shallow';
+import type { Player, Role, AssignedPlayer } from '../types';
+import { useAppStore } from '../store';
 import './RoleAssignment.css';
-
-interface Props {
-  teamA: Player[];
-  teamB: Player[];
-  settings: AppSettings;
-  onResult: (teamA: AssignedPlayer[], teamB: AssignedPlayer[]) => void;
-  onBack: () => void;
-}
 
 const ROLE_LABELS: Record<Role, string> = { tank: '탱', dps: '딜', heal: '힐' };
 const ROLE_SLOTS: Role[] = ['tank', 'dps', 'dps', 'heal', 'heal'];
@@ -224,13 +218,21 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
   );
 }
 
-export default function RoleAssignment({ teamA, teamB, settings, onResult, onBack }: Props) {
+export default function RoleAssignment() {
+  const { teamA, teamB, settings, setResult, setStep } = useAppStore(useShallow(s => ({
+    teamA: s.teamA,
+    teamB: s.teamB,
+    settings: s.settings,
+    setResult: s.setResult,
+    setStep: s.setStep,
+  })));
+
   const [doneA, setDoneA] = useState<AssignedPlayer[] | null>(null);
   const [doneB, setDoneB] = useState<AssignedPlayer[] | null>(null);
 
   useEffect(() => {
-    if (doneA && doneB) onResult(doneA, doneB);
-  }, [doneA, doneB, onResult]);
+    if (doneA && doneB) setResult(doneA, doneB);
+  }, [doneA, doneB, setResult]);
 
   return (
     <div className="role-assignment">
@@ -240,7 +242,7 @@ export default function RoleAssignment({ teamA, teamB, settings, onResult, onBac
         <TeamLadder players={teamA} label="A" useBan={settings.useBan} onDone={setDoneA} />
         <TeamLadder players={teamB} label="B" useBan={settings.useBan} onDone={setDoneB} />
       </div>
-      <button className="secondary-btn" onClick={onBack}>← 팀 다시 나누기</button>
+      <button className="secondary-btn" onClick={() => setStep('teams')}>← 팀 다시 나누기</button>
     </div>
   );
 }
