@@ -37,7 +37,7 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <div className="header-top">
-          <div>
+          <div className="header-titles">
             <h1 className="app-title">팀 역할 배정기</h1>
             <p className="app-subtitle">10인 5:5 팀 나누기 + 사다리타기 역할 배정</p>
           </div>

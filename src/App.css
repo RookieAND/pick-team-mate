@@ -17,6 +17,10 @@
   padding-bottom: 24px;
 }
 
+.header-titles {
+  text-align: center;
+}
+
 .app-title {
   font-size: 2rem;
   font-weight: 800;
@@ -86,13 +90,15 @@
 
 .header-top {
   width: 100%;
+  position: relative;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: center;
 }
 
 .settings-btn {
+  position: absolute;
+  right: 0;
+  top: 4px;
   background: #1a1a2e;
   border: 1px solid #2a2a45;
   border-radius: 8px;
@@ -104,7 +110,6 @@
   font-family: inherit;
   transition: border-color 0.2s, color 0.2s;
   white-space: nowrap;
-  margin-top: 4px;
 }
 
 .settings-btn:hover { border-color: #7c3aed; color: #c4b5fd; }
