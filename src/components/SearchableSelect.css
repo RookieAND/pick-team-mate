@@ -1,0 +1,107 @@
+.ss-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.ss-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  background: #0f0f1a;
+  border: 1px solid #2a2a45;
+  border-radius: 6px;
+  padding: 5px 8px;
+  color: #e8e8f0;
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  text-align: left;
+}
+
+.ss-trigger:hover { border-color: #555; }
+.ss-wrap.open .ss-trigger { border-color: #7c3aed; border-radius: 6px 6px 0 0; }
+
+.ss-trigger.role-tank { }
+.ss-trigger.role-dps  { }
+.ss-trigger.role-heal { }
+
+.ss-wrap.open .ss-trigger.role-tank { border-color: #3b82f6; }
+.ss-wrap.open .ss-trigger.role-dps  { border-color: #ef4444; }
+.ss-wrap.open .ss-trigger.role-heal { border-color: #22c55e; }
+
+.ss-value {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ss-arrow {
+  font-size: 0.55rem;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.ss-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #12121f;
+  border: 1px solid #7c3aed;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+
+.ss-wrap.open .ss-trigger.role-tank ~ .ss-dropdown { border-color: #3b82f6; }
+.ss-wrap.open .ss-trigger.role-dps  ~ .ss-dropdown { border-color: #ef4444; }
+.ss-wrap.open .ss-trigger.role-heal ~ .ss-dropdown { border-color: #22c55e; }
+
+.ss-search {
+  background: #0f0f1a;
+  border: none;
+  border-bottom: 1px solid #2a2a45;
+  padding: 6px 10px;
+  color: #e8e8f0;
+  font-size: 0.78rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.ss-search::placeholder { color: #555; }
+
+.ss-list {
+  list-style: none;
+  max-height: 160px;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.ss-list::-webkit-scrollbar { width: 4px; }
+.ss-list::-webkit-scrollbar-track { background: transparent; }
+.ss-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+.ss-option {
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.ss-option:hover { background: rgba(124,58,237,0.15); color: #e8e8f0; }
+.ss-option.selected { color: #a78bfa; font-weight: 600; }
+
+.ss-empty {
+  padding: 8px 10px;
+  font-size: 0.75rem;
+  color: #555;
+  text-align: center;
+}

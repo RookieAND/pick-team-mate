@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Player, Role, HeroMost, AppSettings } from '../types';
 import { HEROES } from '../data/heroes';
+import SearchableSelect from './SearchableSelect';
 import './PlayerInputForm.css';
 
 const ROLE_LABELS: Record<Role, string> = { tank: '탱커', dps: '딜러', heal: '힐러' };
@@ -68,15 +69,12 @@ function PlayerCard({
                     {([0, 1, 2] as const).map(rank => (
                       <div key={rank} className="hero-select-wrap">
                         <span className="rank-dot">{rank + 1}</span>
-                        <select
+                        <SearchableSelect
                           value={player.most[role][rank]}
-                          onChange={e => setHero(role, rank, e.target.value)}
-                          className={`hero-select role-select-${role}`}
-                        >
-                          {HEROES[role].map(hero => (
-                            <option key={hero} value={hero}>{hero}</option>
-                          ))}
-                        </select>
+                          options={HEROES[role]}
+                          roleClass={`role-${role}`}
+                          onChange={v => setHero(role, rank, v)}
+                        />
                       </div>
                     ))}
                   </div>

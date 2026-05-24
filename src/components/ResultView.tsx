@@ -1,4 +1,7 @@
+import { useRef } from 'react';
+import html2canvas from 'html2canvas';
 import type { AssignedPlayer, Role, AppSettings } from '../types';
+import MapPicker from './MapPicker';
 import './ResultView.css';
 
 interface Props {
@@ -17,7 +20,9 @@ function sortByRole(players: AssignedPlayer[]) {
   );
 }
 
-function TeamResult({ players, label, showMost }: { players: AssignedPlayer[]; label: string; showMost: boolean }) {
+function TeamResult({ players, label, showMost, showBan }: {
+  players: AssignedPlayer[]; label: string; showMost: boolean; showBan: boolean;
+}) {
   const sorted = sortByRole(players);
   return (
     <div className="team-result">
@@ -29,13 +34,14 @@ function TeamResult({ players, label, showMost }: { players: AssignedPlayer[]; l
               {ROLE_LABELS[p.assignedRole]}
             </span>
             <span className="result-name">{p.name}</span>
-            {showMost && (
-              <span className="result-mosts">
-                {p.most[p.assignedRole].map((hero, i) => (
-                  <span key={i} className={`mini-badge role-${p.assignedRole}`}>{hero}</span>
-                ))}
-              </span>
-            )}
+            <span className="result-badges">
+              {showMost && p.most[p.assignedRole].map((hero, i) => (
+                <span key={i} className={`mini-badge role-${p.assignedRole}`}>{hero}</span>
+              ))}
+              {showBan && p.banned.length > 0 && p.banned.map(role => (
+                <span key={role} className="ban-badge">🚫{ROLE_LABELS[role]}</span>
+              ))}
+            </span>
           </div>
         ))}
       </div>
@@ -44,17 +50,40 @@ function TeamResult({ players, label, showMost }: { players: AssignedPlayer[]; l
 }
 
 export default function ResultView({ teamA, teamB, settings, onReset }: Props) {
+  const captureRef = useRef<HTMLDivElement>(null);
+
+  const teamAName = '팀 A';
+  const teamBName = '팀 B';
+
+  const download = async () => {
+    if (!captureRef.current) return;
+    const canvas = await html2canvas(captureRef.current, {
+      backgroundColor: '#0f0f1a',
+      scale: 2,
+    });
+    const link = document.createElement('a');
+    link.download = 'team-result.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+
   return (
     <div className="result-view">
       <h2 className="section-title">배정 완료!</h2>
       <p className="section-desc">모든 팀원의 역할이 배정되었습니다.</p>
-      <div className="result-teams">
-        <TeamResult players={teamA} label="A" showMost={settings.useMost} />
-        <TeamResult players={teamB} label="B" showMost={settings.useMost} />
+
+      <div ref={captureRef} className="result-capture">
+        <div className="result-teams">
+          <TeamResult players={teamA} label="A" showMost={settings.useMost} showBan={settings.useBan} />
+          <TeamResult players={teamB} label="B" showMost={settings.useMost} showBan={settings.useBan} />
+        </div>
+        <MapPicker teamAName={teamAName} teamBName={teamBName} />
       </div>
-      <button className="reset-btn" onClick={onReset}>
-        처음부터 다시 →
-      </button>
+
+      <div className="result-actions">
+        <button className="download-btn" onClick={download}>📷 이미지 저장</button>
+        <button className="reset-btn" onClick={onReset}>처음부터 다시 →</button>
+      </div>
     </div>
   );
 }
