@@ -72,8 +72,8 @@ export default function ResultView({ teamA, teamB, settings, onReset }: Props) {
       <h2 className="section-title">배정 완료!</h2>
       <p className="section-desc">모든 팀원의 역할이 배정되었습니다.</p>
 
-      <div ref={captureRef} className="result-capture">
-        <div className="result-teams">
+      <div className="result-capture">
+        <div ref={captureRef} className="result-teams">
           <TeamResult players={teamA} label="A" showMost={settings.useMost} showBan={settings.useBan} />
           <TeamResult players={teamB} label="B" showMost={settings.useMost} showBan={settings.useBan} />
         </div>
