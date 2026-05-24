@@ -85,13 +85,12 @@ export default function App() {
         )}
       </main>
 
-      {showSettings && (
-        <SettingsModal
-          settings={settings}
-          onChange={setSettings}
-          onClose={() => setShowSettings(false)}
-        />
-      )}
+      <SettingsModal
+        open={showSettings}
+        settings={settings}
+        onChange={setSettings}
+        onClose={() => setShowSettings(false)}
+      />
     </div>
   );
 }

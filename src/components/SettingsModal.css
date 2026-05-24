@@ -1,37 +1,38 @@
-.modal-backdrop {
+.dialog-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 100;
-  animation: fade-in 0.15s ease;
+  animation: overlay-in 0.15s ease;
 }
 
-@keyframes fade-in {
+@keyframes overlay-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-.modal {
+.dialog-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: #1a1a2e;
   border: 1px solid #3a2a5e;
   border-radius: 16px;
-  width: 100%;
+  width: calc(100% - 40px);
   max-width: 400px;
-  margin: 20px;
-  animation: slide-up 0.18s ease;
+  z-index: 101;
+  animation: content-in 0.18s ease;
   overflow: hidden;
 }
 
-@keyframes slide-up {
-  from { transform: translateY(12px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
+@keyframes content-in {
+  from { transform: translate(-50%, -48%); opacity: 0; }
+  to   { transform: translate(-50%, -50%); opacity: 1; }
 }
 
-.modal-header {
+.dialog-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -39,13 +40,14 @@
   border-bottom: 1px solid #2a2a45;
 }
 
-.modal-title {
+.dialog-title {
   font-size: 1rem;
   font-weight: 700;
   color: #c4b5fd;
+  margin: 0;
 }
 
-.modal-close {
+.dialog-close {
   background: none;
   border: none;
   color: #666;
@@ -55,76 +57,74 @@
   border-radius: 6px;
   transition: color 0.15s, background 0.15s;
   font-family: inherit;
+  line-height: 1;
 }
 
-.modal-close:hover { color: #ccc; background: rgba(255,255,255,0.05); }
+.dialog-close:hover { color: #ccc; background: rgba(255,255,255,0.05); }
 
-.modal-body {
+.dialog-body {
   padding: 16px 20px 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Toggle */
-.toggle-item {
+/* Setting row */
+.setting-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
   background: #0f0f1a;
   border: 1px solid #2a2a45;
   border-radius: 10px;
   padding: 12px 14px;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  font-family: inherit;
-  width: 100%;
-  text-align: left;
 }
 
-.toggle-item.on  { border-color: #7c3aed; background: #1a0f38; }
-.toggle-item:hover { border-color: #7c3aed; }
-
-.toggle-text {
+.setting-text {
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
-.toggle-label {
+.setting-label {
   font-size: 0.88rem;
   font-weight: 700;
   color: #e8e8f0;
 }
 
-.toggle-desc {
+.setting-desc {
   font-size: 0.72rem;
   color: #666;
 }
 
-.toggle-switch {
-  width: 38px;
+/* Radix Switch */
+.switch-root {
+  width: 40px;
   height: 22px;
   border-radius: 11px;
   background: #2a2a45;
+  border: none;
+  padding: 0;
+  cursor: pointer;
   position: relative;
   transition: background 0.2s;
   flex-shrink: 0;
 }
 
-.toggle-switch.on { background: #7c3aed; }
+.switch-root[data-state='checked'] { background: #7c3aed; }
+.switch-root:focus-visible { outline: 2px solid #a78bfa; outline-offset: 2px; }
 
-.toggle-thumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
+.switch-thumb {
+  display: block;
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background: white;
-  transition: transform 0.2s;
   box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  transition: transform 0.2s;
+  transform: translateX(3px);
+  will-change: transform;
 }
 
-.toggle-switch.on .toggle-thumb { transform: translateX(16px); }
+.switch-thumb[data-state='checked'] { transform: translateX(21px); }

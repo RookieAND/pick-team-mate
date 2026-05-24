@@ -44,7 +44,7 @@ export const useAppStore = create<AppState>((set) => ({
   setStep: (step) => set({ step }),
   setSettings: (s) => set((state) => ({ settings: { ...state.settings, ...s } })),
   setPlayers: (players) => set({ players }),
-  confirmTeams: (teamA, teamB) => set({ teamA, teamB, step: 'result' }),
+  confirmTeams: (teamA, teamB) => set({ teamA, teamB, step: 'result', resultA: [], resultB: [] }),
   setResult: (resultA, resultB) => set({ resultA, resultB }),
   reset: () => set({
     step: 'input',
