@@ -1,17 +1,9 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { shuffle, sample } from 'es-toolkit';
 import type { Player } from '../../types';
 import { useAppStore } from '../../store';
 import RoleBadge from '../RoleBadge';
-
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 type TeamPair = { teamA: Player[]; teamB: Player[] };
 
@@ -64,8 +56,8 @@ export default function TeamSplit() {
       (function tick() {
         const progress = Math.min((Date.now() - start) / 800, 1);
         setDisplayNames({
-          a: target.teamA.map(() => names[Math.floor(Math.random() * names.length)]),
-          b: target.teamB.map(() => names[Math.floor(Math.random() * names.length)]),
+          a: target.teamA.map(() => sample(names)),
+          b: target.teamB.map(() => sample(names)),
         });
         setTickKey((k) => k + 1);
         if (progress < 1) {

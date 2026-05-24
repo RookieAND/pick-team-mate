@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { shuffle, range } from 'es-toolkit';
 import type { Player, Role, AssignedPlayer } from '../../types';
 
 const ROLE_SLOTS_5: Role[] = ['tank', 'dps', 'dps', 'heal', 'heal'];
@@ -10,9 +11,7 @@ function getRoleSlots(count: number): Role[] {
 
 function generateLadder(count: number): boolean[][] {
   const ROWS = 8;
-  const rungs: boolean[][] = Array.from({ length: count - 1 }, () =>
-    Array.from({ length: ROWS }, () => false)
-  );
+  const rungs: boolean[][] = range(count - 1).map(() => new Array(ROWS).fill(false));
   for (let row = 0; row < ROWS; row++) {
     let col = 0;
     while (col < count - 1) {
@@ -79,7 +78,7 @@ export function useLadderGame({ players, useBan, onDone }: UseLadderGameOptions)
       rungs: boolean[][] = [],
       result: AssignedPlayer[] = [];
     for (let attempt = 0; attempt < 200; attempt++) {
-      slots = [...roleSlots].sort(() => Math.random() - 0.5);
+      slots = shuffle([...roleSlots]);
       rungs = generateLadder(players.length);
       const mapping = players.map((_, i) => tracePath(i, rungs));
       result = players.map((p, i) => ({ ...p, assignedRole: slots[mapping[i]] }));
@@ -106,7 +105,7 @@ export function useLadderGame({ players, useBan, onDone }: UseLadderGameOptions)
 
   const revealAll = () => {
     if (bulkRevealing || revealingIdx !== null) return;
-    const unrevealed = players.map((_, i) => i).filter((i) => !revealedSet.has(i));
+    const unrevealed = range(players.length).filter((i) => !revealedSet.has(i));
     if (unrevealed.length === 0) return;
 
     setBulkRevealing(true);

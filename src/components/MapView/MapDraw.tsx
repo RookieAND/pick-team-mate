@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { sample, groupBy } from 'es-toolkit';
 import { OW_MAPS, HAS_SIDE, type OWMap } from '../../data/maps';
 import { useAppStore } from '../../store';
 
@@ -56,7 +57,7 @@ export default function MapDraw() {
   const draw = () => {
     if (spinning) { settle(); return; }
     if (available.length === 0) return;
-    const target = available[Math.floor(Math.random() * available.length)];
+    const target = sample(available);
     finalRef.current = target;
     setCurrent(null);
     setSpinning(true);
@@ -67,7 +68,7 @@ export default function MapDraw() {
       const elapsed = Date.now() - start;
       const progress = Math.min(elapsed / DURATION, 1);
       if (progress < 1) {
-        setDisplayMap(available[Math.floor(Math.random() * available.length)]);
+        setDisplayMap(sample(available));
         setTickKey((k) => k + 1);
         timerRef.current = setTimeout(tick, 55 + Math.floor(progress * progress * 310));
       } else {
@@ -96,10 +97,7 @@ export default function MapDraw() {
     });
   };
 
-  const mapsByMode = ALL_MODES.reduce<Record<string, OWMap[]>>((acc, mode) => {
-    acc[mode] = available.filter((m) => m.mode === mode);
-    return acc;
-  }, {} as Record<string, OWMap[]>);
+  const mapsByMode = groupBy(available, (m) => m.mode);
 
   return (
     <div className="flex flex-col gap-4">
@@ -175,7 +173,7 @@ export default function MapDraw() {
         {showManual && (
           <div className="flex flex-col gap-3 border-t border-line/30 pt-3">
             {ALL_MODES.map((mode) => {
-              const maps = mapsByMode[mode];
+              const maps = mapsByMode[mode] ?? [];
               if (maps.length === 0) return null;
               return (
                 <div key={mode} className="flex flex-col gap-1.5">

@@ -1,4 +1,5 @@
 import { useShallow } from 'zustand/react/shallow';
+import { sortBy } from 'es-toolkit';
 import type { AssignedPlayer, Role } from '../../types';
 import { useAppStore } from '../../store';
 import RoleBadge from '../RoleBadge';
@@ -7,9 +8,7 @@ const ROLE_LABELS: Record<Role, string> = { tank: '탱커', dps: '딜러', heal:
 const ROLE_ORDER: Role[] = ['tank', 'heal', 'dps'];
 
 function sortByRole(players: AssignedPlayer[]) {
-  return [...players].sort(
-    (a, b) => ROLE_ORDER.indexOf(a.assignedRole) - ROLE_ORDER.indexOf(b.assignedRole)
-  );
+  return sortBy(players, [(p) => ROLE_ORDER.indexOf(p.assignedRole)]);
 }
 
 export default function TeamResult({
