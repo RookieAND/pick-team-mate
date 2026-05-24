@@ -1,26 +1,12 @@
+import { useState } from 'react';
 import { useAppStore } from './store';
 import PlayerInputForm from './components/PlayerInputForm';
 import TeamSplit from './components/TeamSplit';
 import RoleAssignment from './components/RoleAssignment';
 import ResultView from './components/ResultView';
+import SettingsModal from './components/SettingsModal';
 import type { AppStep } from './types';
 import './App.css';
-
-function Toggle({ label, desc, value, onChange }: {
-  label: string; desc: string; value: boolean; onChange: (v: boolean) => void;
-}) {
-  return (
-    <button className={`toggle-item ${value ? 'on' : 'off'}`} onClick={() => onChange(!value)}>
-      <div className="toggle-text">
-        <span className="toggle-label">{label}</span>
-        <span className="toggle-desc">{desc}</span>
-      </div>
-      <div className={`toggle-switch ${value ? 'on' : ''}`}>
-        <div className="toggle-thumb" />
-      </div>
-    </button>
-  );
-}
 
 function StepIndicator({ current }: { current: AppStep }) {
   const labels = [
@@ -43,32 +29,22 @@ function StepIndicator({ current }: { current: AppStep }) {
 }
 
 export default function App() {
+  const [showSettings, setShowSettings] = useState(false);
   const { step, settings, players, teamA, teamB, resultA, resultB,
     setStep, setSettings, setPlayers, confirmTeams, setResult, reset } = useAppStore();
 
   return (
     <div className="app">
       <header className="app-header">
-        <h1 className="app-title">팀 역할 배정기</h1>
-        <p className="app-subtitle">10인 5:5 팀 나누기 + 사다리타기 역할 배정</p>
-
-        {step === 'input' && (
-          <div className="settings-bar">
-            <Toggle
-              label="역할 모스트"
-              desc="포지션별 모스트 영웅 입력"
-              value={settings.useMost}
-              onChange={v => setSettings({ useMost: v })}
-            />
-            <Toggle
-              label="역할 밴"
-              desc="너무 잘해서 제외할 역할 선택"
-              value={settings.useBan}
-              onChange={v => setSettings({ useBan: v })}
-            />
+        <div className="header-top">
+          <div>
+            <h1 className="app-title">팀 역할 배정기</h1>
+            <p className="app-subtitle">10인 5:5 팀 나누기 + 사다리타기 역할 배정</p>
           </div>
-        )}
-
+          <button className="settings-btn" onClick={() => setShowSettings(true)}>
+            ⚙ 설정
+          </button>
+        </div>
         <StepIndicator current={step} />
       </header>
 
@@ -108,6 +84,14 @@ export default function App() {
           </>
         )}
       </main>
+
+      {showSettings && (
+        <SettingsModal
+          settings={settings}
+          onChange={setSettings}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
     </div>
   );
 }
