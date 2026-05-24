@@ -31,11 +31,8 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col items-center w-full min-h-screen">
-      <header
-        className="w-full flex flex-col items-center gap-1.5 px-6 pt-8 pb-6"
-        style={{ background: 'linear-gradient(180deg, #12012f 0%, transparent 100%)' }}
-      >
+    <div className="flex flex-col w-full h-screen">
+      <header className="sticky top-0 z-50 w-full flex flex-col items-center gap-1.5 px-6 pt-6 pb-4 bg-[#0c0c1e] backdrop-blur-md border-b border-line/40 shrink-0">
         <div className="w-full relative flex justify-center">
           <div className="text-center">
             <h1 className="app-title">팀 역할 배정기</h1>
@@ -61,7 +58,7 @@ export default function App() {
         <StepIndicator current={step} />
       </header>
 
-      <main className="w-full flex flex-col items-center flex-1">
+      <main className="flex-1 overflow-y-auto flex flex-col items-center">
         {step === 'input' && <PlayerInputForm />}
         {step === 'teams' && <TeamSplit />}
         {step === 'result' &&
