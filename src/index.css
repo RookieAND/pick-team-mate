@@ -240,31 +240,30 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Aurora blob movements */
+/* Aurora blob movements — slow gentle pulse only */
 @keyframes aurora-purple {
-  0%, 100% { transform: translate(-50%, 0) scale(1); }
-  33%       { transform: translate(-48%, -40px) scale(1.08); }
-  66%       { transform: translate(-52%, 25px) scale(0.95); }
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 0.75; }
 }
 @keyframes aurora-tank {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%       { transform: translate(60px, -50px) scale(1.15); }
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.55; }
 }
 @keyframes aurora-dps {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%       { transform: translate(-60px, -40px) scale(1.12); }
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 0.45; }
 }
 @keyframes aurora-heal {
-  0%, 100% { transform: translate(-50%, 0) scale(1); }
-  50%       { transform: translate(-50%, -30px) scale(1.2); }
+  0%, 100% { opacity: 0.25; }
+  50%       { opacity: 0.38; }
 }
 
 /* Background elements */
 .intro-grid {
   background-image:
-    linear-gradient(rgba(167,139,250,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(167,139,250,0.04) 1px, transparent 1px);
-  background-size: 56px 56px;
+    linear-gradient(rgba(167,139,250,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(167,139,250,0.025) 1px, transparent 1px);
+  background-size: 72px 72px;
 }
 
 .intro-vignette {
@@ -272,8 +271,8 @@
 }
 
 .intro-neon-line {
-  background: linear-gradient(90deg, transparent 0%, #7c3aed 30%, #a855f7 50%, #c084fc 70%, transparent 100%);
-  box-shadow: 0 0 12px 1px rgba(168, 85, 247, 0.6), 0 0 40px 4px rgba(124, 58, 237, 0.25);
+  background: linear-gradient(90deg, transparent 10%, #7c3aed 40%, #a855f7 50%, #7c3aed 60%, transparent 90%);
+  box-shadow: 0 0 8px rgba(168, 85, 247, 0.4), 0 0 24px rgba(124, 58, 237, 0.15);
 }
 
 /* Blobs */
@@ -282,28 +281,28 @@
   filter: blur(60px);
 }
 .intro-blob-purple {
-  width: 800px; height: 800px;
-  top: -280px; left: 50%;
-  background: radial-gradient(circle, rgba(124,58,237,0.45) 0%, transparent 65%);
-  animation: aurora-purple 9s ease-in-out infinite;
+  width: 700px; height: 700px;
+  top: -250px; left: 50%; transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(124,58,237,0.28) 0%, transparent 65%);
+  animation: aurora-purple 8s ease-in-out infinite;
 }
 .intro-blob-tank {
-  width: 550px; height: 550px;
-  bottom: 5%; left: -80px;
-  background: radial-gradient(circle, rgba(59,130,246,0.35) 0%, transparent 65%);
-  animation: aurora-tank 11s ease-in-out infinite 1.5s;
+  width: 480px; height: 480px;
+  bottom: 0; left: -60px;
+  background: radial-gradient(circle, rgba(59,130,246,0.18) 0%, transparent 65%);
+  animation: aurora-tank 10s ease-in-out infinite 1s;
 }
 .intro-blob-dps {
-  width: 550px; height: 550px;
-  bottom: 5%; right: -80px;
-  background: radial-gradient(circle, rgba(239,68,68,0.28) 0%, transparent 65%);
-  animation: aurora-dps 10s ease-in-out infinite 3s;
+  width: 480px; height: 480px;
+  bottom: 0; right: -60px;
+  background: radial-gradient(circle, rgba(239,68,68,0.14) 0%, transparent 65%);
+  animation: aurora-dps 12s ease-in-out infinite 2.5s;
 }
 .intro-blob-heal {
-  width: 450px; height: 450px;
-  bottom: -60px; left: 50%;
-  background: radial-gradient(circle, rgba(34,197,94,0.25) 0%, transparent 65%);
-  animation: aurora-heal 13s ease-in-out infinite 0.8s;
+  width: 380px; height: 380px;
+  bottom: -40px; left: 50%; transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 65%);
+  animation: aurora-heal 14s ease-in-out infinite 0.5s;
 }
 
 /* Content */
@@ -329,9 +328,9 @@
 }
 
 .intro-cta-glow {
-  box-shadow: 0 0 30px rgba(124,58,237,0.5), 0 0 80px rgba(124,58,237,0.2);
+  box-shadow: 0 0 20px rgba(124,58,237,0.3), 0 0 50px rgba(124,58,237,0.1);
   transition: box-shadow 0.3s ease, opacity 0.2s, transform 0.2s;
 }
 .intro-cta-glow:hover {
-  box-shadow: 0 0 40px rgba(168,85,247,0.7), 0 0 100px rgba(124,58,237,0.35);
+  box-shadow: 0 0 28px rgba(168,85,247,0.45), 0 0 70px rgba(124,58,237,0.2);
 }
