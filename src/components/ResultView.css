@@ -1,0 +1,118 @@
+.result-view {
+  width: 100%;
+  max-width: 900px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #a78bfa;
+}
+
+.section-desc {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.result-teams {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .result-teams { grid-template-columns: 1fr; }
+}
+
+.team-result {
+  background: #1a1a2e;
+  border: 1px solid #2a2a45;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.result-team-header {
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #c4b5fd;
+  background: #14142a;
+  border-bottom: 1px solid #2a2a45;
+}
+
+.result-players {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.result-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #1f1f38;
+  transition: background 0.15s;
+}
+
+.result-player:last-child { border-bottom: none; }
+.result-player:hover { background: rgba(255,255,255,0.03); }
+
+.role-bg-tank { border-left: 3px solid #3b82f6; }
+.role-bg-dps  { border-left: 3px solid #ef4444; }
+.role-bg-heal { border-left: 3px solid #22c55e; }
+
+.result-role {
+  font-size: 0.75rem;
+  font-weight: 700;
+  min-width: 44px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.result-role.role-tank { background: #1e3a5f; color: #93c5fd; }
+.result-role.role-dps  { background: #3f1515; color: #fca5a5; }
+.result-role.role-heal { background: #14332a; color: #86efac; }
+
+.result-name {
+  flex: 1;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.result-mosts {
+  display: flex;
+  gap: 3px;
+}
+
+.mini-badge {
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.mini-badge.role-tank { background: #1e3a5f; color: #93c5fd; }
+.mini-badge.role-dps  { background: #3f1515; color: #fca5a5; }
+.mini-badge.role-heal { background: #14332a; color: #86efac; }
+
+.reset-btn {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 14px 40px;
+  border-radius: 999px;
+  transition: opacity 0.2s, transform 0.1s;
+  margin-top: 8px;
+}
+
+.reset-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.reset-btn:active { transform: translateY(0); }

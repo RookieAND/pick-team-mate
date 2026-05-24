@@ -1,0 +1,175 @@
+.player-input-form {
+  width: 100%;
+  max-width: 1100px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #a78bfa;
+}
+
+.section-desc {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+@media (max-width: 700px) {
+  .players-grid { grid-template-columns: 1fr; }
+}
+
+.player-card {
+  background: #1a1a2e;
+  border: 1px solid #2a2a45;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.player-number {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 0.75rem;
+  color: #555;
+  font-weight: 600;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.78rem;
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.field input {
+  background: #0f0f1a;
+  border: 1px solid #333355;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #e8e8f0;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.field input:focus { border-color: #7c3aed; }
+.field input.error { border-color: #ef4444; }
+
+.error-msg {
+  font-size: 0.75rem;
+  color: #f87171;
+}
+
+.most-selects {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.most-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rank-label {
+  font-size: 0.75rem;
+  color: #666;
+  min-width: 42px;
+}
+
+.role-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.role-btn {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 2px solid transparent;
+  background: #1f1f38;
+  color: #666;
+  transition: all 0.15s;
+}
+
+.role-btn:hover { opacity: 0.85; }
+
+.role-btn.role-tank.active { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; }
+.role-btn.role-dps.active  { background: #3f1515; border-color: #ef4444; color: #fca5a5; }
+.role-btn.role-heal.active { background: #14332a; border-color: #22c55e; color: #86efac; }
+
+.role-btn.role-tank:not(.active):hover { color: #93c5fd; }
+.role-btn.role-dps:not(.active):hover  { color: #fca5a5; }
+.role-btn.role-heal:not(.active):hover { color: #86efac; }
+
+.label-hint {
+  font-size: 0.7rem;
+  color: #555;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.ban-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.ban-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 2px solid #2a2a45;
+  background: #1f1f38;
+  color: #666;
+  transition: all 0.15s;
+}
+
+.ban-btn:hover { opacity: 0.85; }
+
+.ban-btn.role-tank.banned { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; opacity: 0.5; text-decoration: line-through; }
+.ban-btn.role-dps.banned  { background: #3f1515; border-color: #ef4444; color: #fca5a5; opacity: 0.5; text-decoration: line-through; }
+.ban-btn.role-heal.banned { background: #14332a; border-color: #22c55e; color: #86efac; opacity: 0.5; text-decoration: line-through; }
+
+.ban-btn.role-tank:not(.banned):hover { color: #93c5fd; }
+.ban-btn.role-dps:not(.banned):hover  { color: #fca5a5; }
+.ban-btn.role-heal:not(.banned):hover { color: #86efac; }
+
+.primary-btn {
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 14px 40px;
+  border-radius: 999px;
+  transition: opacity 0.2s, transform 0.1s;
+  margin-top: 8px;
+}
+
+.primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.primary-btn:active { transform: translateY(0); }
