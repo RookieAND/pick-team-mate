@@ -20,8 +20,12 @@ function generateLadder(count: number): boolean[][] {
   for (let row = 0; row < ROWS; row++) {
     let col = 0;
     while (col < count - 1) {
-      if (Math.random() > 0.5) { rungs[col][row] = true; col += 2; }
-      else { col += 1; }
+      if (Math.random() > 0.5) {
+        rungs[col][row] = true;
+        col += 2;
+      } else {
+        col += 1;
+      }
     }
   }
   return rungs;
@@ -46,28 +50,43 @@ interface TeamLadderProps {
 
 function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
   const [phase, setPhase] = useState<'idle' | 'animating' | 'done'>('idle');
-  const [revealedPaths, setRevealedPaths] = useState<boolean[]>(() => Array(players.length).fill(false));
+  const [revealedPaths, setRevealedPaths] = useState<boolean[]>(() =>
+    Array(players.length).fill(false)
+  );
   const [assigned, setAssigned] = useState<AssignedPlayer[]>([]);
   const rungsRef = useRef<boolean[][]>([]);
 
   const startLadder = () => {
     const roleSlots = getRoleSlots(players.length);
-    let slots: Role[] = [], rungs: boolean[][] = [], result: AssignedPlayer[] = [];
+    let slots: Role[] = [],
+      rungs: boolean[][] = [],
+      result: AssignedPlayer[] = [];
     for (let attempt = 0; attempt < 200; attempt++) {
       slots = [...roleSlots].sort(() => Math.random() - 0.5);
       rungs = generateLadder(players.length);
       const mapping = players.map((_, i) => tracePath(i, rungs));
       result = players.map((p, i) => ({ ...p, assignedRole: slots[mapping[i]] }));
-      if (!useBan || !result.some(p => p.banned.includes(p.assignedRole))) break;
+      if (!useBan || !result.some((p) => p.banned.includes(p.assignedRole))) break;
     }
     rungsRef.current = rungs;
     setAssigned(result);
     setPhase('animating');
     players.forEach((_, i) => {
-      setTimeout(() => {
-        setRevealedPaths(prev => { const next = [...prev]; next[i] = true; return next; });
-        if (i === players.length - 1) setTimeout(() => { setPhase('done'); onDone(result); }, 600);
-      }, i * 400 + 300);
+      setTimeout(
+        () => {
+          setRevealedPaths((prev) => {
+            const next = [...prev];
+            next[i] = true;
+            return next;
+          });
+          if (i === players.length - 1)
+            setTimeout(() => {
+              setPhase('done');
+              onDone(result);
+            }, 600);
+        },
+        i * 400 + 300
+      );
     });
   };
 
@@ -83,7 +102,9 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
       <h3 className="text-[1.1rem] font-bold text-lilac">팀 {label}</h3>
 
       {phase === 'idle' && (
-        <button className="btn-sm" onClick={startLadder}>사다리 시작</button>
+        <button className="btn-sm" onClick={startLadder}>
+          사다리 시작
+        </button>
       )}
 
       {phase !== 'idle' && (
@@ -97,14 +118,34 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
           </div>
 
           <div className="ladder-svg-wrap">
-            <svg viewBox={`0 0 ${svgW} ${svgH}`} xmlns="http://www.w3.org/2000/svg" className="ladder-svg">
+            <svg
+              viewBox={`0 0 ${svgW} ${svgH}`}
+              xmlns="http://www.w3.org/2000/svg"
+              className="ladder-svg"
+            >
               {players.map((_, col) => (
-                <line key={`v${col}`} x1={col * COL_W + 30} y1={10} x2={col * COL_W + 30} y2={ROWS * 30 + 10} stroke="#333355" strokeWidth="2" />
+                <line
+                  key={`v${col}`}
+                  x1={col * COL_W + 30}
+                  y1={10}
+                  x2={col * COL_W + 30}
+                  y2={ROWS * 30 + 10}
+                  stroke="#333355"
+                  strokeWidth="2"
+                />
               ))}
               {rungs.map((colRungs, col) =>
                 colRungs.map((hasRung, row) =>
                   hasRung ? (
-                    <line key={`h${col}_${row}`} x1={col * COL_W + 30} y1={row * 30 + 25} x2={(col + 1) * COL_W + 30} y2={row * 30 + 25} stroke="#5533aa" strokeWidth="2" />
+                    <line
+                      key={`h${col}_${row}`}
+                      x1={col * COL_W + 30}
+                      y1={row * 30 + 25}
+                      x2={(col + 1) * COL_W + 30}
+                      y2={row * 30 + 25}
+                      stroke="#5533aa"
+                      strokeWidth="2"
+                    />
                   ) : null
                 )
               )}
@@ -116,14 +157,24 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
                 for (let row = 0; row < ROWS; row++) {
                   const midY = row * 30 + 25;
                   pathParts.push(`L ${col * COL_W + 30} ${midY}`);
-                  if (col > 0 && rungs[col - 1]?.[row]) { col -= 1; pathParts.push(`L ${col * COL_W + 30} ${midY}`); }
-                  else if (col < rungs.length && rungs[col]?.[row]) { col += 1; pathParts.push(`L ${col * COL_W + 30} ${midY}`); }
+                  if (col > 0 && rungs[col - 1]?.[row]) {
+                    col -= 1;
+                    pathParts.push(`L ${col * COL_W + 30} ${midY}`);
+                  } else if (col < rungs.length && rungs[col]?.[row]) {
+                    col += 1;
+                    pathParts.push(`L ${col * COL_W + 30} ${midY}`);
+                  }
                 }
                 pathParts.push(`L ${col * COL_W + 30} ${ROWS * 30 + 10}`);
                 return (
-                  <path key={`path${startCol}`} d={pathParts.join(' ')}
+                  <path
+                    key={`path${startCol}`}
+                    d={pathParts.join(' ')}
                     stroke={`hsl(${(startCol * 60) % 360}, 80%, 65%)`}
-                    strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"
+                    strokeWidth="3"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="path-reveal"
                   />
                 );
@@ -133,7 +184,9 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
 
           <div className="flex justify-around" style={{ width: svgW }}>
             {roleSlots.map((role, i) => (
-              <div key={i} className={`badge-${role} min-w-[48px] text-center`}>{ROLE_LABELS[role]}</div>
+              <div key={i} className={`badge-${role} min-w-[48px] text-center`}>
+                {ROLE_LABELS[role]}
+              </div>
             ))}
           </div>
         </div>
@@ -141,8 +194,11 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
 
       {phase === 'done' && (
         <div className="w-full flex flex-col gap-1.5">
-          {assigned.map(p => (
-            <div key={p.id} className="flex justify-between items-center bg-white/[0.04] rounded-lg px-3 py-2">
+          {assigned.map((p) => (
+            <div
+              key={p.id}
+              className="flex justify-between items-center bg-white/[0.04] rounded-lg px-3 py-2"
+            >
               <span className="font-semibold text-[0.9rem]">{p.name}</span>
               <span className={`badge-${p.assignedRole}`}>{ROLE_LABELS[p.assignedRole]}</span>
             </div>
@@ -154,13 +210,15 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
 }
 
 export default function RoleAssignment() {
-  const { teamA, teamB, settings, setResult, setStep } = useAppStore(useShallow(s => ({
-    teamA: s.teamA,
-    teamB: s.teamB,
-    settings: s.settings,
-    setResult: s.setResult,
-    setStep: s.setStep,
-  })));
+  const { teamA, teamB, settings, setResult, setStep } = useAppStore(
+    useShallow((s) => ({
+      teamA: s.teamA,
+      teamB: s.teamB,
+      settings: s.settings,
+      setResult: s.setResult,
+      setStep: s.setStep,
+    }))
+  );
 
   const [doneA, setDoneA] = useState<AssignedPlayer[] | null>(null);
   const [doneB, setDoneB] = useState<AssignedPlayer[] | null>(null);
@@ -179,7 +237,9 @@ export default function RoleAssignment() {
         <TeamLadder players={teamA} label="A" useBan={settings.useBan} onDone={setDoneA} />
         <TeamLadder players={teamB} label="B" useBan={settings.useBan} onDone={setDoneB} />
       </div>
-      <button className="btn-secondary" onClick={() => setStep('teams')}>← 팀 다시 나누기</button>
+      <button className="btn-secondary" onClick={() => setStep('teams')}>
+        ← 팀 다시 나누기
+      </button>
     </div>
   );
 }

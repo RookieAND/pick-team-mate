@@ -8,14 +8,12 @@ const FEATURES = [
 ];
 
 export default function IntroPage() {
-  const setStep = useAppStore(s => s.setStep);
+  const setStep = useAppStore((s) => s.setStep);
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen w-full overflow-hidden px-6 py-16">
-
       {/* ── Background layers ── */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
-
         {/* Grid */}
         <div className="absolute inset-0 intro-grid" />
 
@@ -59,7 +57,7 @@ export default function IntroPage() {
 
       {/* Feature cards */}
       <div className="grid grid-cols-2 gap-3 w-full max-w-md intro-features">
-        {FEATURES.map(f => (
+        {FEATURES.map((f) => (
           <div
             key={f.label}
             className="card px-4 py-3.5 flex flex-col gap-1.5 hover:border-purple transition-all hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(124,58,237,0.15)]"

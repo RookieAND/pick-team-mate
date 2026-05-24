@@ -14,18 +14,30 @@ function sortByRole(players: AssignedPlayer[]) {
   );
 }
 
-function TeamResult({ players, label, showMost, showBan }: {
-  players: AssignedPlayer[]; label: string; showMost: boolean; showBan: boolean;
+function TeamResult({
+  players,
+  label,
+  showMost,
+  showBan,
+}: {
+  players: AssignedPlayer[];
+  label: string;
+  showMost: boolean;
+  showBan: boolean;
 }) {
   const sorted = sortByRole(players);
-  const borderColor: Record<Role, string> = { tank: 'var(--color-tank)', dps: 'var(--color-dps)', heal: 'var(--color-heal)' };
+  const borderColor: Record<Role, string> = {
+    tank: 'var(--color-tank)',
+    dps: 'var(--color-dps)',
+    heal: 'var(--color-heal)',
+  };
   return (
     <div className="card overflow-hidden">
       <div className="px-4 py-3 font-bold text-[0.95rem] text-lilac bg-[#14142a] border-b border-line">
         팀 {label}
       </div>
       <div className="flex flex-col">
-        {sorted.map(p => (
+        {sorted.map((p) => (
           <div
             key={p.id}
             className="flex items-center gap-2.5 px-4 py-2.5 border-b border-[#1f1f38] last:border-0 hover:bg-white/[0.02] transition-colors"
@@ -38,12 +50,19 @@ function TeamResult({ players, label, showMost, showBan }: {
               {p.name}
             </span>
             <div className="flex gap-1 flex-wrap justify-end">
-              {showMost && p.most[p.assignedRole].map((hero, i) => (
-                <span key={i} className={`badge-sm-${p.assignedRole}`}>{hero}</span>
-              ))}
-              {showBan && p.banned.length > 0 && p.banned.map(role => (
-                <span key={role} className="badge-ban">🚫{ROLE_LABELS[role]}</span>
-              ))}
+              {showMost &&
+                p.most[p.assignedRole].map((hero, i) => (
+                  <span key={i} className={`badge-sm-${p.assignedRole}`}>
+                    {hero}
+                  </span>
+                ))}
+              {showBan &&
+                p.banned.length > 0 &&
+                p.banned.map((role) => (
+                  <span key={role} className="badge-ban">
+                    🚫{ROLE_LABELS[role]}
+                  </span>
+                ))}
             </div>
           </div>
         ))}
@@ -53,12 +72,14 @@ function TeamResult({ players, label, showMost, showBan }: {
 }
 
 export default function ResultView() {
-  const { resultA, resultB, settings, reset } = useAppStore(useShallow(s => ({
-    resultA: s.resultA,
-    resultB: s.resultB,
-    settings: s.settings,
-    reset: s.reset,
-  })));
+  const { resultA, resultB, settings, reset } = useAppStore(
+    useShallow((s) => ({
+      resultA: s.resultA,
+      resultB: s.resultB,
+      settings: s.settings,
+      reset: s.reset,
+    }))
+  );
 
   const captureRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
@@ -85,15 +106,29 @@ export default function ResultView() {
 
       <div className="w-full flex flex-col gap-4 p-4 bg-base rounded-2xl">
         <div ref={captureRef} className="grid grid-cols-2 gap-4 max-[600px]:grid-cols-1">
-          <TeamResult players={resultA} label="A" showMost={settings.useMost} showBan={settings.useBan} />
-          <TeamResult players={resultB} label="B" showMost={settings.useMost} showBan={settings.useBan} />
+          <TeamResult
+            players={resultA}
+            label="A"
+            showMost={settings.useMost}
+            showBan={settings.useBan}
+          />
+          <TeamResult
+            players={resultB}
+            label="B"
+            showMost={settings.useMost}
+            showBan={settings.useBan}
+          />
         </div>
         <MapPicker teamAName="팀 A" teamBName="팀 B" />
       </div>
 
       <div className="flex gap-3 flex-wrap justify-center">
-        <button className="btn-icon" onClick={download}>📷 이미지 저장</button>
-        <button className="btn-primary" onClick={reset}>처음부터 다시 →</button>
+        <button className="btn-icon" onClick={download}>
+          📷 이미지 저장
+        </button>
+        <button className="btn-primary" onClick={reset}>
+          처음부터 다시 →
+        </button>
       </div>
     </div>
   );

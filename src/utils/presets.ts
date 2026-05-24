@@ -23,7 +23,7 @@ export function savePreset(players: Player[]): Preset {
 }
 
 export function deletePreset(id: string): Preset[] {
-  const next = loadPresets().filter(p => p.id !== id);
+  const next = loadPresets().filter((p) => p.id !== id);
   localStorage.setItem(KEY, JSON.stringify(next));
   return next;
 }

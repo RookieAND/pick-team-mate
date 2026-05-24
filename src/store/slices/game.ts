@@ -9,9 +9,9 @@ export const createGameSlice: StateCreator<AppState, [], [], GameSlice> = (set, 
   resultA: [],
   resultB: [],
 
-  setStep:      (step) => set({ step }),
+  setStep: (step) => set({ step }),
   confirmTeams: (teamA, teamB) => set({ teamA, teamB, step: 'result', resultA: [], resultB: [] }),
-  setResult:    (resultA, resultB) => set({ resultA, resultB }),
+  setResult: (resultA, resultB) => set({ resultA, resultB }),
 
   reset: () => {
     const { settings } = get();
