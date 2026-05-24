@@ -24,10 +24,12 @@ function SettingRow({ label, desc, checked, onCheckedChange }: {
 }
 
 export default function SettingsModal() {
-  const { showSettings, settings, setSettings, setShowSettings } = useAppStore(useShallow(s => ({
+  const { showSettings, settings, setUseMost, setUseBan, setUse6v6, setShowSettings } = useAppStore(useShallow(s => ({
     showSettings: s.showSettings,
     settings: s.settings,
-    setSettings: s.setSettings,
+    setUseMost: s.setUseMost,
+    setUseBan:  s.setUseBan,
+    setUse6v6:  s.setUse6v6,
     setShowSettings: s.setShowSettings,
   })));
 
@@ -47,19 +49,19 @@ export default function SettingsModal() {
               label="역할 모스트"
               desc="포지션별 모스트 영웅 입력 활성화"
               checked={settings.useMost}
-              onCheckedChange={v => setSettings({ useMost: v })}
+              onCheckedChange={setUseMost}
             />
             <SettingRow
               label="역할 밴"
               desc="너무 잘해서 제외할 역할 선택 활성화"
               checked={settings.useBan}
-              onCheckedChange={v => setSettings({ useBan: v })}
+              onCheckedChange={setUseBan}
             />
             <SettingRow
               label="6:6 모드"
               desc="12명으로 진행 (탱×2 딜×2 힐×2) — 변경 시 처음부터 시작"
               checked={settings.use6v6}
-              onCheckedChange={v => setSettings({ use6v6: v })}
+              onCheckedChange={setUse6v6}
             />
           </div>
         </Dialog.Content>
