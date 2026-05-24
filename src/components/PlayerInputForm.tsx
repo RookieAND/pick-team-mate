@@ -36,15 +36,46 @@ function PlayerCard({
   return (
     <div className={`card overflow-hidden transition-colors ${isActive ? 'border-purple!' : ''} ${filled && !isActive ? 'border-line-strong!' : ''}`}>
       <button
-        className="w-full flex items-center gap-2.5 px-4 py-3 bg-transparent hover:bg-white/[0.03] transition-colors text-left"
+        className="w-full flex items-center gap-3 px-4 py-3 bg-transparent hover:bg-white/[0.03] transition-colors text-left"
         onClick={onSelect}
       >
         <span className="text-[0.72rem] text-faint font-bold min-w-7">#{index + 1}</span>
-        <span className={`flex-1 text-[0.9rem] font-semibold ${filled ? 'text-lilac' : 'text-faint'}`}>
-          {player.name || '미입력'}
-        </span>
-        {filled && <span className="text-[0.75rem] text-purple font-bold">✓</span>}
-        <span className="text-[0.65rem] text-faint">{isActive ? '▲' : '▼'}</span>
+
+        <div className="flex items-center gap-1.5 flex-1 min-w-0">
+          <span className="text-[0.62rem] text-faint font-bold shrink-0">[닉네임]</span>
+          <span className={`text-[0.88rem] font-semibold truncate ${filled ? 'text-lilac' : 'text-faint'}`}>
+            {player.name || '미입력'}
+          </span>
+        </div>
+
+        {useMost && filled && (
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="text-[0.62rem] text-faint font-bold">[모스트]</span>
+            <div className="flex gap-1">
+              <span className="badge-sm-tank">{player.most.tank[0]}</span>
+              <span className="badge-sm-dps">{player.most.dps[0]}</span>
+              <span className="badge-sm-heal">{player.most.heal[0]}</span>
+            </div>
+          </div>
+        )}
+
+        {useBan && player.banned.length > 0 && (
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="text-[0.62rem] text-faint font-bold">[밴]</span>
+            <div className="flex gap-1">
+              {player.banned.map(role => (
+                <span key={role} className="badge-ban">
+                  {role === 'tank' ? '탱' : role === 'dps' ? '딜' : '힐'}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center gap-1.5 shrink-0">
+          {filled && <span className="text-[0.75rem] text-purple font-bold">✓</span>}
+          <span className="text-[0.65rem] text-faint">{isActive ? '▲' : '▼'}</span>
+        </div>
       </button>
 
       {isActive && (
