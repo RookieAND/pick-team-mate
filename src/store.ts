@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import type { Player, AssignedPlayer, AppStep, AppSettings, Role } from './types';
 import { HEROES } from './data/heroes';
 
-function makeDefaultPlayers(): Player[] {
-  return Array.from({ length: 10 }, (_, i) => ({
+function makeDefaultPlayers(count = 10): Player[] {
+  return Array.from({ length: count }, (_, i) => ({
     id: String(i),
     name: '',
     most: {
@@ -38,7 +38,7 @@ interface AppState {
 
 export const useAppStore = create<AppState>((set) => ({
   step: 'intro',
-  settings: { useMost: true, useBan: true },
+  settings: { useMost: true, useBan: true, use6v6: false },
   players: makeDefaultPlayers(),
   teamA: [],
   teamB: [],
@@ -48,18 +48,30 @@ export const useAppStore = create<AppState>((set) => ({
   showPreset: false,
 
   setStep: (step) => set({ step }),
-  setSettings: (s) => set((state) => ({ settings: { ...state.settings, ...s } })),
+  setSettings: (s) => set((state) => {
+    const next = { ...state.settings, ...s };
+    if (s.use6v6 !== undefined && s.use6v6 !== state.settings.use6v6) {
+      const targetCount = s.use6v6 ? 12 : 10;
+      const currentPlayers = state.players;
+      const newPlayers =
+        targetCount > currentPlayers.length
+          ? [...currentPlayers, ...makeDefaultPlayers(targetCount - currentPlayers.length).map((p, i) => ({ ...p, id: String(currentPlayers.length + i) }))]
+          : currentPlayers.slice(0, targetCount);
+      return { settings: next, players: newPlayers, step: 'input', teamA: [], teamB: [], resultA: [], resultB: [] };
+    }
+    return { settings: next };
+  }),
   setPlayers: (players) => set({ players }),
   confirmTeams: (teamA, teamB) => set({ teamA, teamB, step: 'result', resultA: [], resultB: [] }),
   setResult: (resultA, resultB) => set({ resultA, resultB }),
   setShowSettings: (showSettings) => set({ showSettings }),
   setShowPreset: (showPreset) => set({ showPreset }),
-  reset: () => set({
+  reset: () => set((state) => ({
     step: 'input',
-    players: makeDefaultPlayers(),
+    players: makeDefaultPlayers(state.settings.use6v6 ? 12 : 10),
     teamA: [],
     teamB: [],
     resultA: [],
     resultB: [],
-  }),
+  })),
 }));

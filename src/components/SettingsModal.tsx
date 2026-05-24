@@ -55,6 +55,12 @@ export default function SettingsModal() {
               checked={settings.useBan}
               onCheckedChange={v => setSettings({ useBan: v })}
             />
+            <SettingRow
+              label="6:6 모드"
+              desc="12명으로 진행 (탱×2 딜×2 힐×2) — 변경 시 처음부터 시작"
+              checked={settings.use6v6}
+              onCheckedChange={v => setSettings({ use6v6: v })}
+            />
           </div>
         </Dialog.Content>
       </Dialog.Portal>

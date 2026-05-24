@@ -22,6 +22,7 @@ export type AppStep = 'intro' | 'input' | 'teams' | 'result';
 export interface AppSettings {
   useMost: boolean;
   useBan: boolean;
+  use6v6: boolean;
 }
 
 export interface Preset {

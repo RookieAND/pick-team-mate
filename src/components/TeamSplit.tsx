@@ -20,10 +20,11 @@ export default function TeamSplit() {
     setStep: s.setStep,
   })));
 
+  const half = Math.floor(players.length / 2);
   const split = useCallback(() => {
     const shuffled = shuffle(players);
-    return { teamA: shuffled.slice(0, 5), teamB: shuffled.slice(5, 10) };
-  }, [players]);
+    return { teamA: shuffled.slice(0, half), teamB: shuffled.slice(half) };
+  }, [players, half]);
 
   const [teams, setTeams] = useState(split);
   const [spinning, setSpinning] = useState(false);
@@ -37,7 +38,7 @@ export default function TeamSplit() {
     <div className="w-full max-w-3xl px-6 py-8 flex flex-col items-center gap-6">
       <div className="text-center">
         <h2 className="section-title">팀 배정</h2>
-        <p className="section-desc mt-1">랜덤으로 5:5 팀이 나뉘었습니다. 마음에 들지 않으면 다시 섞어보세요.</p>
+        <p className="section-desc mt-1">랜덤으로 {half}:{half} 팀이 나뉘었습니다. 마음에 들지 않으면 다시 섞어보세요.</p>
       </div>
 
       <div className={`grid grid-cols-2 gap-4 w-full transition-opacity duration-300 ${spinning ? 'opacity-30' : ''}`}>

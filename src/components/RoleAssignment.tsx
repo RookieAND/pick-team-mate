@@ -5,7 +5,12 @@ import { useAppStore } from '../store';
 import './RoleAssignment.css';
 
 const ROLE_LABELS: Record<Role, string> = { tank: '탱', dps: '딜', heal: '힐' };
-const ROLE_SLOTS: Role[] = ['tank', 'dps', 'dps', 'heal', 'heal'];
+const ROLE_SLOTS_5: Role[] = ['tank', 'dps', 'dps', 'heal', 'heal'];
+const ROLE_SLOTS_6: Role[] = ['tank', 'tank', 'dps', 'dps', 'heal', 'heal'];
+
+function getRoleSlots(count: number): Role[] {
+  return count === 6 ? ROLE_SLOTS_6 : ROLE_SLOTS_5;
+}
 
 function generateLadder(count: number): boolean[][] {
   const ROWS = 8;
@@ -41,15 +46,16 @@ interface TeamLadderProps {
 
 function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
   const [phase, setPhase] = useState<'idle' | 'animating' | 'done'>('idle');
-  const [revealedPaths, setRevealedPaths] = useState<boolean[]>(Array(5).fill(false));
+  const [revealedPaths, setRevealedPaths] = useState<boolean[]>(() => Array(players.length).fill(false));
   const [assigned, setAssigned] = useState<AssignedPlayer[]>([]);
   const rungsRef = useRef<boolean[][]>([]);
 
   const startLadder = () => {
+    const roleSlots = getRoleSlots(players.length);
     let slots: Role[] = [], rungs: boolean[][] = [], result: AssignedPlayer[] = [];
     for (let attempt = 0; attempt < 200; attempt++) {
-      slots = [...ROLE_SLOTS].sort(() => Math.random() - 0.5);
-      rungs = generateLadder(5);
+      slots = [...roleSlots].sort(() => Math.random() - 0.5);
+      rungs = generateLadder(players.length);
       const mapping = players.map((_, i) => tracePath(i, rungs));
       result = players.map((p, i) => ({ ...p, assignedRole: slots[mapping[i]] }));
       if (!useBan || !result.some(p => p.banned.includes(p.assignedRole))) break;
@@ -66,7 +72,11 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
   };
 
   const ROWS = 8;
+  const COL_W = 60;
   const rungs = rungsRef.current;
+  const svgW = players.length * COL_W;
+  const svgH = ROWS * 30 + 20;
+  const roleSlots = getRoleSlots(players.length);
 
   return (
     <div className="card p-5 flex flex-col items-center gap-3.5">
@@ -78,7 +88,7 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
 
       {phase !== 'idle' && (
         <div className="w-full flex flex-col items-center gap-1.5">
-          <div className="flex w-[300px] justify-around">
+          <div className="flex justify-around" style={{ width: svgW }}>
             {players.map((p, i) => (
               <div key={p.id} className={`ladder-name ${revealedPaths[i] ? 'revealed' : ''}`}>
                 {p.name || `#${i + 1}`}
@@ -87,14 +97,14 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
           </div>
 
           <div className="ladder-svg-wrap">
-            <svg viewBox={`0 0 ${5 * 60} ${ROWS * 30 + 20}`} xmlns="http://www.w3.org/2000/svg" className="ladder-svg">
+            <svg viewBox={`0 0 ${svgW} ${svgH}`} xmlns="http://www.w3.org/2000/svg" className="ladder-svg">
               {players.map((_, col) => (
-                <line key={`v${col}`} x1={col * 60 + 30} y1={10} x2={col * 60 + 30} y2={ROWS * 30 + 10} stroke="#333355" strokeWidth="2" />
+                <line key={`v${col}`} x1={col * COL_W + 30} y1={10} x2={col * COL_W + 30} y2={ROWS * 30 + 10} stroke="#333355" strokeWidth="2" />
               ))}
               {rungs.map((colRungs, col) =>
                 colRungs.map((hasRung, row) =>
                   hasRung ? (
-                    <line key={`h${col}_${row}`} x1={col * 60 + 30} y1={row * 30 + 25} x2={(col + 1) * 60 + 30} y2={row * 30 + 25} stroke="#5533aa" strokeWidth="2" />
+                    <line key={`h${col}_${row}`} x1={col * COL_W + 30} y1={row * 30 + 25} x2={(col + 1) * COL_W + 30} y2={row * 30 + 25} stroke="#5533aa" strokeWidth="2" />
                   ) : null
                 )
               )}
@@ -102,14 +112,14 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
                 if (!revealed || !rungs.length) return null;
                 const pathParts: string[] = [];
                 let col = startCol;
-                pathParts.push(`M ${col * 60 + 30} 10`);
+                pathParts.push(`M ${col * COL_W + 30} 10`);
                 for (let row = 0; row < ROWS; row++) {
                   const midY = row * 30 + 25;
-                  pathParts.push(`L ${col * 60 + 30} ${midY}`);
-                  if (col > 0 && rungs[col - 1]?.[row]) { col -= 1; pathParts.push(`L ${col * 60 + 30} ${midY}`); }
-                  else if (col < rungs.length && rungs[col]?.[row]) { col += 1; pathParts.push(`L ${col * 60 + 30} ${midY}`); }
+                  pathParts.push(`L ${col * COL_W + 30} ${midY}`);
+                  if (col > 0 && rungs[col - 1]?.[row]) { col -= 1; pathParts.push(`L ${col * COL_W + 30} ${midY}`); }
+                  else if (col < rungs.length && rungs[col]?.[row]) { col += 1; pathParts.push(`L ${col * COL_W + 30} ${midY}`); }
                 }
-                pathParts.push(`L ${col * 60 + 30} ${ROWS * 30 + 10}`);
+                pathParts.push(`L ${col * COL_W + 30} ${ROWS * 30 + 10}`);
                 return (
                   <path key={`path${startCol}`} d={pathParts.join(' ')}
                     stroke={`hsl(${(startCol * 60) % 360}, 80%, 65%)`}
@@ -121,8 +131,8 @@ function TeamLadder({ players, label, useBan, onDone }: TeamLadderProps) {
             </svg>
           </div>
 
-          <div className="flex w-[300px] justify-around">
-            {ROLE_SLOTS.map((role, i) => (
+          <div className="flex justify-around" style={{ width: svgW }}>
+            {roleSlots.map((role, i) => (
               <div key={i} className={`badge-${role} min-w-[48px] text-center`}>{ROLE_LABELS[role]}</div>
             ))}
           </div>

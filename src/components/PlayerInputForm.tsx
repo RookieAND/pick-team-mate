@@ -139,6 +139,7 @@ export default function PlayerInputForm() {
     return true;
   };
 
+  const totalCount = players.length;
   const filledCount = players.filter(p => p.name.trim()).length;
 
   return (
@@ -147,10 +148,10 @@ export default function PlayerInputForm() {
         <div className="w-full h-1 bg-[#1f1f38] rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-[width] duration-300"
-            style={{ width: `${(filledCount / 10) * 100}%`, background: 'linear-gradient(90deg, #7c3aed, #a855f7)' }}
+            style={{ width: `${(filledCount / totalCount) * 100}%`, background: 'linear-gradient(90deg, #7c3aed, #a855f7)' }}
           />
         </div>
-        <span className="text-[0.75rem] text-muted">{filledCount} / 10 입력 완료</span>
+        <span className="text-[0.75rem] text-muted">{filledCount} / {totalCount} 입력 완료</span>
       </div>
 
       <div className="w-full flex flex-col gap-1.5">
@@ -164,7 +165,7 @@ export default function PlayerInputForm() {
             onChange={p => setPlayer(i, p)}
             isActive={activeIdx === i}
             onSelect={() => setActiveIdx(activeIdx === i ? null : i)}
-            onTabNext={() => setActiveIdx(i < 9 ? i + 1 : null)}
+            onTabNext={() => setActiveIdx(i < totalCount - 1 ? i + 1 : null)}
             onTabPrev={() => setActiveIdx(i > 0 ? i - 1 : null)}
           />
         ))}
@@ -174,7 +175,7 @@ export default function PlayerInputForm() {
 
       <button
         className="btn-primary mt-1"
-        disabled={filledCount < 10}
+        disabled={filledCount < totalCount}
         onClick={() => { if (validate()) setStep('teams'); }}
       >
         팀 나누기 →
