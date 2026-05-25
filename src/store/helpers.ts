@@ -1,6 +1,6 @@
 import { range } from 'es-toolkit';
 import type { Player, Role } from '../types';
-import { HEROES } from '../data/heroes';
+import { HEROES } from '../constants/heroes';
 
 export function makeDefaultPlayers(count = 10): Player[] {
   return range(count).map((i) => ({

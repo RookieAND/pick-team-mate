@@ -1,9 +1,4 @@
-export type MapMode = '점령' | '호위' | '혼합' | '밀기' | '플래시포인트' | '섬멸';
-
-export interface OWMap {
-  name: string;
-  mode: MapMode;
-}
+import type { MapMode, OWMap } from '../types';
 
 export const OW_MAPS: OWMap[] = [
   // 점령 (Control)
@@ -51,5 +46,4 @@ export const OW_MAPS: OWMap[] = [
   { name: '클라우드뱅크', mode: '섬멸' },
 ];
 
-// 선공/후공이 의미 있는 모드
 export const HAS_SIDE: MapMode[] = ['호위', '혼합'];

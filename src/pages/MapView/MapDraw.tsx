@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { sample, groupBy } from 'es-toolkit';
-import { OW_MAPS, HAS_SIDE, type OWMap } from '../../data/maps';
+import { OW_MAPS, HAS_SIDE } from '../../constants/maps';
+import type { OWMap } from '../../types';
 import { useAppStore } from '../../store';
 import { Button, Card, Text } from '../../ui';
 import { MapModeBadge } from './MapModeBadge';

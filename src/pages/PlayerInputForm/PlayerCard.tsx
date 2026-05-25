@@ -1,6 +1,6 @@
 import { useShallow } from 'zustand/react/shallow';
 import type { Player, Role, HeroMost } from '../../types';
-import { HEROES } from '../../data/heroes';
+import { HEROES } from '../../constants/heroes';
 import { useAppStore } from '../../store';
 import { Badge, Input } from '../../ui';
 import SearchableSelect from '../../components/SearchableSelect';
