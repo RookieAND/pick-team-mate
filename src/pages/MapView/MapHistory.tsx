@@ -1,13 +1,9 @@
 import { useShallow } from 'zustand/react/shallow';
 import type { PlayedMap } from '../../types';
 import { useAppStore } from '../../store';
-import { Card } from '../../ui';
+import { Card, Text } from '../../ui';
 import WinnerBtn from './WinnerBtn';
-
-const MODE_COLOR: Record<string, string> = {
-  점령: '#3b82f6', 호위: '#f59e0b', 혼합: '#a855f7',
-  밀기: '#22c55e', 플래시포인트: '#ef4444', 섬멸: '#ec4899',
-};
+import { MapModeBadge } from './MapModeBadge';
 
 type Winner = PlayedMap['winner'];
 
@@ -29,9 +25,7 @@ export default function MapHistory() {
   return (
     <Card className="px-5 py-4 flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span className="text-[0.88rem] font-bold text-muted uppercase tracking-wide">
-          진행한 맵 ({mapHistory.length})
-        </span>
+        <Text as="span" variant="label">진행한 맵 ({mapHistory.length})</Text>
         <button
           className="text-[0.75rem] text-faint hover:text-danger transition-colors"
           onClick={clearMapHistory}
@@ -45,12 +39,7 @@ export default function MapHistory() {
           <div key={entry.id} className="flex flex-col gap-1.5 bg-base rounded-xl px-3.5 py-2.5">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-[0.65rem] font-bold text-muted">{idx + 1}</span>
-              <span
-                className="text-[0.65rem] font-bold px-2 py-0.5 rounded-full text-white whitespace-nowrap"
-                style={{ background: MODE_COLOR[entry.mode] ?? '#555' }}
-              >
-                {entry.mode}
-              </span>
+              <MapModeBadge mode={entry.mode} className="text-[0.65rem] px-2 py-0.5 whitespace-nowrap" />
               <span className="font-semibold text-[0.92rem] text-text flex-1 min-w-0 truncate">
                 {entry.name}
               </span>

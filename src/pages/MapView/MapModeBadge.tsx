@@ -12,7 +12,10 @@ interface MapModeBadgeProps {
   className?: string;
 }
 
-export function MapModeBadge({ mode, className = 'text-[0.75rem] px-3 py-0.5' }: MapModeBadgeProps) {
+export function MapModeBadge({
+  mode,
+  className = 'text-[0.75rem] px-3 py-0.5',
+}: MapModeBadgeProps) {
   return (
     <span
       className={`font-bold rounded-full text-white whitespace-nowrap ${className}`}

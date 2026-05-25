@@ -81,22 +81,21 @@
 
 /* ─── ResultView entry animations ───────────────────── */
 @keyframes result-title-in {
-  0%   { opacity: 0; transform: scale(0.7) translateY(10px); }
-  65%  { transform: scale(1.07) translateY(-3px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.result-title   { animation: result-title-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-.result-desc    { animation: fade-up 0.4s ease 0.2s both; }
-.result-card    { animation: fade-up 0.38s ease var(--card-delay, 0.2s) both; }
-.result-row     { animation: fade-up 0.3s ease var(--row-delay, 0s) both; }
-.result-actions { animation: fade-up 0.4s ease 0.6s both; }
+.result-title   { animation: result-title-in 0.3s ease both; }
+.result-desc    { animation: fade-up 0.28s ease 0.1s both; }
+.result-card    { animation: fade-up 0.28s ease var(--card-delay, 0.15s) both; }
+.result-row     { animation: fade-up 0.22s ease var(--row-delay, 0s) both; }
+.result-actions { animation: fade-up 0.28s ease 0.4s both; }
 
 /* page-* aliases used in pages/ResultView */
-.page-title   { animation: result-title-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-.page-desc    { animation: fade-up 0.4s ease 0.2s both; }
-.page-card    { animation: fade-up 0.38s ease var(--card-delay, 0.2s) both; }
-.page-row     { animation: fade-up 0.3s ease var(--row-delay, 0s) both; }
-.page-actions { animation: fade-up 0.4s ease 0.6s both; }
+.page-title   { animation: result-title-in 0.3s ease both; }
+.page-desc    { animation: fade-up 0.28s ease 0.1s both; }
+.page-card    { animation: fade-up 0.28s ease var(--card-delay, 0.15s) both; }
+.page-row     { animation: fade-up 0.22s ease var(--row-delay, 0s) both; }
+.page-actions { animation: fade-up 0.28s ease 0.4s both; }
 
 /* ─── Animations ─────────────────────────────────── */
 @keyframes draw {
@@ -127,7 +126,7 @@
   50%       { transform: translateY(-8px); }
 }
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 

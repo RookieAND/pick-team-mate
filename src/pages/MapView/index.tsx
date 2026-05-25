@@ -3,6 +3,7 @@ import { useAppStore } from '../../store';
 import { Button, Layout } from '../../ui';
 import MapDraw from './MapDraw';
 import MapHistory from './MapHistory';
+import MapSettings from './MapSettings';
 
 export default function MapView() {
   const { setStep, reset } = useAppStore(
@@ -15,6 +16,7 @@ export default function MapView() {
         <Layout.Header title="맵 뽑기" desc="진행할 맵을 추첨하고 결과를 기록하세요." />
         <MapDraw />
         <MapHistory />
+        <MapSettings />
       </Layout.Body>
 
       <Layout.Footer>
