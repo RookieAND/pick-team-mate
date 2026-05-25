@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { Player } from '../../types';
 import { useAppStore } from '../../store';
-import { Button } from '../../ui';
+import { Button, PageFooter } from '../../ui';
 import PlayerCard from './PlayerCard';
 
 export default function PlayerInputForm() {
@@ -70,7 +70,7 @@ export default function PlayerInputForm() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-5 py-4 flex flex-col gap-2">
+      <PageFooter col className="px-5">
         {error && <p className="text-[0.82rem] text-danger text-center">{error}</p>}
         <Button
           size="xl"
@@ -80,9 +80,9 @@ export default function PlayerInputForm() {
             if (validate()) setStep('teams');
           }}
         >
-          팀 나누기 →
+          다음
         </Button>
-      </div>
+      </PageFooter>
     </div>
   );
 }

@@ -17,6 +17,7 @@
     "@tailwindcss/vite": "^4.3.0",
     "es-toolkit": "^1.46.1",
     "html2canvas": "^1.4.1",
+    "lucide-react": "^1.16.0",
     "nanoid": "^5.1.11",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

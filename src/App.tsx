@@ -1,4 +1,5 @@
 import { useShallow } from 'zustand/react/shallow';
+import { Settings, BookMarked } from 'lucide-react';
 import { useAppStore } from './store';
 import IntroPage from './pages/IntroPage';
 import PlayerInputForm from './pages/PlayerInputForm';
@@ -35,15 +36,17 @@ export default function App() {
           <h1 className="text-[1.15rem] font-extrabold bg-gradient-to-br from-[#a78bfa] via-[#c084fc] to-[#f0abfc] bg-clip-text text-transparent">빠치마리</h1>
           <div className="flex gap-2">
             <button
-              className="bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3 py-1.5 transition-all hover:border-purple hover:text-lilac"
+              className="bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3 py-1.5 transition-all hover:border-purple hover:text-lilac flex items-center gap-1.5"
               onClick={() => setShowSettings(true)}
             >
+              <Settings size={14} />
               설정
             </button>
             <button
-              className="bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3 py-1.5 transition-all hover:border-purple hover:text-lilac"
+              className="bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3 py-1.5 transition-all hover:border-purple hover:text-lilac flex items-center gap-1.5"
               onClick={() => setShowPreset(true)}
             >
+              <BookMarked size={14} />
               프리셋
             </button>
           </div>

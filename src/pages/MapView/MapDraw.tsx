@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { sample, groupBy } from 'es-toolkit';
 import { OW_MAPS, HAS_SIDE, type OWMap } from '../../data/maps';
 import { useAppStore } from '../../store';
-import { Button, Card } from '../../ui';
+import { Button, Card, Switch } from '../../ui';
 
 const ALL_MODES = ['점령', '호위', '혼합', '밀기', '플래시포인트', '섬멸'] as const;
 
@@ -216,18 +216,10 @@ export default function MapDraw() {
         <span className="text-[0.88rem] font-bold text-muted uppercase tracking-wide">맵 설정</span>
 
         <label className="flex items-center gap-2.5 cursor-pointer">
-          <div
-            className={`w-10 h-5.5 rounded-full transition-colors flex items-center px-0.5 ${
-              mapSettings.preventDuplicates ? 'bg-purple' : 'bg-line'
-            }`}
-            onClick={() => setMapSettings({ preventDuplicates: !mapSettings.preventDuplicates })}
-          >
-            <div
-              className={`w-4.5 h-4.5 rounded-full bg-white shadow transition-transform ${
-                mapSettings.preventDuplicates ? 'translate-x-4.5' : 'translate-x-0'
-              }`}
-            />
-          </div>
+          <Switch
+            checked={mapSettings.preventDuplicates}
+            onCheckedChange={(v) => setMapSettings({ preventDuplicates: v })}
+          />
           <span className="text-[0.88rem] text-sub">중복 방지 (진행한 맵 제외)</span>
         </label>
 

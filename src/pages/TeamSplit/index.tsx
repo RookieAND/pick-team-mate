@@ -1,9 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import type { CSSProperties } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { shuffle, sample } from 'es-toolkit';
 import type { Player } from '../../types';
 import { useAppStore } from '../../store';
-import { Badge, Card, Button, Text } from '../../ui';
+import { Badge, Card, Button, PageHeader, PageFooter } from '../../ui';
 
 type TeamPair = { teamA: Player[]; teamB: Player[] };
 
@@ -84,13 +85,18 @@ export default function TeamSplit() {
   if (!revealed) {
     return (
       <div className="w-full max-w-3xl flex flex-col flex-1 items-center justify-center gap-6 px-6">
-        <div className="text-center">
-          <Text as="h2" variant="section-title">팀 배정</Text>
-          <Text variant="section-desc" className="mt-1">
-            랜덤으로 {half}:{players.length - half} 팀이 나뉩니다.
-          </Text>
-        </div>
-        <Button size="2xl" className="px-12" onClick={handleReveal}>
+        <PageHeader
+          title="팀 배정"
+          desc={`랜덤으로 ${half}:${players.length - half} 팀이 나뉩니다.`}
+          titleClassName="page-title"
+          descClassName="page-desc"
+        />
+        <Button
+          size="2xl"
+          className="px-12 page-card"
+          style={{ '--card-delay': '0.35s' } as CSSProperties}
+          onClick={handleReveal}
+        >
           결과 보기
         </Button>
       </div>
@@ -100,12 +106,12 @@ export default function TeamSplit() {
   return (
     <div className="w-full max-w-3xl flex flex-col flex-1">
       <div className="flex-1 px-6 pt-8 pb-4 flex flex-col items-center gap-6">
-        <div className="text-center">
-          <Text as="h2" variant="section-title">팀 배정</Text>
-          <Text variant="section-desc" className="mt-1">
-            랜덤으로 {half}:{players.length - half} 팀이 나뉘었습니다.
-          </Text>
-        </div>
+        <PageHeader
+          title="팀 배정"
+          desc={`랜덤으로 ${half}:${players.length - half} 팀이 나뉘었습니다.`}
+          titleClassName="page-title"
+          descClassName="page-desc"
+        />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
           {(['A', 'B'] as const).map((label, idx) => {
@@ -113,9 +119,10 @@ export default function TeamSplit() {
             return (
               <Card
                 key={label}
-                className={`overflow-hidden transition-all duration-300 ${
+                className={`page-card overflow-hidden transition-all duration-300 ${
                   label === 'A' ? 'border-t-2 border-t-purple!' : 'border-t-2 border-t-violet!'
                 } ${spinning ? 'shadow-[0_0_24px_rgba(124,58,237,0.2)] border-purple/40!' : ''}`}
+                style={{ '--card-delay': `${0.32 + idx * 0.12}s` } as CSSProperties}
               >
                 <div className="px-4 py-3 font-bold text-[0.95rem] text-lilac bg-[#14142a] border-b border-line">
                   팀 {label}
@@ -168,7 +175,7 @@ export default function TeamSplit() {
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex gap-2">
+      <PageFooter className="page-actions">
         <Button
           variant="secondary"
           size="lg"
@@ -176,7 +183,7 @@ export default function TeamSplit() {
           onClick={() => setStep('input')}
           disabled={spinning}
         >
-          돌아가기
+          이전
         </Button>
         <Button variant="ghost" size="lg" className="flex-1" onClick={reshuffle}>
           {spinning ? '즉시 보기' : '다시 섞기'}
@@ -187,9 +194,9 @@ export default function TeamSplit() {
           onClick={() => confirmTeams(teams.teamA, teams.teamB)}
           disabled={spinning}
         >
-          역할 배정 시작
+          역할 배정
         </Button>
-      </div>
+      </PageFooter>
     </div>
   );
 }

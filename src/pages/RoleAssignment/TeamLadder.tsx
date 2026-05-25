@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import type { Player, AssignedPlayer } from '../../types';
 import { useAppStore } from '../../store';
 import { Badge, Button, Card } from '../../ui';
@@ -15,6 +16,7 @@ interface TeamLadderProps {
 
 export default function TeamLadder({ players, label, onDone, onReset }: TeamLadderProps) {
   const useBan = useAppStore((s) => s.settings.useBan);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const {
     phase,
@@ -34,7 +36,14 @@ export default function TeamLadder({ players, label, onDone, onReset }: TeamLadd
     buildPath,
   } = useLadderGame({ players, useBan, onDone });
 
+  useEffect(() => {
+    if (phase === 'ready') {
+      cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [phase]);
+
   return (
+    <div ref={cardRef}>
     <Card className="p-5 flex flex-col items-center gap-3.5">
       <h3 className="text-[1.1rem] font-bold text-lilac">팀 {label}</h3>
 
@@ -184,5 +193,6 @@ export default function TeamLadder({ players, label, onDone, onReset }: TeamLadd
         </div>
       )}
     </Card>
+    </div>
   );
 }

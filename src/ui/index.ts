@@ -6,3 +6,5 @@ export { default as Dialog } from './Dialog';
 export { default as Flex } from './Flex';
 export { default as Box } from './Box';
 export { default as Text } from './Text';
+export { default as Switch } from './Switch';
+export { PageHeader, PageFooter } from './Layout';

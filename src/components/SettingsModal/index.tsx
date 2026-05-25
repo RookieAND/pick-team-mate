@@ -1,7 +1,6 @@
-import * as Switch from '@radix-ui/react-switch';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store';
-import { Dialog } from '../../ui';
+import { Dialog, Switch } from '../../ui';
 
 function SettingRow({
   label,
@@ -20,13 +19,7 @@ function SettingRow({
         <span className="text-[0.88rem] font-bold text-text">{label}</span>
         <span className="text-[0.72rem] text-dim">{desc}</span>
       </div>
-      <Switch.Root
-        className="w-10 h-[22px] rounded-full border-none p-0 cursor-pointer relative transition-colors shrink-0 data-[state=checked]:bg-purple bg-line"
-        checked={checked}
-        onCheckedChange={onCheckedChange}
-      >
-        <Switch.Thumb className="block w-4 h-4 rounded-full bg-white shadow-sm transition-transform data-[state=checked]:translate-x-[21px] translate-x-[3px] will-change-transform" />
-      </Switch.Root>
+      <Switch checked={checked} onCheckedChange={onCheckedChange} />
     </div>
   );
 }

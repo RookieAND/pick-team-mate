@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
 import { useAppStore } from '../../store';
-import { Button, Text } from '../../ui';
+import { Button, PageHeader, PageFooter } from '../../ui';
 import TeamResult from './TeamResult';
 
 export default function ResultView() {
@@ -44,10 +44,12 @@ export default function ResultView() {
   return (
     <div ref={viewRef} className="w-full max-w-[900px] flex flex-col flex-1">
       <div className="flex-1 px-6 pt-8 pb-4 flex flex-col items-center gap-6">
-        <div className="text-center">
-          <Text as="h2" variant="section-title" className="page-title">배정 완료!</Text>
-          <Text variant="section-desc" className="mt-1 page-desc">모든 팀원의 역할이 배정되었습니다.</Text>
-        </div>
+        <PageHeader
+          title="배정 완료!"
+          desc="모든 팀원의 역할이 배정되었습니다."
+          titleClassName="page-title"
+          descClassName="page-desc"
+        />
 
         <div ref={captureRef} className="w-full">
           <div className="grid grid-cols-2 gap-4 max-[600px]:grid-cols-1">
@@ -57,14 +59,14 @@ export default function ResultView() {
         </div>
       </div>
 
-      <div className="page-actions sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex gap-2">
+      <PageFooter className="page-actions">
         <Button variant="icon" size="lg" className="flex-1" onClick={download}>
           이미지 저장
         </Button>
         <Button size="xl" className="flex-[2]" onClick={() => setStep('map')}>
-          맵 뽑기 시작 →
+          맵 뽑기
         </Button>
-      </div>
+      </PageFooter>
     </div>
   );
 }
