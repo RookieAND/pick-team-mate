@@ -23,11 +23,12 @@ export default function TeamSplit() {
     return { teamA: shuffled.slice(0, half), teamB: shuffled.slice(half) };
   }, [players, half]);
 
-  // Compute initial teams once at mount (before first render) and reuse as animation target
+  // Pre-compute initial teams once at first render
   const initRef = useRef<TeamPair | null>(null);
   if (initRef.current === null) initRef.current = split();
 
   const [teams, setTeams] = useState<TeamPair>(initRef.current);
+  const [revealed, setRevealed] = useState(false);
   const [spinning, setSpinning] = useState(false);
   const [displayNames, setDisplayNames] = useState<{ a: string[]; b: string[] } | null>(null);
   const [tickKey, setTickKey] = useState(0);
@@ -70,18 +71,31 @@ export default function TeamSplit() {
     [players, settle]
   );
 
-  // Auto-start animation on mount with the pre-computed initial teams
-  useEffect(() => {
+  const handleReveal = () => {
+    setRevealed(true);
     animate(initRef.current!);
-  }, [animate]);
+  };
 
   const reshuffle = () => {
-    if (spinning) {
-      settle();
-      return;
-    }
+    if (spinning) { settle(); return; }
     animate(split());
   };
+
+  if (!revealed) {
+    return (
+      <div className="w-full max-w-3xl flex flex-col flex-1 items-center justify-center gap-6 px-6">
+        <div className="text-center">
+          <h2 className="section-title">팀 배정</h2>
+          <p className="section-desc mt-1">
+            랜덤으로 {half}:{players.length - half} 팀이 나뉩니다.
+          </p>
+        </div>
+        <button className="btn-primary px-12! py-[18px]! text-[1.1rem]!" onClick={handleReveal}>
+          결과 보기
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-3xl flex flex-col flex-1">
@@ -89,11 +103,11 @@ export default function TeamSplit() {
         <div className="text-center">
           <h2 className="section-title">팀 배정</h2>
           <p className="section-desc mt-1">
-            랜덤으로 {half}:{half} 팀이 나뉘었습니다. 마음에 들지 않으면 다시 섞어보세요.
+            랜덤으로 {half}:{players.length - half} 팀이 나뉘었습니다.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
           {(['A', 'B'] as const).map((label, idx) => {
             const team = idx === 0 ? teams.teamA : teams.teamB;
             return (
@@ -119,19 +133,19 @@ export default function TeamSplit() {
                       >
                         <span
                           key={cyclingName ? `${tickKey}-${idx}-${i}` : p.id}
-                          className={`flex-1 font-semibold text-[0.9rem] ${cyclingName ? 'text-lilac slot-in' : ''}`}
+                          className={`flex-1 font-semibold text-[0.9rem] truncate ${cyclingName ? 'text-lilac slot-in' : ''}`}
                         >
                           {cyclingName ?? (p.name || '(이름 없음)')}
                         </span>
                         {!spinning && settings.useMost && (
-                          <div className="flex gap-1">
+                          <div className="flex gap-1 shrink-0">
                             <RoleBadge role="tank">{p.most.tank[0]}</RoleBadge>
                             <RoleBadge role="dps">{p.most.dps[0]}</RoleBadge>
                             <RoleBadge role="heal">{p.most.heal[0]}</RoleBadge>
                           </div>
                         )}
                         {!spinning && settings.useBan && p.banned.length > 0 && (
-                          <div className="flex gap-1">
+                          <div className="flex gap-1 shrink-0">
                             {p.banned.map((role) => (
                               <RoleBadge
                                 key={role}
@@ -139,7 +153,7 @@ export default function TeamSplit() {
                                 size="sm"
                                 className="opacity-60 line-through"
                               >
-                                🚫{role === 'tank' ? '탱' : role === 'dps' ? '딜' : '힐'}
+                                {role === 'tank' ? '탱' : role === 'dps' ? '딜' : '힐'}
                               </RoleBadge>
                             ))}
                           </div>
@@ -160,17 +174,17 @@ export default function TeamSplit() {
           onClick={() => setStep('input')}
           disabled={spinning}
         >
-          ← 돌아가기
+          돌아가기
         </button>
         <button className="btn-ghost py-[14px]! flex-1!" onClick={reshuffle}>
-          {spinning ? '⏩ 바로 보기' : '🔀 다시 섞기'}
+          {spinning ? '즉시 보기' : '다시 섞기'}
         </button>
         <button
           className="btn-primary py-[17px]! text-[1.05rem]! flex-[2]!"
           onClick={() => confirmTeams(teams.teamA, teams.teamB)}
           disabled={spinning}
         >
-          역할 배정 시작 →
+          역할 배정 시작
         </button>
       </div>
     </div>

@@ -46,7 +46,7 @@ export default function IntroPage() {
         시작하기 →
       </button>
 
-      <div className="grid grid-cols-2 gap-3 w-full max-w-md intro-features">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-md intro-features">
         {FEATURES.map((f) => (
           <div
             key={f.label}

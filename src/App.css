@@ -50,3 +50,12 @@
   flex-shrink: 0;
 }
 .step.done + .step .step-line { background: var(--color-purple); }
+
+/* ─── Mobile responsive ──────────────────────────── */
+@media (max-width: 639px) {
+  .step-label { display: none; }
+  .step-line  { width: 22px; margin: 0 3px; }
+  .step-dot   { width: 24px; height: 24px; font-size: 0.68rem; }
+  .step       { gap: 4px; }
+  .step-indicator { margin-top: 8px; }
+}

@@ -36,16 +36,16 @@ export default function App() {
           <h1 className="app-title text-[1.15rem]!">빠치마리</h1>
           <div className="flex gap-2">
             <button
-              className="bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3.5 py-1.5 transition-all hover:border-purple hover:text-lilac"
+              className="bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3 py-1.5 transition-all hover:border-purple hover:text-lilac"
               onClick={() => setShowSettings(true)}
             >
-              ⚙ 설정
+              설정
             </button>
             <button
-              className="bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3.5 py-1.5 transition-all hover:border-purple hover:text-lilac"
+              className="bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3 py-1.5 transition-all hover:border-purple hover:text-lilac"
               onClick={() => setShowPreset(true)}
             >
-              📋 프리셋
+              프리셋
             </button>
           </div>
         </div>

@@ -68,8 +68,7 @@ export default function PlayerCard({
         </div>
 
         {useMost && filled && (
-          <div className="flex items-center gap-1.5 shrink-0">
-            <span className="text-[0.62rem] text-faint font-bold">[모스트]</span>
+          <div className="hidden sm:flex items-center gap-1.5 shrink-0">
             <div className="flex gap-1">
               <RoleBadge role="tank" size="sm">{player.most.tank[0]}</RoleBadge>
               <RoleBadge role="dps" size="sm">{player.most.dps[0]}</RoleBadge>
@@ -79,15 +78,12 @@ export default function PlayerCard({
         )}
 
         {useBan && player.banned.length > 0 && (
-          <div className="flex items-center gap-1.5 shrink-0">
-            <span className="text-[0.62rem] text-faint font-bold">[밴]</span>
-            <div className="flex gap-1">
-              {player.banned.map((role) => (
-                <RoleBadge key={role} role={role} size="sm" className="opacity-60 line-through">
-                  {ROLE_LABELS[role]}
-                </RoleBadge>
-              ))}
-            </div>
+          <div className="hidden sm:flex items-center gap-1 shrink-0">
+            {player.banned.map((role) => (
+              <RoleBadge key={role} role={role} size="sm" className="opacity-60 line-through">
+                {ROLE_LABELS[role]}
+              </RoleBadge>
+            ))}
           </div>
         )}
 

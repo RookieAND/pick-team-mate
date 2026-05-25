@@ -58,7 +58,7 @@ export default function ResultView() {
 
       <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-6 py-4 flex gap-2">
         <button className="btn-icon py-[14px]! flex-1!" onClick={download}>
-          📷 이미지 저장
+          이미지 저장
         </button>
         <button className="btn-primary py-[17px]! text-[1.05rem]! flex-[2]!" onClick={() => setStep('map')}>
           맵 뽑기 시작 →

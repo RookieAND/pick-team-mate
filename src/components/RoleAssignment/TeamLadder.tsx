@@ -44,7 +44,7 @@ export default function TeamLadder({ players, label, onDone, onReset }: TeamLadd
       )}
 
       {phase !== 'idle' && (
-        <div className="w-full flex flex-col items-center gap-2">
+        <div className="w-full flex flex-col items-center gap-2 ladder-scroll">
           {/* Clickable player name buttons */}
           <div className="flex justify-around" style={{ width: svgW }}>
             {players.map((p, i) => {

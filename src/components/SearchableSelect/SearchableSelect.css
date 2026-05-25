@@ -7,7 +7,7 @@
   background: var(--color-base);
   border: 1px solid var(--color-line);
   border-radius: 6px;
-  padding: 5px 8px;
+  padding: 8px 8px;
   color: var(--color-text);
   font-size: 0.78rem;
   font-family: inherit;
@@ -62,7 +62,7 @@
 
 .ss-list {
   list-style: none;
-  max-height: 160px;
+  max-height: 200px;
   overflow-y: auto;
   padding: 4px 0;
 }
@@ -71,7 +71,7 @@
 .ss-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
 
 .ss-option {
-  padding: 6px 10px;
+  padding: 10px 10px;
   font-size: 0.78rem;
   color: var(--color-sub);
   cursor: pointer;
