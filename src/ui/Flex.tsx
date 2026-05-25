@@ -1,3 +1,4 @@
+import { cn } from './cn';
 import type { ElementType, HTMLAttributes } from 'react';
 
 type Items = 'start' | 'center' | 'end' | 'stretch' | 'baseline';
@@ -36,24 +37,23 @@ export default function Flex({
   justify,
   gap,
   wrap,
-  className = '',
+  className,
   children,
   ...rest
 }: FlexProps) {
-  const classes = [
-    'flex',
-    col ? 'flex-col' : '',
-    items ? ITEMS_CLASSES[items] : '',
-    justify ? JUSTIFY_CLASSES[justify] : '',
-    gap != null ? `gap-${gap}` : '',
-    wrap ? 'flex-wrap' : '',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
   return (
-    <Tag className={classes} {...rest}>
+    <Tag
+      className={cn(
+        'flex',
+        col && 'flex-col',
+        items && ITEMS_CLASSES[items],
+        justify && JUSTIFY_CLASSES[justify],
+        gap != null && `gap-${gap}`,
+        wrap && 'flex-wrap',
+        className,
+      )}
+      {...rest}
+    >
       {children}
     </Tag>
   );

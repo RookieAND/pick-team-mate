@@ -1,21 +1,22 @@
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from './cn';
 import type { HTMLAttributes } from 'react';
 
-type Variant = 'default' | 'dark';
+const cardVariants = cva('border', {
+  variants: {
+    variant: {
+      default: 'bg-surface border-line rounded-[14px]',
+      dark:    'bg-base border-line rounded-[10px]',
+    },
+  },
+  defaultVariants: { variant: 'default' },
+});
 
-const VARIANT_CLASSES: Record<Variant, string> = {
-  default: 'bg-surface border border-line rounded-[14px]',
-  dark:    'bg-base border border-line rounded-[10px]',
-};
+type CardProps = HTMLAttributes<HTMLDivElement> & VariantProps<typeof cardVariants>;
 
-interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: Variant;
-  className?: string;
-}
-
-export default function Card({ variant = 'default', className = '', children, ...rest }: CardProps) {
-  const classes = [VARIANT_CLASSES[variant], className].filter(Boolean).join(' ');
+export default function Card({ variant, className, children, ...rest }: CardProps) {
   return (
-    <div className={classes} {...rest}>
+    <div className={cn(cardVariants({ variant }), className)} {...rest}>
       {children}
     </div>
   );

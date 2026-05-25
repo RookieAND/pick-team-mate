@@ -38,6 +38,16 @@
 
   --color-danger: #f87171;
   --color-warn:   #fbbf24;
+
+  /* ─── Extended tokens ──────────────────────── */
+  --color-purple-dark:  #4a2a8a;   /* disabled primary button start */
+  --color-violet-dark:  #6b3aaa;   /* disabled primary button end   */
+  --color-icon-border:  #3a3a5a;   /* icon button border            */
+  --color-icon-hover:   #1e1040;   /* icon button hover bg          */
+  --color-border-muted: #333;      /* secondary button border       */
+  --color-ban-b:        #2a1515;   /* ban badge background          */
+  --color-card-header:  #14142a;   /* team card header background   */
+  --color-surface-dim:  #1f1f38;   /* progress bar bg, dim borders  */
 }
 
 /* ─── Base ───────────────────────────────────────── */

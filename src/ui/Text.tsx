@@ -9,7 +9,8 @@ type Variant =
   | 'dim'
   | 'faint'
   | 'lilac'
-  | 'lavender';
+  | 'lavender'
+  | 'label';
 
 const VARIANT_CLASSES: Record<Variant, string> = {
   'default':      'text-text',
@@ -21,6 +22,7 @@ const VARIANT_CLASSES: Record<Variant, string> = {
   'faint':         'text-faint',
   'lilac':         'text-lilac',
   'lavender':      'text-lavender',
+  'label':         'text-[0.88rem] font-bold text-muted uppercase tracking-wide',
 };
 
 interface TextProps extends HTMLAttributes<HTMLElement> {

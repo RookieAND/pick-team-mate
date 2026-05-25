@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { AssignedPlayer } from '../../types';
 import { useAppStore } from '../../store';
-import { Button, PageHeader, PageFooter } from '../../ui';
+import { Button, Layout } from '../../ui';
 import TeamLadder from './TeamLadder';
 import './RoleAssignment.css';
 
@@ -23,9 +23,9 @@ export default function RoleAssignment() {
   const canConfirm = !!doneA && !!doneB;
 
   return (
-    <div className="w-full max-w-[1100px] flex flex-col flex-1">
-      <div className="flex-1 px-6 pt-8 pb-4 flex flex-col items-center gap-6">
-        <PageHeader
+    <Layout.Root maxWidth="1100px">
+      <Layout.Body center>
+        <Layout.Header
           title="사다리타기 역할 배정"
           desc="각 팀의 사다리 시작 버튼을 눌러 역할을 배정하세요."
           titleClassName="page-title"
@@ -49,9 +49,9 @@ export default function RoleAssignment() {
             />
           </div>
         </div>
-      </div>
+      </Layout.Body>
 
-      <PageFooter className="page-actions">
+      <Layout.Footer className="page-actions">
         <Button variant="secondary" size="lg" className="flex-1" onClick={() => setStep('teams')}>
           이전
         </Button>
@@ -60,7 +60,7 @@ export default function RoleAssignment() {
             배정 확인
           </Button>
         )}
-      </PageFooter>
-    </div>
+      </Layout.Footer>
+    </Layout.Root>
   );
 }

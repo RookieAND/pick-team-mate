@@ -1,3 +1,4 @@
+import { cn } from './cn';
 import type { ElementType, HTMLAttributes } from 'react';
 
 interface BoxProps extends HTMLAttributes<HTMLElement> {
@@ -5,9 +6,9 @@ interface BoxProps extends HTMLAttributes<HTMLElement> {
   className?: string;
 }
 
-export default function Box({ as: Tag = 'div', className = '', children, ...rest }: BoxProps) {
+export default function Box({ as: Tag = 'div', className, children, ...rest }: BoxProps) {
   return (
-    <Tag className={className} {...rest}>
+    <Tag className={cn(className)} {...rest}>
       {children}
     </Tag>
   );

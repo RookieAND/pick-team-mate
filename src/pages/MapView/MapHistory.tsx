@@ -2,6 +2,7 @@ import { useShallow } from 'zustand/react/shallow';
 import type { PlayedMap } from '../../types';
 import { useAppStore } from '../../store';
 import { Card } from '../../ui';
+import WinnerBtn from './WinnerBtn';
 
 const MODE_COLOR: Record<string, string> = {
   점령: '#3b82f6', 호위: '#f59e0b', 혼합: '#a855f7',
@@ -9,36 +10,6 @@ const MODE_COLOR: Record<string, string> = {
 };
 
 type Winner = PlayedMap['winner'];
-
-function WinnerBtn({
-  label,
-  value,
-  current,
-  onClick,
-}: {
-  label: string;
-  value: Winner;
-  current: Winner;
-  onClick: () => void;
-}) {
-  const active = current === value;
-  return (
-    <button
-      onClick={onClick}
-      className={`text-[0.72rem] font-bold px-2.5 py-1 rounded-lg border transition-all ${
-        active
-          ? value === 'A'
-            ? 'bg-tank-b border-tank text-tank-t'
-            : value === 'B'
-              ? 'bg-dps-b border-dps text-dps-t'
-              : 'bg-surface border-line-strong text-lavender'
-          : 'bg-transparent border-line text-faint hover:border-line-strong hover:text-sub'
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
 
 export default function MapHistory() {
   const { mapHistory, updateMapWinner, clearMapHistory } = useAppStore(

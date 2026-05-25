@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
 import { useAppStore } from '../../store';
-import { Button, PageHeader, PageFooter } from '../../ui';
+import { Button, Layout } from '../../ui';
 import TeamResult from './TeamResult';
 
 export default function ResultView() {
@@ -42,9 +42,9 @@ export default function ResultView() {
   };
 
   return (
-    <div ref={viewRef} className="w-full max-w-[900px] flex flex-col flex-1">
-      <div className="flex-1 px-6 pt-8 pb-4 flex flex-col items-center gap-6">
-        <PageHeader
+    <Layout.Root ref={viewRef} maxWidth="900px">
+      <Layout.Body center>
+        <Layout.Header
           title="배정 완료!"
           desc="모든 팀원의 역할이 배정되었습니다."
           titleClassName="page-title"
@@ -57,16 +57,16 @@ export default function ResultView() {
             <TeamResult players={resultB} label="B" cardDelay={0.36} />
           </div>
         </div>
-      </div>
+      </Layout.Body>
 
-      <PageFooter className="page-actions">
+      <Layout.Footer className="page-actions">
         <Button variant="icon" size="lg" className="flex-1" onClick={download}>
           이미지 저장
         </Button>
         <Button size="xl" className="flex-[2]" onClick={() => setStep('map')}>
           맵 뽑기
         </Button>
-      </PageFooter>
-    </div>
+      </Layout.Footer>
+    </Layout.Root>
   );
 }
