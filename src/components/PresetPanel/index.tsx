@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 import type { Player, Preset } from '../../types';
 import { loadPresets, savePreset, deletePreset } from '../../utils/presets';
 
@@ -11,6 +12,10 @@ export default function PresetPanel({ players, onLoad }: Props) {
   const [presets, setPresets] = useState<Preset[]>(loadPresets);
 
   const handleSave = () => {
+    if (players.filter((p) => p.name.trim()).length === 0) {
+      toast.error('이름을 입력한 플레이어가 없습니다.');
+      return;
+    }
     savePreset(players);
     setPresets(loadPresets());
   };

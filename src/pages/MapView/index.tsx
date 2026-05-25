@@ -1,22 +1,32 @@
+import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store';
 import { Button, Layout } from '../../ui';
 import MapDraw from './MapDraw';
 import MapHistory from './MapHistory';
-import MapSettings from './MapSettings';
+import MapSettingsDialog from './MapSettings';
 
 export default function MapView() {
   const { setStep, reset } = useAppStore(
     useShallow((s) => ({ setStep: s.setStep, reset: s.reset }))
   );
+  const [showSettings, setShowSettings] = useState(false);
 
   return (
     <Layout.Root maxWidth="900px">
       <Layout.Body>
-        <Layout.Header title="맵 뽑기" desc="진행할 맵을 추첨하고 결과를 기록하세요." />
+        <Layout.Header
+          title="맵 뽑기"
+          desc="진행할 맵을 추첨하고 결과를 기록하세요."
+          action={
+            <Button variant="ghost" size="xs" onClick={() => setShowSettings(true)}>
+              설정
+            </Button>
+          }
+        />
         <MapDraw />
         <MapHistory />
-        <MapSettings />
+        <MapSettingsDialog open={showSettings} onOpenChange={setShowSettings} />
       </Layout.Body>
 
       <Layout.Footer>

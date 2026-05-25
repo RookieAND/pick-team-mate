@@ -1,10 +1,11 @@
 import { useState, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { sample, groupBy } from 'es-toolkit';
+import confetti from 'canvas-confetti';
 import { OW_MAPS, HAS_SIDE } from '../../constants/maps';
 import type { OWMap } from '../../types';
 import { useAppStore } from '../../store';
-import { Button, Card, Text } from '../../ui';
+import { Button, Card, Dialog, Text } from '../../ui';
 import { MapModeBadge } from './MapModeBadge';
 
 const ALL_MODES = ['점령', '호위', '혼합', '밀기', '플래시포인트', '섬멸'] as const;
@@ -41,13 +42,22 @@ export default function MapDraw() {
     return true;
   });
 
+  const fireConfetti = () => {
+    const colors = ['#a855f7', '#7c3aed', '#c084fc', '#ddd6fe', '#ffffff'];
+    confetti({ particleCount: 60, spread: 70, origin: { y: 0.55 }, colors, startVelocity: 28, scalar: 0.9 });
+    setTimeout(() => confetti({ particleCount: 40, spread: 50, origin: { y: 0.5, x: 0.35 }, colors, startVelocity: 22, scalar: 0.85 }), 120);
+    setTimeout(() => confetti({ particleCount: 40, spread: 50, origin: { y: 0.5, x: 0.65 }, colors, startVelocity: 22, scalar: 0.85 }), 220);
+  };
+
   const settle = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
     const map = finalRef.current!;
     finalRef.current = null;
     setDisplayMap(null);
-    setCurrent({ map, side: computeSide(map) });
+    const side = mapSettings.sideMode === 'random' ? computeSide(map) : null;
+    setCurrent({ map, side });
     setSpinning(false);
+    fireConfetti();
   };
 
   const draw = () => {
@@ -74,7 +84,8 @@ export default function MapDraw() {
   };
 
   const pickManual = (map: OWMap) => {
-    setCurrent({ map, side: computeSide(map) });
+    const side = mapSettings.sideMode === 'random' ? computeSide(map) : null;
+    setCurrent({ map, side });
     setShowManual(false);
   };
 
@@ -84,21 +95,23 @@ export default function MapDraw() {
     setCurrent(null);
   };
 
+  const needsSideChoice =
+    current !== null &&
+    !spinning &&
+    mapSettings.sideMode === 'manual' &&
+    HAS_SIDE.includes(current.map.mode) &&
+    current.side === null;
+
   const mapsByMode = groupBy(available, (m) => m.mode);
 
   return (
     <div className="flex flex-col gap-4">
-      {/* 맵 추첨 카드 */}
       <Card className="px-5 py-5 flex flex-col gap-4">
         <div className="flex items-center justify-between gap-3">
           <Text as="span" variant="label">맵 추첨</Text>
           <div className="flex gap-2">
             {!spinning && (
-              <Button
-                variant="ghost"
-                size="xs"
-                onClick={() => setShowManual((v) => !v)}
-              >
+              <Button variant="ghost" size="xs" onClick={() => setShowManual(true)}>
                 직접 선택
               </Button>
             )}
@@ -112,10 +125,12 @@ export default function MapDraw() {
           </div>
         </div>
 
-        {/* 룰렛 디스플레이 영역 */}
         <div className="flex items-center justify-center min-h-[220px] rounded-xl bg-base border border-line-subtle px-8 py-8">
           {!spinning && !current && available.length === 0 && (
-            <p className="text-[0.9rem] text-danger text-center">선택 가능한 맵이 없습니다.<br /><span className="text-faint text-[0.8rem]">설정에서 모드를 활성화하세요.</span></p>
+            <p className="text-[0.9rem] text-danger text-center">
+              선택 가능한 맵이 없습니다.<br />
+              <span className="text-faint text-[0.8rem]">설정에서 모드를 활성화하세요.</span>
+            </p>
           )}
           {!spinning && !current && available.length > 0 && (
             <p className="text-[0.9rem] text-faint">맵 뽑기 버튼을 눌러 추첨을 시작하세요</p>
@@ -136,6 +151,7 @@ export default function MapDraw() {
               <span className="text-[2.8rem] font-black text-text tracking-tight leading-none text-center">
                 {current.map.name}
               </span>
+
               {current.side && (
                 <div className="flex gap-6 mt-2">
                   <span className="text-[0.9rem] text-muted">
@@ -146,42 +162,71 @@ export default function MapDraw() {
                   </span>
                 </div>
               )}
+
+              {needsSideChoice && (
+                <div className="flex flex-col items-center gap-2.5 mt-1 w-full">
+                  <span className="text-[0.8rem] text-muted">선공 팀을 선택하세요</span>
+                  <div className="flex gap-3">
+                    <button
+                      className="text-[0.85rem] font-semibold px-5 py-2 rounded-lg border border-warn/50 text-warn hover:bg-warn/10 transition-all font-[inherit]"
+                      onClick={() => setCurrent((c) => c && { ...c, side: { first: '팀 A', second: '팀 B' } })}
+                    >
+                      ⚔ 팀 A 선공
+                    </button>
+                    <button
+                      className="text-[0.85rem] font-semibold px-5 py-2 rounded-lg border border-tank-t/50 text-tank-t hover:bg-tank-t/10 transition-all font-[inherit]"
+                      onClick={() => setCurrent((c) => c && { ...c, side: { first: '팀 B', second: '팀 A' } })}
+                    >
+                      🛡 팀 B 선공
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
 
-        {current && !spinning && (
+        {current && !spinning && !needsSideChoice && (
           <Button className="py-[11px] text-[0.9rem] w-full" onClick={confirm}>
             이 맵 진행하기 →
           </Button>
         )}
-
-        {/* 직접 선택 패널 */}
-        {showManual && (
-          <div className="flex flex-col gap-3 border-t border-line/30 pt-3">
-            {ALL_MODES.map((mode) => {
-              const maps = mapsByMode[mode] ?? [];
-              if (maps.length === 0) return null;
-              return (
-                <div key={mode} className="flex flex-col gap-1.5">
-                  <MapModeBadge mode={mode} className="text-[0.7rem] px-2 py-0.5 self-start" />
-                  <div className="flex flex-wrap gap-1.5">
-                    {maps.map((m) => (
-                      <button
-                        key={m.name}
-                        className="text-[0.8rem] font-semibold px-3 py-1.5 rounded-lg bg-surface border border-line text-sub hover:border-purple hover:text-lilac transition-all"
-                        onClick={() => pickManual(m)}
-                      >
-                        {m.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
       </Card>
+
+      <Dialog
+        open={showManual}
+        onOpenChange={setShowManual}
+        title="맵 직접 선택"
+        maxWidth="480px"
+      >
+        <div className="flex flex-col gap-3 px-5 py-4 max-h-[60vh] overflow-y-auto">
+          {available.length === 0 && (
+            <p className="text-[0.88rem] text-faint text-center py-4">
+              선택 가능한 맵이 없습니다.
+            </p>
+          )}
+          {ALL_MODES.map((mode) => {
+            const maps = mapsByMode[mode] ?? [];
+            if (maps.length === 0) return null;
+            return (
+              <div key={mode} className="flex flex-col gap-1.5">
+                <MapModeBadge mode={mode} className="text-[0.7rem] px-2 py-0.5 self-start" />
+                <div className="flex flex-wrap gap-1.5">
+                  {maps.map((m) => (
+                    <button
+                      key={m.name}
+                      className="text-[0.8rem] font-semibold px-3 py-1.5 rounded-lg bg-surface border border-line text-sub hover:border-purple hover:text-lilac transition-all font-[inherit]"
+                      onClick={() => pickManual(m)}
+                    >
+                      {m.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Dialog>
     </div>
   );
 }

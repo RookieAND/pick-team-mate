@@ -7,6 +7,7 @@ export const createMapSlice: StateCreator<AppState, [], [], MapSlice> = (set) =>
   mapSettings: {
     preventDuplicates: false,
     excludedModes: [],
+    sideMode: 'manual' as const,
   },
 
   addPlayedMap: (entry) =>

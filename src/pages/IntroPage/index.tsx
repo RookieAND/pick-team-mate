@@ -1,3 +1,4 @@
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../../store';
 import { Button, Badge, Card } from '../../ui';
 
@@ -9,7 +10,20 @@ const FEATURES = [
 ];
 
 export default function IntroPage() {
-  const setStep = useAppStore((s) => s.setStep);
+  const { setStep, reset, players, teamA, mapHistory } = useAppStore(
+    useShallow((s) => ({
+      setStep: s.setStep,
+      reset: s.reset,
+      players: s.players,
+      teamA: s.teamA,
+      mapHistory: s.mapHistory,
+    }))
+  );
+
+  const hasProgress =
+    players.some((p) => p.name.trim() !== '') ||
+    teamA.length > 0 ||
+    mapHistory.length > 0;
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen w-full overflow-hidden px-6 py-16">
@@ -40,13 +54,25 @@ export default function IntroPage() {
         </p>
       </div>
 
-      <Button
-        size="2xl"
-        className="mt-3 mb-14 intro-cta intro-cta-glow"
-        onClick={() => setStep('input')}
-      >
-        시작하기 →
-      </Button>
+      <div className="flex flex-col items-center gap-2 mt-3 mb-14">
+        <Button
+          size="2xl"
+          className="intro-cta intro-cta-glow"
+          onClick={() => setStep('input')}
+        >
+          {hasProgress ? '이어서 하기 →' : '시작하기 →'}
+        </Button>
+        {hasProgress && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-faint hover:text-danger"
+            onClick={reset}
+          >
+            새 게임 시작
+          </Button>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-md intro-features">
         {FEATURES.map((f) => (

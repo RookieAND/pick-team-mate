@@ -17,4 +17,5 @@ export interface PlayedMap {
 export interface MapSettings {
   preventDuplicates: boolean;
   excludedModes: string[];
+  sideMode: 'random' | 'manual';
 }

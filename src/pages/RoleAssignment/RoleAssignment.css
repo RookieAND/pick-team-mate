@@ -59,7 +59,11 @@
 }
 
 /* SVG 영역 스크롤 — 6인 팀에서 좁은 화면 대응 */
-.ladder-scroll { overflow-x: auto; }
+.ladder-scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ladder-scroll::-webkit-scrollbar { display: none; }
 
 @media (max-width: 639px) {
   .ladders-wrap { grid-template-columns: 1fr !important; }
