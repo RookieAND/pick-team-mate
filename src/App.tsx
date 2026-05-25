@@ -12,9 +12,10 @@ import PresetDialog from './components/PresetDialog';
 import StepIndicator from './components/StepIndicator';
 
 export default function App() {
-  const { step, setShowSettings, setShowPreset } = useAppStore(
+  const { step, setStep, setShowSettings, setShowPreset } = useAppStore(
     useShallow((s) => ({
       step: s.step,
+      setStep: s.setStep,
       setShowSettings: s.setShowSettings,
       setShowPreset: s.setShowPreset,
     }))
@@ -33,7 +34,12 @@ export default function App() {
     <div className="flex flex-col w-full h-screen">
       <header className="sticky top-0 z-50 w-full flex flex-col gap-3 px-6 pt-4 pb-3 bg-base/90 backdrop-blur-md border-b border-line/20 shrink-0">
         <div className="w-full flex items-center justify-between">
-          <h1 className="text-[1.15rem] font-extrabold bg-gradient-to-br from-[#a78bfa] via-[#c084fc] to-[#f0abfc] bg-clip-text text-transparent">빠치마리</h1>
+          <button
+            className="text-[1.15rem] font-extrabold bg-gradient-to-br from-[#a78bfa] via-[#c084fc] to-[#f0abfc] bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+            onClick={() => setStep('intro')}
+          >
+            빠치마리
+          </button>
           <div className="flex gap-2">
             <button
               className="bg-surface border border-line rounded-lg text-muted text-[0.82rem] font-semibold px-3 py-1.5 transition-all hover:border-purple hover:text-lilac flex items-center gap-1.5"
