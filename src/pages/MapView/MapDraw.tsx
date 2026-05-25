@@ -3,14 +3,10 @@ import { useShallow } from 'zustand/react/shallow';
 import { sample, groupBy } from 'es-toolkit';
 import { OW_MAPS, HAS_SIDE, type OWMap } from '../../data/maps';
 import { useAppStore } from '../../store';
-import { Button, Card, Switch } from '../../ui';
+import { Button, Card, Text } from '../../ui';
+import { MapModeBadge } from './MapModeBadge';
 
 const ALL_MODES = ['점령', '호위', '혼합', '밀기', '플래시포인트', '섬멸'] as const;
-
-const MODE_COLOR: Record<string, string> = {
-  점령: '#3b82f6', 호위: '#f59e0b', 혼합: '#a855f7',
-  밀기: '#22c55e', 플래시포인트: '#ef4444', 섬멸: '#ec4899',
-};
 
 type CurrentDraw = { map: OWMap; side: { first: string; second: string } | null };
 
@@ -21,12 +17,11 @@ function computeSide(map: OWMap): { first: string; second: string } | null {
 }
 
 export default function MapDraw() {
-  const { mapHistory, mapSettings, addPlayedMap, setMapSettings } = useAppStore(
+  const { mapHistory, mapSettings, addPlayedMap } = useAppStore(
     useShallow((s) => ({
       mapHistory: s.mapHistory,
       mapSettings: s.mapSettings,
       addPlayedMap: s.addPlayedMap,
-      setMapSettings: s.setMapSettings,
     }))
   );
 
@@ -88,15 +83,6 @@ export default function MapDraw() {
     setCurrent(null);
   };
 
-  const toggleMode = (mode: string) => {
-    const excluded = mapSettings.excludedModes;
-    setMapSettings({
-      excludedModes: excluded.includes(mode)
-        ? excluded.filter((m) => m !== mode)
-        : [...excluded, mode],
-    });
-  };
-
   const mapsByMode = groupBy(available, (m) => m.mode);
 
   return (
@@ -104,7 +90,7 @@ export default function MapDraw() {
       {/* 맵 추첨 카드 */}
       <Card className="px-5 py-5 flex flex-col gap-4">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-[0.88rem] font-bold text-muted uppercase tracking-wide">맵 추첨</span>
+          <Text as="span" variant="label">맵 추첨</Text>
           <div className="flex gap-2">
             {!spinning && (
               <Button
@@ -126,45 +112,35 @@ export default function MapDraw() {
         </div>
 
         {/* 룰렛 디스플레이 영역 */}
-        <div className="flex items-center justify-center min-h-[88px] rounded-xl bg-base border border-line-subtle px-6">
+        <div className="flex items-center justify-center min-h-[220px] rounded-xl bg-base border border-line-subtle px-8 py-8">
           {!spinning && !current && available.length === 0 && (
-            <p className="text-[0.85rem] text-danger">선택 가능한 맵이 없습니다. 설정을 확인해주세요.</p>
+            <p className="text-[0.9rem] text-danger text-center">선택 가능한 맵이 없습니다.<br /><span className="text-faint text-[0.8rem]">설정에서 모드를 활성화하세요.</span></p>
           )}
           {!spinning && !current && available.length > 0 && (
-            <p className="text-[0.85rem] text-faint">맵 뽑기 버튼을 눌러 추첨을 시작하세요</p>
+            <p className="text-[0.9rem] text-faint">맵 뽑기 버튼을 눌러 추첨을 시작하세요</p>
           )}
 
           {spinning && displayMap && (
-            <div key={tickKey} className="flex flex-col items-center gap-2 slot-in">
-              <span
-                className="text-[0.75rem] font-bold px-3 py-0.5 rounded-full text-white"
-                style={{ background: MODE_COLOR[displayMap.mode] ?? '#555' }}
-              >
-                {displayMap.mode}
-              </span>
-              <span className="text-[1.8rem] font-black text-text tracking-tight leading-none">
+            <div key={tickKey} className="flex flex-col items-center gap-3 slot-in">
+              <MapModeBadge mode={displayMap.mode} className="text-[0.82rem] px-3 py-1" />
+              <span className="text-[2.8rem] font-black text-text tracking-tight leading-none text-center">
                 {displayMap.name}
               </span>
             </div>
           )}
 
           {current && !spinning && (
-            <div className="flex flex-col items-center gap-2 pop-in w-full">
-              <span
-                className="text-[0.75rem] font-bold px-3 py-0.5 rounded-full text-white"
-                style={{ background: MODE_COLOR[current.map.mode] ?? '#555' }}
-              >
-                {current.map.mode}
-              </span>
-              <span className="text-[1.8rem] font-black text-text tracking-tight leading-none">
+            <div className="flex flex-col items-center gap-3 pop-in w-full">
+              <MapModeBadge mode={current.map.mode} className="text-[0.82rem] px-3 py-1" />
+              <span className="text-[2.8rem] font-black text-text tracking-tight leading-none text-center">
                 {current.map.name}
               </span>
               {current.side && (
-                <div className="flex gap-4 mt-1">
-                  <span className="text-[0.82rem] text-muted">
+                <div className="flex gap-6 mt-2">
+                  <span className="text-[0.9rem] text-muted">
                     ⚔ 선공 <strong className="text-warn">{current.side.first}</strong>
                   </span>
-                  <span className="text-[0.82rem] text-muted">
+                  <span className="text-[0.9rem] text-muted">
                     🛡 후공 <strong className="text-tank-t">{current.side.second}</strong>
                   </span>
                 </div>
@@ -187,12 +163,7 @@ export default function MapDraw() {
               if (maps.length === 0) return null;
               return (
                 <div key={mode} className="flex flex-col gap-1.5">
-                  <span
-                    className="text-[0.7rem] font-bold px-2 py-0.5 rounded-full text-white self-start"
-                    style={{ background: MODE_COLOR[mode] ?? '#555' }}
-                  >
-                    {mode}
-                  </span>
+                  <MapModeBadge mode={mode} className="text-[0.7rem] px-2 py-0.5 self-start" />
                   <div className="flex flex-wrap gap-1.5">
                     {maps.map((m) => (
                       <button
@@ -209,41 +180,6 @@ export default function MapDraw() {
             })}
           </div>
         )}
-      </Card>
-
-      {/* 설정 카드 */}
-      <Card className="px-5 py-4 flex flex-col gap-4">
-        <span className="text-[0.88rem] font-bold text-muted uppercase tracking-wide">맵 설정</span>
-
-        <label className="flex items-center gap-2.5 cursor-pointer">
-          <Switch
-            checked={mapSettings.preventDuplicates}
-            onCheckedChange={(v) => setMapSettings({ preventDuplicates: v })}
-          />
-          <span className="text-[0.88rem] text-sub">중복 방지 (진행한 맵 제외)</span>
-        </label>
-
-        <div className="flex flex-col gap-2">
-          <span className="text-[0.8rem] text-muted">제외할 모드</span>
-          <div className="flex flex-wrap gap-2">
-            {ALL_MODES.map((mode) => {
-              const excluded = mapSettings.excludedModes.includes(mode);
-              return (
-                <button
-                  key={mode}
-                  onClick={() => toggleMode(mode)}
-                  className={`text-[0.78rem] font-semibold px-3 py-1 rounded-full border transition-all ${
-                    excluded
-                      ? 'bg-surface border-faint text-faint line-through'
-                      : 'border-line text-sub hover:border-purple hover:text-lilac'
-                  }`}
-                >
-                  {mode}
-                </button>
-              );
-            })}
-          </div>
-        </div>
       </Card>
     </div>
   );
