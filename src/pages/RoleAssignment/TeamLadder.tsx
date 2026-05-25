@@ -1,6 +1,6 @@
 import type { Player, AssignedPlayer } from '../../types';
 import { useAppStore } from '../../store';
-import RoleBadge from '../RoleBadge';
+import { Badge, Button, Card } from '../../ui';
 import { useLadderGame, LADDER_ROWS, LADDER_COL_W } from './useLadderGame';
 import type { Role } from '../../types';
 
@@ -35,13 +35,13 @@ export default function TeamLadder({ players, label, onDone, onReset }: TeamLadd
   } = useLadderGame({ players, useBan, onDone });
 
   return (
-    <div className="card p-5 flex flex-col items-center gap-3.5">
+    <Card className="p-5 flex flex-col items-center gap-3.5">
       <h3 className="text-[1.1rem] font-bold text-lilac">팀 {label}</h3>
 
       {phase === 'idle' && (
-        <button className="btn-sm" onClick={startLadder}>
+        <Button size="sm" onClick={startLadder}>
           사다리 시작
-        </button>
+        </Button>
       )}
 
       {phase !== 'idle' && (
@@ -131,12 +131,12 @@ export default function TeamLadder({ players, label, onDone, onReset }: TeamLadd
                 : -1;
               return (
                 <div key={j} className="flex flex-col items-center gap-0.5">
-                  <RoleBadge
+                  <Badge
                     role={role}
                     className={`min-w-[48px] text-center ${isRevealed ? 'pop-in' : 'opacity-30'}`}
                   >
                     {ROLE_LABELS[role]}
-                  </RoleBadge>
+                  </Badge>
                   {isRevealed && claimedIdx >= 0 && (
                     <span className="text-[0.68rem] text-white/50 font-medium leading-none">
                       {players[claimedIdx].name || `#${claimedIdx + 1}`}
@@ -149,13 +149,15 @@ export default function TeamLadder({ players, label, onDone, onReset }: TeamLadd
 
           {/* Reveal-all button */}
           {phase === 'ready' && !bulkRevealing && (
-            <button
-              className="btn-sm text-[0.8rem]! py-[8px]! px-5! mt-1"
+            <Button
+              variant="ghost"
+              size="xs"
+              className="mt-1"
               onClick={revealAll}
               disabled={revealingIdx !== null}
             >
               전체 공개
-            </button>
+            </Button>
           )}
         </div>
       )}
@@ -169,17 +171,18 @@ export default function TeamLadder({ players, label, onDone, onReset }: TeamLadd
               className="flex justify-between items-center bg-white/4 rounded-lg px-3 py-2"
             >
               <span className="font-semibold text-[0.9rem]">{p.name}</span>
-              <RoleBadge role={p.assignedRole}>{ROLE_LABELS[p.assignedRole]}</RoleBadge>
+              <Badge role={p.assignedRole}>{ROLE_LABELS[p.assignedRole]}</Badge>
             </div>
           ))}
-          <button
-            className="btn-ghost text-[0.82rem]! py-[9px]! w-full! mt-0.5"
+          <Button
+            variant="ghost"
+            className="py-[9px] w-full mt-0.5 text-[0.82rem]"
             onClick={() => { onReset?.(); startLadder(); }}
           >
             다시 뽑기
-          </button>
+          </Button>
         </div>
       )}
-    </div>
+    </Card>
   );
 }

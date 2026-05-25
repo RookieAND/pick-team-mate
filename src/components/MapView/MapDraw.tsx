@@ -99,156 +99,156 @@ export default function MapDraw() {
   const mapsByMode = groupBy(available, (m) => m.mode);
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* 맵 추첨 카드 */}
-      <div className="card px-5 py-5 flex flex-col gap-4">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-[0.88rem] font-bold text-muted uppercase tracking-wide">맵 추첨</span>
-          <div className="flex gap-2">
-            {!spinning && (
-              <button
-                className="btn-ghost text-[0.8rem]! py-[7px]! px-4!"
-                onClick={() => setShowManual((v) => !v)}
-              >
-                직접 선택
-              </button>
-            )}
+    <div className="card px-5 py-5 flex flex-col gap-4">
+      {/* 헤더 */}
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-[0.88rem] font-bold text-muted uppercase tracking-wide">맵 추첨</span>
+        <div className="flex gap-2">
+          {!spinning && (
             <button
-              className="btn-sm"
-              onClick={draw}
-              disabled={!spinning && available.length === 0}
+              className="btn-ghost text-[0.8rem]! py-[7px]! px-4!"
+              onClick={() => setShowManual((v) => !v)}
             >
-              {spinning ? '즉시 확정' : current ? '다시 뽑기' : '맵 뽑기'}
+              직접 선택
             </button>
-          </div>
-        </div>
-
-        {/* 룰렛 디스플레이 영역 */}
-        <div className="flex items-center justify-center min-h-[88px] rounded-xl bg-base border border-line-subtle px-6">
-          {!spinning && !current && available.length === 0 && (
-            <p className="text-[0.85rem] text-danger">선택 가능한 맵이 없습니다. 설정을 확인해주세요.</p>
           )}
-          {!spinning && !current && available.length > 0 && (
-            <p className="text-[0.85rem] text-faint">맵 뽑기 버튼을 눌러 추첨을 시작하세요</p>
-          )}
-
-          {spinning && displayMap && (
-            <div key={tickKey} className="flex flex-col items-center gap-2 slot-in">
-              <span
-                className="text-[0.75rem] font-bold px-3 py-0.5 rounded-full text-white"
-                style={{ background: MODE_COLOR[displayMap.mode] ?? '#555' }}
-              >
-                {displayMap.mode}
-              </span>
-              <span className="text-[1.8rem] font-black text-text tracking-tight leading-none">
-                {displayMap.name}
-              </span>
-            </div>
-          )}
-
-          {current && !spinning && (
-            <div className="flex flex-col items-center gap-2 pop-in w-full">
-              <span
-                className="text-[0.75rem] font-bold px-3 py-0.5 rounded-full text-white"
-                style={{ background: MODE_COLOR[current.map.mode] ?? '#555' }}
-              >
-                {current.map.mode}
-              </span>
-              <span className="text-[1.8rem] font-black text-text tracking-tight leading-none">
-                {current.map.name}
-              </span>
-              {current.side && (
-                <div className="flex gap-4 mt-1">
-                  <span className="text-[0.82rem] text-muted">
-                    ⚔ 선공 <strong className="text-warn">{current.side.first}</strong>
-                  </span>
-                  <span className="text-[0.82rem] text-muted">
-                    🛡 후공 <strong className="text-tank-t">{current.side.second}</strong>
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {current && !spinning && (
-          <button className="btn-primary py-[11px]! text-[0.9rem]! w-full!" onClick={confirm}>
-            이 맵 진행하기 →
+          <button
+            className="btn-sm"
+            onClick={draw}
+            disabled={!spinning && available.length === 0}
+          >
+            {spinning ? '즉시 확정' : current ? '다시 뽑기' : '맵 뽑기'}
           </button>
+        </div>
+      </div>
+
+      {/* 룰렛 디스플레이 — 넉넉한 높이로 강조 */}
+      <div className="flex items-center justify-center min-h-[200px] rounded-xl bg-base border border-line-subtle px-6 py-6">
+        {!spinning && !current && available.length === 0 && (
+          <p className="text-[0.9rem] text-danger text-center">
+            선택 가능한 맵이 없습니다.
+            <br />
+            <span className="text-[0.8rem] text-faint">아래 설정에서 모드를 활성화하세요.</span>
+          </p>
+        )}
+        {!spinning && !current && available.length > 0 && (
+          <p className="text-[0.9rem] text-faint">맵 뽑기 버튼을 눌러 추첨을 시작하세요</p>
         )}
 
-        {/* 직접 선택 패널 */}
-        {showManual && (
-          <div className="flex flex-col gap-3 border-t border-line/30 pt-3">
-            {ALL_MODES.map((mode) => {
-              const maps = mapsByMode[mode] ?? [];
-              if (maps.length === 0) return null;
-              return (
-                <div key={mode} className="flex flex-col gap-1.5">
-                  <span
-                    className="text-[0.7rem] font-bold px-2 py-0.5 rounded-full text-white self-start"
-                    style={{ background: MODE_COLOR[mode] ?? '#555' }}
-                  >
-                    {mode}
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {maps.map((m) => (
-                      <button
-                        key={m.name}
-                        className="text-[0.8rem] font-semibold px-3 py-1.5 rounded-lg bg-surface border border-line text-sub hover:border-purple hover:text-lilac transition-all"
-                        onClick={() => pickManual(m)}
-                      >
-                        {m.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+        {spinning && displayMap && (
+          <div key={tickKey} className="flex flex-col items-center gap-3 slot-in">
+            <span
+              className="text-[0.78rem] font-bold px-3 py-1 rounded-full text-white"
+              style={{ background: MODE_COLOR[displayMap.mode] ?? '#555' }}
+            >
+              {displayMap.mode}
+            </span>
+            <span className="text-[2.6rem] font-black text-text tracking-tight leading-none text-center">
+              {displayMap.name}
+            </span>
+          </div>
+        )}
+
+        {current && !spinning && (
+          <div className="flex flex-col items-center gap-3 pop-in w-full">
+            <span
+              className="text-[0.78rem] font-bold px-3 py-1 rounded-full text-white"
+              style={{ background: MODE_COLOR[current.map.mode] ?? '#555' }}
+            >
+              {current.map.mode}
+            </span>
+            <span className="text-[2.6rem] font-black text-text tracking-tight leading-none text-center">
+              {current.map.name}
+            </span>
+            {current.side && (
+              <div className="flex gap-6 mt-1">
+                <span className="text-[0.88rem] text-muted">
+                  ⚔ 선공 <strong className="text-warn">{current.side.first}</strong>
+                </span>
+                <span className="text-[0.88rem] text-muted">
+                  🛡 후공 <strong className="text-tank-t">{current.side.second}</strong>
+                </span>
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {/* 설정 카드 */}
-      <div className="card px-5 py-4 flex flex-col gap-4">
-        <span className="text-[0.88rem] font-bold text-muted uppercase tracking-wide">맵 설정</span>
+      {current && !spinning && (
+        <button className="btn-primary py-[13px]! text-[1rem]! w-full!" onClick={confirm}>
+          이 맵 진행하기 →
+        </button>
+      )}
 
-        <label className="flex items-center gap-2.5 cursor-pointer">
+      {/* 직접 선택 패널 */}
+      {showManual && (
+        <div className="panel-open flex flex-col gap-3 border-t border-line/30 pt-3">
+          {ALL_MODES.map((mode) => {
+            const maps = mapsByMode[mode] ?? [];
+            if (maps.length === 0) return null;
+            return (
+              <div key={mode} className="flex flex-col gap-1.5">
+                <span
+                  className="text-[0.7rem] font-bold px-2 py-0.5 rounded-full text-white self-start"
+                  style={{ background: MODE_COLOR[mode] ?? '#555' }}
+                >
+                  {mode}
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {maps.map((m) => (
+                    <button
+                      key={m.name}
+                      className="text-[0.8rem] font-semibold px-3 py-1.5 rounded-lg bg-surface border border-line text-sub hover:border-purple hover:text-lilac transition-all"
+                      onClick={() => pickManual(m)}
+                    >
+                      {m.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* 설정 — 한 줄로 압축 */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 border-t border-line/20">
+        <button
+          className="flex items-center gap-2 cursor-pointer shrink-0"
+          onClick={() => setMapSettings({ preventDuplicates: !mapSettings.preventDuplicates })}
+        >
           <div
-            className={`w-10 h-5.5 rounded-full transition-colors flex items-center px-0.5 ${
+            className={`w-8 h-4.5 rounded-full transition-colors flex items-center px-0.5 ${
               mapSettings.preventDuplicates ? 'bg-purple' : 'bg-line'
             }`}
-            onClick={() => setMapSettings({ preventDuplicates: !mapSettings.preventDuplicates })}
           >
             <div
-              className={`w-4.5 h-4.5 rounded-full bg-white shadow transition-transform ${
-                mapSettings.preventDuplicates ? 'translate-x-4.5' : 'translate-x-0'
+              className={`w-3.5 h-3.5 rounded-full bg-white shadow transition-transform ${
+                mapSettings.preventDuplicates ? 'translate-x-3.5' : 'translate-x-0'
               }`}
             />
           </div>
-          <span className="text-[0.88rem] text-sub">중복 방지 (진행한 맵 제외)</span>
-        </label>
+          <span className="text-[0.78rem] text-sub">중복 방지</span>
+        </button>
 
-        <div className="flex flex-col gap-2">
-          <span className="text-[0.8rem] text-muted">제외할 모드</span>
-          <div className="flex flex-wrap gap-2">
-            {ALL_MODES.map((mode) => {
-              const excluded = mapSettings.excludedModes.includes(mode);
-              return (
-                <button
-                  key={mode}
-                  onClick={() => toggleMode(mode)}
-                  className={`text-[0.78rem] font-semibold px-3 py-1 rounded-full border transition-all ${
-                    excluded
-                      ? 'bg-surface border-faint text-faint line-through'
-                      : 'border-line text-sub hover:border-purple hover:text-lilac'
-                  }`}
-                >
-                  {mode}
-                </button>
-              );
-            })}
-          </div>
+        <div className="flex flex-wrap gap-1.5 items-center">
+          <span className="text-[0.72rem] text-faint shrink-0">제외:</span>
+          {ALL_MODES.map((mode) => {
+            const excluded = mapSettings.excludedModes.includes(mode);
+            return (
+              <button
+                key={mode}
+                onClick={() => toggleMode(mode)}
+                className={`text-[0.72rem] font-semibold px-2.5 py-0.5 rounded-full border transition-all ${
+                  excluded
+                    ? 'bg-surface border-faint text-faint line-through'
+                    : 'border-line text-sub hover:border-purple hover:text-lilac'
+                }`}
+              >
+                {mode}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import type { Player } from '../../types';
 import { useAppStore } from '../../store';
+import { Button } from '../../ui';
 import PlayerCard from './PlayerCard';
 
 export default function PlayerInputForm() {
@@ -38,7 +39,7 @@ export default function PlayerInputForm() {
   return (
     <div className="w-full max-w-[680px] flex flex-col flex-1">
       <div className="flex-1 px-5 pt-6 pb-4 flex flex-col items-center gap-4">
-        <div className="w-full flex flex-col items-end gap-1 page-desc">
+        <div className="w-full flex flex-col items-end gap-1">
           <div className="w-full h-1 bg-[#1f1f38] rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-[width] duration-300"
@@ -69,17 +70,18 @@ export default function PlayerInputForm() {
         </div>
       </div>
 
-      <div className="page-actions sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-5 py-4 flex flex-col gap-2">
+      <div className="sticky bottom-0 z-10 w-full bg-base/95 backdrop-blur-sm border-t border-line/20 px-5 py-4 flex flex-col gap-2">
         {error && <p className="text-[0.82rem] text-danger text-center">{error}</p>}
-        <button
-          className="btn-primary py-[17px]! text-[1.05rem]! w-full!"
+        <Button
+          size="xl"
+          className="w-full"
           disabled={filledCount < totalCount}
           onClick={() => {
             if (validate()) setStep('teams');
           }}
         >
           팀 나누기 →
-        </button>
+        </Button>
       </div>
     </div>
   );

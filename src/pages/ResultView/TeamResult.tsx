@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { sortBy } from 'es-toolkit';
 import type { AssignedPlayer, Role } from '../../types';
 import { useAppStore } from '../../store';
-import RoleBadge from '../RoleBadge';
+import { Badge, Card } from '../../ui';
 
 const ROLE_LABELS: Record<Role, string> = { tank: '탱커', dps: '딜러', heal: '힐러' };
 const ROLE_ORDER: Role[] = ['tank', 'heal', 'dps'];
@@ -35,8 +35,8 @@ export default function TeamResult({
     heal: 'var(--color-heal)',
   };
   return (
-    <div
-      className="card overflow-hidden page-card"
+    <Card
+      className="overflow-hidden page-card"
       style={{ '--card-delay': `${cardDelay}s` } as CSSProperties}
     >
       <div className="px-4 py-3 font-bold text-[0.95rem] text-lilac bg-[#14142a] border-b border-line">
@@ -52,30 +52,30 @@ export default function TeamResult({
               '--row-delay': `${cardDelay + 0.14 + i * 0.065}s`,
             } as CSSProperties}
           >
-            <RoleBadge role={p.assignedRole} className="min-w-10 text-center">
+            <Badge role={p.assignedRole} className="min-w-10 text-center">
               {ROLE_LABELS[p.assignedRole]}
-            </RoleBadge>
+            </Badge>
             <span className="flex-1 font-semibold text-[0.9rem] overflow-hidden text-ellipsis whitespace-nowrap">
               {p.name}
             </span>
             <div className="flex gap-1 flex-wrap justify-end">
               {useMost &&
                 p.most[p.assignedRole].map((hero, i) => (
-                  <RoleBadge key={i} role={p.assignedRole} size="sm">
+                  <Badge key={i} role={p.assignedRole} size="sm">
                     {hero}
-                  </RoleBadge>
+                  </Badge>
                 ))}
               {useBan &&
                 p.banned.length > 0 &&
                 p.banned.map((role) => (
-                  <RoleBadge key={role} role={role} size="sm" className="opacity-60 line-through">
+                  <Badge key={role} role={role} size="sm" className="opacity-60 line-through">
                     🚫{ROLE_LABELS[role]}
-                  </RoleBadge>
+                  </Badge>
                 ))}
             </div>
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }
