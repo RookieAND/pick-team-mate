@@ -81,21 +81,21 @@
 
 /* ─── ResultView entry animations ───────────────────── */
 @keyframes result-title-in {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.result-title   { animation: result-title-in 0.3s ease both; }
-.result-desc    { animation: fade-up 0.28s ease 0.1s both; }
-.result-card    { animation: fade-up 0.28s ease var(--card-delay, 0.15s) both; }
-.result-row     { animation: fade-up 0.22s ease var(--row-delay, 0s) both; }
-.result-actions { animation: fade-up 0.28s ease 0.4s both; }
+.result-title   { animation: result-title-in 0.22s ease both; }
+.result-desc    { animation: fade-up 0.2s ease 0.06s both; }
+.result-card    { animation: fade-up 0.2s ease var(--card-delay, 0.1s) both; }
+.result-row     { animation: fade-up 0.18s ease var(--row-delay, 0s) both; }
+.result-actions { animation: fade-up 0.2s ease 0.2s both; }
 
 /* page-* aliases used in pages/ResultView */
-.page-title   { animation: result-title-in 0.3s ease both; }
-.page-desc    { animation: fade-up 0.28s ease 0.1s both; }
-.page-card    { animation: fade-up 0.28s ease var(--card-delay, 0.15s) both; }
-.page-row     { animation: fade-up 0.22s ease var(--row-delay, 0s) both; }
-.page-actions { animation: fade-up 0.28s ease 0.4s both; }
+.page-title   { animation: result-title-in 0.22s ease both; }
+.page-desc    { animation: fade-up 0.2s ease 0.06s both; }
+.page-card    { animation: fade-up 0.2s ease var(--card-delay, 0.1s) both; }
+.page-row     { animation: fade-up 0.18s ease var(--row-delay, 0s) both; }
+.page-actions { animation: fade-up 0.2s ease 0.2s both; }
 
 /* ─── Animations ─────────────────────────────────── */
 @keyframes draw {
@@ -126,7 +126,7 @@
   50%       { transform: translateY(-8px); }
 }
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
