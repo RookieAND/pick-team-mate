@@ -32,7 +32,6 @@ export default function TeamSplit() {
   const [revealed, setRevealed] = useState(false);
   const [spinning, setSpinning] = useState(false);
   const [displayNames, setDisplayNames] = useState<{ a: string[]; b: string[] } | null>(null);
-  const [tickKey, setTickKey] = useState(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const finalRef = useRef<TeamPair | null>(null);
 
@@ -61,7 +60,6 @@ export default function TeamSplit() {
           a: target.teamA.map(() => sample(names)),
           b: target.teamB.map(() => sample(names)),
         });
-        setTickKey((k) => k + 1);
         if (progress < 1) {
           timeoutRef.current = setTimeout(tick, 40 + Math.floor(progress * progress * 160));
         } else {
@@ -141,8 +139,8 @@ export default function TeamSplit() {
                         className="flex items-center gap-2 px-4 py-2.5 border-b border-line/60 last:border-0"
                       >
                         <span
-                          key={cyclingName ? `${tickKey}-${idx}-${i}` : p.id}
-                          className={`flex-1 font-semibold text-[0.9rem] truncate ${cyclingName ? 'text-lilac slot-in' : ''}`}
+                          key={spinning ? `spin-${idx}-${i}` : p.id}
+                          className={`flex-1 font-semibold text-[0.9rem] truncate ${spinning ? 'text-lilac' : 'slot-in'}`}
                         >
                           {cyclingName ?? (p.name || '(이름 없음)')}
                         </span>
